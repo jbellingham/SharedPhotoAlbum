@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -29,6 +30,7 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
             return new PostsVm
             {
                 Posts = await _dbContext.Posts
+                    .OrderByDescending(_ => _.Created)
                     .ProjectTo<PostDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken)
             };
