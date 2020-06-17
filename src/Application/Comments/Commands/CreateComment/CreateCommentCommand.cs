@@ -30,7 +30,7 @@ namespace SharedPhotoAlbum.Application.Comments.Commands.CreateComment
                 PostId = request.PostId
             };
 
-            await _dbContext.Comments.AddAsync(entity);
+            await _dbContext.Comments.AddAsync(entity, cancellationToken);
             await _dbContext.SaveChangesAsync(cancellationToken);
             return entity.Id;
         }
