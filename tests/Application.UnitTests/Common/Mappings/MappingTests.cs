@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using SharedPhotoAlbum.Application.Common.Mappings;
-using SharedPhotoAlbum.Application.TodoLists.Queries.GetTodos;
 using SharedPhotoAlbum.Domain.Entities;
 using NUnit.Framework;
 using System;
+using SharedPhotoAlbum.Application.Posts.Queries.GetPosts;
 
 namespace SharedPhotoAlbum.Application.UnitTests.Common.Mappings
 {
@@ -29,8 +29,9 @@ namespace SharedPhotoAlbum.Application.UnitTests.Common.Mappings
         }
         
         [Test]
-        [TestCase(typeof(TodoList), typeof(TodoListDto))]
-        [TestCase(typeof(TodoItem), typeof(TodoItemDto))]
+        [TestCase(typeof(StoredMedia), typeof(MediaDto))]
+        [TestCase(typeof(Post), typeof(PostDto))]
+        [TestCase(typeof(Comment), typeof(CommentDto))]
         public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
         {
             var instance = Activator.CreateInstance(source);

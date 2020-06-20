@@ -30,13 +30,11 @@ namespace SharedPhotoAlbum.Infrastructure.Persistence
             _dateTime = dateTime;
         }
 
-        public DbSet<TodoList> TodoLists { get; set; }
-
-        public DbSet<TodoItem> TodoItems { get; set; }
-        
         public DbSet<Post> Posts { get; set; }
         
         public DbSet<Comment> Comments { get; set; }
+        
+        public DbSet<StoredMedia> StoredMedia { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

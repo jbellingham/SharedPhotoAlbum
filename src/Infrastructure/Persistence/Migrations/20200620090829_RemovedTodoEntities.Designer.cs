@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SharedPhotoAlbum.Infrastructure.Persistence;
@@ -9,9 +10,10 @@ using SharedPhotoAlbum.Infrastructure.Persistence;
 namespace SharedPhotoAlbum.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200620090829_RemovedTodoEntities")]
+    partial class RemovedTodoEntities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -332,7 +334,7 @@ namespace SharedPhotoAlbum.Infrastructure.Persistence.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<int>("PostId")
+                    b.Property<int?>("PostId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -468,11 +470,9 @@ namespace SharedPhotoAlbum.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("SharedPhotoAlbum.Domain.Entities.StoredMedia", b =>
                 {
-                    b.HasOne("SharedPhotoAlbum.Domain.Entities.Post", "Post")
+                    b.HasOne("SharedPhotoAlbum.Domain.Entities.Post", null)
                         .WithMany("StoredMedia")
-                        .HasForeignKey("PostId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PostId");
                 });
 #pragma warning restore 612, 618
         }

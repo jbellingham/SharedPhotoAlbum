@@ -1,5 +1,4 @@
 ﻿using SharedPhotoAlbum.Application.Common.Interfaces;
-using SharedPhotoAlbum.Infrastructure.Files;
 using SharedPhotoAlbum.Infrastructure.Identity;
 using SharedPhotoAlbum.Infrastructure.Persistence;
 using SharedPhotoAlbum.Infrastructure.Services;
@@ -41,7 +40,6 @@ namespace SharedPhotoAlbum.Infrastructure
 
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IIdentityService, IdentityService>();
-            services.AddTransient<ICsvFileBuilder, CsvFileBuilder>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt();

@@ -12,5 +12,9 @@ namespace SharedPhotoAlbum.Domain.Entities
         public MediaType MediaType { get; set; }
         
         public byte[] Content { get; set; }
+        
+        public int PostId { get; set; }
+        
+        public Post Post { get; set; }
     }
 }

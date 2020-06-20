@@ -1,19 +1,19 @@
 ﻿using FluentValidation;
 using SharedPhotoAlbum.Application.Common.Interfaces;
 
-namespace SharedPhotoAlbum.Application.Posts.Commands.CreatePost
+namespace SharedPhotoAlbum.Application.Comments.Commands.CreateComment
 {
-    public class CreatePostCommandValidator : AbstractValidator<CreatePostCommand>
+    public class CreateCommentCommandValidator : AbstractValidator<CreateCommentCommand>
     {
         private readonly IApplicationDbContext _context;
 
-        public CreatePostCommandValidator(IApplicationDbContext context)
+        public CreateCommentCommandValidator(IApplicationDbContext context)
         {
             _context = context;
 
             RuleFor(v => v.Text)
-                .NotEmpty().WithMessage("Post text is required.")
-                .MaximumLength(1000).WithMessage("Post text must not exceed 1000 characters.");
+                .NotEmpty().WithMessage("Comment text is required.")
+                .MaximumLength(1000).WithMessage("Comment text must not exceed 1000 characters.");
             // .MustAsync(BeUniqueTitle).WithMessage("The specified title already exists.");
         }
 
