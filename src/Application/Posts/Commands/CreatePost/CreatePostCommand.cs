@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using SharedPhotoAlbum.Application.Common.Interfaces;
+using SharedPhotoAlbum.Application.Posts.Queries.GetPosts;
 using SharedPhotoAlbum.Domain.Entities;
 using SharedPhotoAlbum.Domain.Enums;
 
@@ -14,7 +15,7 @@ namespace SharedPhotoAlbum.Application.Posts.Commands.CreatePost
 {
     public class CreatePostCommand : IRequest<int>
     {
-        public string[] Files { get; set; }
+        public IList<StoredMediaDto> StoredMedia { get; set; }
         public string Text { get; set; }
     }
 
@@ -29,10 +30,10 @@ namespace SharedPhotoAlbum.Application.Posts.Commands.CreatePost
         
         public async Task<int> Handle(CreatePostCommand request, CancellationToken cancellationToken)
         {
-            var media = request.Files.Select(_ => new StoredMedia
+            var media = request.StoredMedia.Select(_ => new StoredMedia
             {
-                Content = Encoding.ASCII.GetBytes(_),
-                MediaType = MediaType.Image
+                Content = _.Content,
+                MediaType = _.MediaType
             }).ToList();
             
             var entity = new Post

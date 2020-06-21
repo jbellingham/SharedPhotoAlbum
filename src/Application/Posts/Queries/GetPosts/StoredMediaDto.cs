@@ -4,11 +4,16 @@ using SharedPhotoAlbum.Domain.Enums;
 
 namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
 {
-    public class MediaDto : IMapFrom<StoredMedia>
+    public class StoredMediaDto : IMapFrom<StoredMedia>
     {
         public int Id { get; set; }
-        public string[] Content { get; set; } = {};
+        
+        public string Name { get; set; }
+        
         public MediaType MediaType { get; set; }
+        
+        public string Content { get; set; }
+        
         public int PostId { get; set; }
     }
 }

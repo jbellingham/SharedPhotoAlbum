@@ -111,11 +111,11 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "files": {
+          "storedMedia": {
             "type": "array",
             "nullable": true,
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/StoredMediaDto"
             }
           },
           "text": {
@@ -123,6 +123,43 @@
             "nullable": true
           }
         }
+      },
+      "StoredMediaDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "mediaType": {
+            "$ref": "#/components/schemas/MediaType"
+          },
+          "content": {
+            "type": "string",
+            "nullable": true
+          },
+          "postId": {
+            "type": "integer",
+            "format": "int32"
+          }
+        }
+      },
+      "MediaType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Image",
+          "Video"
+        ],
+        "enum": [
+          0,
+          1
+        ]
       },
       "PostsVm": {
         "type": "object",
@@ -160,11 +197,11 @@
               "$ref": "#/components/schemas/CommentDto"
             }
           },
-          "media": {
+          "storedMedia": {
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/MediaDto"
+              "$ref": "#/components/schemas/StoredMediaDto"
             }
           }
         }
@@ -190,42 +227,6 @@
             "format": "int32"
           }
         }
-      },
-      "MediaDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "content": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "type": "string"
-            }
-          },
-          "mediaType": {
-            "$ref": "#/components/schemas/MediaType"
-          },
-          "postId": {
-            "type": "integer",
-            "format": "int32"
-          }
-        }
-      },
-      "MediaType": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "Image",
-          "Video"
-        ],
-        "enum": [
-          0,
-          1
-        ]
       }
     },
     "securitySchemes": {

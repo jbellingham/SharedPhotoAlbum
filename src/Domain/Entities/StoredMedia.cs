@@ -1,4 +1,5 @@
-﻿using SharedPhotoAlbum.Domain.Common;
+﻿using System;
+using SharedPhotoAlbum.Domain.Common;
 using SharedPhotoAlbum.Domain.Enums;
 
 namespace SharedPhotoAlbum.Domain.Entities
@@ -11,7 +12,7 @@ namespace SharedPhotoAlbum.Domain.Entities
         
         public MediaType MediaType { get; set; }
         
-        public byte[] Content { get; set; }
+        public string Content { get; set; }
         
         public int PostId { get; set; }
         

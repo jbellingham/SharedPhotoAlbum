@@ -27,13 +27,12 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
         
         public async Task<PostsVm> Handle(GetPostsQuery request, CancellationToken cancellationToken)
         {
-            var posts = await _dbContext.Posts
-                .OrderByDescending(_ => _.Created)
-                .ProjectTo<PostDto>(_mapper.ConfigurationProvider)
-                .ToListAsync(cancellationToken);
             return new PostsVm
             {
-                Posts = posts 
+                Posts = await _dbContext.Posts
+                    .OrderByDescending(_ => _.Created)
+                    .ProjectTo<PostDto>(_mapper.ConfigurationProvider)
+                    .ToListAsync(cancellationToken) 
             };
         }
     }

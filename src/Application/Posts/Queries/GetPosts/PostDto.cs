@@ -14,6 +14,6 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
         
         public IList<CommentDto> Comments { get; set; } = new List<CommentDto>();
         
-        public IList<MediaDto> Media { get; set; } = new List<MediaDto>();
+        public IList<StoredMediaDto> StoredMedia { get; set; } = new List<StoredMediaDto>();
     }
 }

@@ -29,7 +29,7 @@ namespace SharedPhotoAlbum.Application.UnitTests.Common.Mappings
         }
         
         [Test]
-        [TestCase(typeof(StoredMedia), typeof(MediaDto))]
+        [TestCase(typeof(StoredMedia), typeof(StoredMediaDto))]
         [TestCase(typeof(Post), typeof(PostDto))]
         [TestCase(typeof(Comment), typeof(CommentDto))]
         public void ShouldSupportMappingFromSourceToDestination(Type source, Type destination)
