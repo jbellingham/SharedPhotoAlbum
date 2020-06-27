@@ -1,10 +1,10 @@
 import { action, decorate, observable } from 'mobx'
-import { PostDto, PostClient, CreatePostCommand, PostsVm } from '../Client'
+import { PostDto, IPostsClient, CreatePostCommand, PostsVm } from '../Client'
 
 class PostStore {
     posts: PostDto[] | undefined = []
 
-    constructor(private postClient: PostClient) {
+    constructor(private postClient: IPostsClient) {
         this.postClient.get().then((result: PostsVm) => {
             this.posts = result.posts
         })

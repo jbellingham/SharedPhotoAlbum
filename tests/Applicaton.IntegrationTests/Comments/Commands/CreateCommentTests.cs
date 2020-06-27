@@ -3,7 +3,6 @@ using FluentAssertions;
 using NUnit.Framework;
 using SharedPhotoAlbum.Application.Comments.Commands.CreateComment;
 using SharedPhotoAlbum.Application.Common.Exceptions;
-using SharedPhotoAlbum.Application.IntegrationTests.Posts.Commands;
 
 namespace SharedPhotoAlbum.Application.IntegrationTests.Comments.Commands
 {
@@ -21,14 +20,14 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Comments.Commands
         }
 
         [Test]
-        public async Task ShouldCreatePost()
+        public async Task ShouldCreateComment()
         {
-            var post = await new CreatePost_TestHarness()
-                .WithPostText("New Post")
+            var comment = await new CreateComment_TestHarness()
+                .WithCommentText("New comment")
                 .WithUser(await RunAsDefaultUserAsync())
                 .Build();
             
-            post.Was_Successfully_Created_Based_Off_Command();
+            comment.Was_Successfully_Created_Based_Off_Command();
         }
     }
 }

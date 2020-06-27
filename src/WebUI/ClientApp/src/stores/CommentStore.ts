@@ -1,9 +1,9 @@
 import { action, decorate } from 'mobx'
-import { CommentClient, CreateCommentCommand, PostDto, CommentDto } from '../Client'
+import { CommentsClient, CreateCommentCommand, PostDto } from '../Client'
 import PostStore from './PostStore'
 
 class CommentStore {
-    constructor(private commentClient: CommentClient, private postStore: PostStore) {}
+    constructor(private commentClient: CommentsClient, private postStore: PostStore) {}
 
     async createComment(comment: CreateCommentCommand): Promise<void> {
         const id = await this.commentClient.create(comment)

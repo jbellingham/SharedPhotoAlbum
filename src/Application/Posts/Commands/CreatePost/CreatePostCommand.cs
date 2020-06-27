@@ -12,7 +12,7 @@ namespace SharedPhotoAlbum.Application.Posts.Commands.CreatePost
 {
     public class CreatePostCommand : IRequest<long>
     {
-        public IList<StoredMediaDto> StoredMedia { get; set; }
+        public IList<StoredMediaDto> StoredMedia { get; set; } = new List<StoredMediaDto>();
         public string Text { get; set; }
     }
 

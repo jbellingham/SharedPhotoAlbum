@@ -5,12 +5,12 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
 {
     public class CommentDto : IMapFrom<Comment>
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         
         public string Text { get; set; }
         
         public int Likes { get; set; }
         
-        public int PostId { get; set; }
+        public long PostId { get; set; }
     }
 }

@@ -6,7 +6,7 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
 {
     public class StoredMediaDto : IMapFrom<StoredMedia>
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         
         public string Name { get; set; }
         
@@ -14,6 +14,6 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
         
         public string Content { get; set; }
         
-        public int PostId { get; set; }
+        public long PostId { get; set; }
     }
 }

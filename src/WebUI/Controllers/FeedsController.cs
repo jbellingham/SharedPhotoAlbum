@@ -4,7 +4,7 @@ using SharedPhotoAlbum.Application.Comments.Commands.CreateComment;
 
 namespace SharedPhotoAlbum.WebUI.Controllers
 {
-    public class CommentController : ApiController
+    public class FeedsController : ApiController
     {
         [HttpPost]
         public async Task<ActionResult<long>> Create(CreateCommentCommand command)

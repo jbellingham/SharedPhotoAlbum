@@ -7,7 +7,7 @@ using SharedPhotoAlbum.Application.Posts.Queries.GetPosts;
 namespace SharedPhotoAlbum.WebUI.Controllers
 {
     [Authorize]
-    public class PostController : ApiController
+    public class PostsController : ApiController
     {
         [HttpPost]
         public async Task<ActionResult<long>> Create(CreatePostCommand command)

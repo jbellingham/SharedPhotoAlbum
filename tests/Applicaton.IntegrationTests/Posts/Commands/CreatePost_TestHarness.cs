@@ -22,12 +22,6 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Posts.Commands
             return this;
         }
 
-        public CreatePost_TestHarness WithUser(string userId)
-        {
-            _userId = userId;
-            return this;
-        }
-
         public async Task<CreatePost_TestHarness> Build()
         {
             _command = new CreatePostCommand
@@ -37,6 +31,12 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Posts.Commands
 
             var postId = await SendAsync(_command);
             _post = await FindAsync<Post>(postId);
+            return this;
+        }
+
+        public CreatePost_TestHarness WithUser(string userId)
+        {
+            _userId = userId;
             return this;
         }
 

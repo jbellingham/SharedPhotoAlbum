@@ -9,11 +9,11 @@
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
-export interface ICommentClient {
+export interface ICommentsClient {
     create(command: CreateCommentCommand): Promise<number>;
 }
 
-export class CommentClient implements ICommentClient {
+export class CommentsClient implements ICommentsClient {
     private instance: AxiosInstance;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -24,7 +24,7 @@ export class CommentClient implements ICommentClient {
     }
 
     create(command: CreateCommentCommand): Promise<number> {
-        let url_ = this.baseUrl + "/api/Comment";
+        let url_ = this.baseUrl + "/api/Comments";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -68,12 +68,129 @@ export class CommentClient implements ICommentClient {
     }
 }
 
-export interface IPostClient {
+export interface IFeedsClient {
+    create(command: CreateCommentCommand): Promise<number>;
+}
+
+export class FeedsClient implements IFeedsClient {
+    private instance: AxiosInstance;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+        this.instance = instance ? instance : axios.create();
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    create(command: CreateCommentCommand): Promise<number> {
+        let url_ = this.baseUrl + "/api/Feeds";
+        url_ = url_.replace(/[?&]$/, "");
+
+        const content_ = JSON.stringify(command);
+
+        let options_ = <AxiosRequestConfig>{
+            data: content_,
+            method: "POST",
+            url: url_,
+            headers: {
+                "Content-Type": "application/json", 
+                "Accept": "application/json"
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processCreate(_response);
+        });
+    }
+
+    protected processCreate(response: AxiosResponse): Promise<number> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<number>(<any>null);
+    }
+}
+
+export interface IOidcConfigurationClient {
+    getClientRequestParameters(clientId: string | null): Promise<FileResponse>;
+}
+
+export class OidcConfigurationClient implements IOidcConfigurationClient {
+    private instance: AxiosInstance;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+        this.instance = instance ? instance : axios.create();
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    getClientRequestParameters(clientId: string | null): Promise<FileResponse> {
+        let url_ = this.baseUrl + "/_configuration/{clientId}";
+        if (clientId === undefined || clientId === null)
+            throw new Error("The parameter 'clientId' must be defined.");
+        url_ = url_.replace("{clientId}", encodeURIComponent("" + clientId)); 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            responseType: "blob",
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/octet-stream"
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processGetClientRequestParameters(_response);
+        });
+    }
+
+    protected processGetClientRequestParameters(response: AxiosResponse): Promise<FileResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<FileResponse>(<any>null);
+    }
+}
+
+export interface IPostsClient {
     create(command: CreatePostCommand): Promise<number>;
     get(): Promise<PostsVm>;
 }
 
-export class PostClient implements IPostClient {
+export class PostsClient implements IPostsClient {
     private instance: AxiosInstance;
     private baseUrl: string;
     protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
@@ -84,7 +201,7 @@ export class PostClient implements IPostClient {
     }
 
     create(command: CreatePostCommand): Promise<number> {
-        let url_ = this.baseUrl + "/api/Post";
+        let url_ = this.baseUrl + "/api/Posts";
         url_ = url_.replace(/[?&]$/, "");
 
         const content_ = JSON.stringify(command);
@@ -128,7 +245,7 @@ export class PostClient implements IPostClient {
     }
 
     get(): Promise<PostsVm> {
-        let url_ = this.baseUrl + "/api/Post";
+        let url_ = this.baseUrl + "/api/Posts";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <AxiosRequestConfig>{
@@ -471,6 +588,13 @@ export interface ICommentDto {
     text?: string | undefined;
     likes?: number;
     postId?: number;
+}
+
+export interface FileResponse {
+    data: Blob;
+    status: number;
+    fileName?: string;
+    headers?: { [name: string]: any };
 }
 
 export class SwaggerException extends Error {

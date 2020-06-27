@@ -6,7 +6,7 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
 {
     public class PostDto : IMapFrom<Post>
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         
         public string LinkUrl { get; set; }
         

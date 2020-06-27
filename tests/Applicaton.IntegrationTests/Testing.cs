@@ -41,7 +41,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests
 
             services.AddSingleton(Mock.Of<IWebHostEnvironment>(w =>
                 w.EnvironmentName == "Development" &&
-                w.ApplicationName == "SharedPhotoAlbum.Api"));
+                w.ApplicationName == "SharedPhotoAlbum.WebUI"));
 
             services.AddLogging();
 

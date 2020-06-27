@@ -1,6 +1,6 @@
 import { createContext, useContext } from 'react'
 import PostStore from './PostStore'
-import { PostClient, CommentClient } from '../Client'
+import { PostsClient, CommentsClient } from '../Client'
 import CommentStore from './CommentStore'
 import Axios from 'axios'
 import authService from '../components/api-authorization/AuthorizeService'
@@ -16,8 +16,8 @@ axios.interceptors.request.use(async function (config) {
     return config
 })
 
-const postStore = new PostStore(new PostClient(baseUrl, axios))
-const commentStore = new CommentStore(new CommentClient(baseUrl, axios), postStore)
+const postStore = new PostStore(new PostsClient(baseUrl, axios))
+const commentStore = new CommentStore(new CommentsClient(baseUrl, axios), postStore)
 
 export interface IStore {
     postStore: PostStore
