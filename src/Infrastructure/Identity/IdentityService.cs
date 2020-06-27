@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Threading.Tasks;
+using SharedPhotoAlbum.Domain.Entities;
 
 namespace SharedPhotoAlbum.Infrastructure.Identity
 {
@@ -22,6 +23,7 @@ namespace SharedPhotoAlbum.Infrastructure.Identity
 
             return user.UserName;
         }
+
         public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)
         {
             var user = new ApplicationUser

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SharedPhotoAlbum.Domain.Entities;
 
 namespace SharedPhotoAlbum.Infrastructure
 {

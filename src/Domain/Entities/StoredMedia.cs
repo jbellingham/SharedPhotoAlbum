@@ -6,7 +6,7 @@ namespace SharedPhotoAlbum.Domain.Entities
 {
     public class StoredMedia : AuditableEntity
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         
         public string Name { get; set; }
         
@@ -14,7 +14,7 @@ namespace SharedPhotoAlbum.Domain.Entities
         
         public string Content { get; set; }
         
-        public int PostId { get; set; }
+        public long PostId { get; set; }
         
         public Post Post { get; set; }
     }

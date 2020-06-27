@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
@@ -12,9 +11,8 @@ using Moq;
 using Npgsql;
 using NUnit.Framework;
 using Respawn;
-using SharedPhotoAlbum.Api;
 using SharedPhotoAlbum.Application.Common.Interfaces;
-using SharedPhotoAlbum.Infrastructure.Identity;
+using SharedPhotoAlbum.Domain.Entities;
 using SharedPhotoAlbum.Infrastructure.Persistence;
 using WebUI;
 
@@ -127,7 +125,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests
             }
         }
 
-        public static async Task<T> FindAsync<T>(int id)
+        public static async Task<T> FindAsync<T>(long id)
             where T : class
         {
             using var scope = _scopeFactory.CreateScope();

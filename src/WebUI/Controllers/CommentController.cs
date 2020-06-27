@@ -2,12 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using SharedPhotoAlbum.Application.Comments.Commands.CreateComment;
 
-namespace WebUI.Controllers
+namespace SharedPhotoAlbum.WebUI.Controllers
 {
     public class CommentController : ApiController
     {
         [HttpPost]
-        public async Task<ActionResult<int>> Create(CreateCommentCommand command)
+        public async Task<ActionResult<long>> Create(CreateCommentCommand command)
         {
             return await Mediator.Send(command);
         }

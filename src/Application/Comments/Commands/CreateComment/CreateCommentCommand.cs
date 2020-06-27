@@ -7,13 +7,13 @@ using SharedPhotoAlbum.Domain.Entities;
 
 namespace SharedPhotoAlbum.Application.Comments.Commands.CreateComment
 {
-    public class CreateCommentCommand : IRequest<int>
+    public class CreateCommentCommand : IRequest<long>
     {
         public string Text { get; set; }
-        public int PostId { get; set; }
+        public long PostId { get; set; }
     }
 
-    public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, int>
+    public class CreateCommentCommandHandler : IRequestHandler<CreateCommentCommand, long>
     {
         private readonly IApplicationDbContext _dbContext;
         
@@ -22,7 +22,7 @@ namespace SharedPhotoAlbum.Application.Comments.Commands.CreateComment
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
         
-        public async Task<int> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
+        public async Task<long> Handle(CreateCommentCommand request, CancellationToken cancellationToken)
         {
             var entity = new Comment
             {

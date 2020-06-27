@@ -31,7 +31,7 @@
               "application/json": {
                 "schema": {
                   "type": "integer",
-                  "format": "int32"
+                  "format": "int64"
                 }
               }
             }
@@ -97,7 +97,7 @@
               "application/json": {
                 "schema": {
                   "type": "integer",
-                  "format": "int32"
+                  "format": "int64"
                 }
               }
             }
@@ -146,7 +146,7 @@
           },
           "postId": {
             "type": "integer",
-            "format": "int32"
+            "format": "int64"
           }
         }
       },

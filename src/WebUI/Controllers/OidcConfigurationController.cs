@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace WebUI.Controllers
+namespace SharedPhotoAlbum.WebUI.Controllers
 {
     public class OidcConfigurationController : Controller
     {

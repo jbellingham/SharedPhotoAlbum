@@ -1,8 +1,9 @@
-﻿using System.Security.Claims;
+﻿using System;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using SharedPhotoAlbum.Application.Common.Interfaces;
 
-namespace SharedPhotoAlbum.Api.Services
+namespace SharedPhotoAlbum.WebUI.Services
 {
     public class CurrentUserService : ICurrentUserService
     {

@@ -13,6 +13,8 @@ namespace SharedPhotoAlbum.Application.Common.Interfaces
         
         DbSet<StoredMedia> StoredMedia { get; set; }
 
+        DbSet<Feed> Feeds { get; set; }
+
         Task<int> SaveChangesAsync(CancellationToken cancellationToken);
     }
 }

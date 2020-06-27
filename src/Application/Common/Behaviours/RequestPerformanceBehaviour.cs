@@ -42,7 +42,7 @@ namespace SharedPhotoAlbum.Application.Common.Behaviours
                 var userId = _currentUserService.UserId ?? string.Empty;
                 var userName = string.Empty;
 
-                if (!string.IsNullOrEmpty(userId))
+                if (!string.IsNullOrWhiteSpace(userId))
                 {
                     userName = await _identityService.GetUserNameAsync(userId);
                 }

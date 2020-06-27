@@ -1,9 +1,7 @@
 ﻿using SharedPhotoAlbum.Application.Common.Interfaces;
 using SharedPhotoAlbum.Domain.Common;
 using SharedPhotoAlbum.Domain.Entities;
-using SharedPhotoAlbum.Infrastructure.Identity;
 using IdentityServer4.EntityFramework.Options;
-using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Options;
@@ -11,6 +9,7 @@ using System.Data;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 
 namespace SharedPhotoAlbum.Infrastructure.Persistence
 {
@@ -35,6 +34,8 @@ namespace SharedPhotoAlbum.Infrastructure.Persistence
         public DbSet<Comment> Comments { get; set; }
         
         public DbSet<StoredMedia> StoredMedia { get; set; }
+
+        public DbSet<Feed> Feeds { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {

@@ -1,8 +1,7 @@
-﻿using SharedPhotoAlbum.Domain.Entities;
-using SharedPhotoAlbum.Infrastructure.Identity;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using System.Linq;
 using System.Threading.Tasks;
+using SharedPhotoAlbum.Domain.Entities;
 
 namespace SharedPhotoAlbum.Infrastructure.Persistence
 {

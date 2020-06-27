@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using SharedPhotoAlbum.Application.Common.Exceptions;
 
-namespace WebUI.Filters
+namespace SharedPhotoAlbum.WebUI.Filters
 {
     public class ApiExceptionFilter : ExceptionFilterAttribute
     {

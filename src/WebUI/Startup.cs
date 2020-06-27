@@ -8,12 +8,12 @@ using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Hosting;
 using NSwag;
 using NSwag.Generation.Processors.Security;
-using SharedPhotoAlbum.Api.Services;
 using SharedPhotoAlbum.Application;
 using SharedPhotoAlbum.Application.Common.Interfaces;
 using SharedPhotoAlbum.Infrastructure;
 using SharedPhotoAlbum.Infrastructure.Persistence;
-using WebUI.Filters;
+using SharedPhotoAlbum.WebUI.Filters;
+using SharedPhotoAlbum.WebUI.Services;
 
 namespace WebUI
 {

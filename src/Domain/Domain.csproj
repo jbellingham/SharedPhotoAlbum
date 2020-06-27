@@ -6,4 +6,8 @@
     <AssemblyName>SharedPhotoAlbum.Domain</AssemblyName>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.0" />
+  </ItemGroup>
+
 </Project>

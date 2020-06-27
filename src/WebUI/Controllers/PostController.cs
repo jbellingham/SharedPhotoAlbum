@@ -4,13 +4,13 @@ using Microsoft.AspNetCore.Mvc;
 using SharedPhotoAlbum.Application.Posts.Commands.CreatePost;
 using SharedPhotoAlbum.Application.Posts.Queries.GetPosts;
 
-namespace WebUI.Controllers
+namespace SharedPhotoAlbum.WebUI.Controllers
 {
     [Authorize]
     public class PostController : ApiController
     {
         [HttpPost]
-        public async Task<ActionResult<int>> Create(CreatePostCommand command)
+        public async Task<ActionResult<long>> Create(CreatePostCommand command)
         {
             return await Mediator.Send(command);
         }
