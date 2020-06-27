@@ -1,0 +1,27 @@
+.post-container {
+    border-radius: 10px;
+    margin-bottom: 1em;
+
+    .card-header {
+        font-size: 16px;
+    }
+
+    .post-title {
+        padding: 10px;
+        margin-bottom: 0;
+    }
+
+    .comments-container {        
+        margin-top: 1em;
+        p {
+            padding: 2px 5px;
+            font-size: 16px;
+            border-radius: 10px;
+        }
+
+        p.comment {
+            background-color: #3dcc3d;
+            color: white;
+        }
+    }
+}

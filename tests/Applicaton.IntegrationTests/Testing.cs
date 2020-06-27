@@ -16,6 +16,7 @@ using SharedPhotoAlbum.Api;
 using SharedPhotoAlbum.Application.Common.Interfaces;
 using SharedPhotoAlbum.Infrastructure.Identity;
 using SharedPhotoAlbum.Infrastructure.Persistence;
+using WebUI;
 
 namespace SharedPhotoAlbum.Application.IntegrationTests
 {

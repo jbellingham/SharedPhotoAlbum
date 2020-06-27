@@ -1,0 +1,23 @@
+.column-heading {
+    margin-left: 1em
+}
+
+.messages-container {
+    margin-top: 1em;
+    p {
+        padding: 2px 5px;
+        font-size: 16px;
+        border-radius: 10px;
+    }
+
+    p.message-self {
+        background-color: #3dcc3d;
+        color: white;
+    }
+
+    p.message-other {
+        max-width: 60%;
+        color: black;
+        background-color: white;
+    }
+}

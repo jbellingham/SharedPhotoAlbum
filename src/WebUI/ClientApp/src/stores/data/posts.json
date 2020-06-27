@@ -1,0 +1,13 @@
+[{
+    "id": "a7587475-7e37-4a0e-a92f-652f4a826807",
+    "text": "This is a post",
+    "title": "Post title",
+    "linkUrl": "www.jessebellingham.com",
+    "comments": []
+}, {
+    "id": "3a444927-3aba-42f8-b9b8-0e4866323827",
+    "text": "This is another post",
+    "title": "Post title the second",
+    "linkUrl": "www.jessebellingham.com",
+    "comments": []
+}]
