@@ -1,10 +1,12 @@
 ﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedPhotoAlbum.Application.Feeds.Commands.CreateFeed;
 using SharedPhotoAlbum.Application.Feeds.Queries.GetFeed;
 
 namespace SharedPhotoAlbum.WebUI.Controllers
 {
+    [Authorize]
     public class FeedsController : ApiController
     {
         [HttpPost]

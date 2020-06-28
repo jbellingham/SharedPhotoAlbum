@@ -409,6 +409,7 @@ export interface ICreateFeedCommand {
 }
 
 export class FeedVm implements IFeedVm {
+    name?: string | undefined;
     posts?: PostDto[] | undefined;
 
     constructor(data?: IFeedVm) {
@@ -422,6 +423,7 @@ export class FeedVm implements IFeedVm {
 
     init(_data?: any) {
         if (_data) {
+            this.name = _data["name"];
             if (Array.isArray(_data["posts"])) {
                 this.posts = [] as any;
                 for (let item of _data["posts"])
@@ -439,6 +441,7 @@ export class FeedVm implements IFeedVm {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        data["name"] = this.name;
         if (Array.isArray(this.posts)) {
             data["posts"] = [];
             for (let item of this.posts)
@@ -449,6 +452,7 @@ export class FeedVm implements IFeedVm {
 }
 
 export interface IFeedVm {
+    name?: string | undefined;
     posts?: PostDto[] | undefined;
 }
 

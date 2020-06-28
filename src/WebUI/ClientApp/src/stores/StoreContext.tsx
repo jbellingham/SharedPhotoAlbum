@@ -5,11 +5,15 @@ import CommentStore from './CommentStore'
 import { PostsClient, CommentsClient, FeedsClient } from '../Client'
 import Axios from 'axios'
 import authService from '../components/api-authorization/AuthorizeService'
+import AuthStore from './AuthStore'
 
 const baseUrl = 'https://localhost:44320'
+const authStore = new AuthStore(authService)
+
 const axios = Axios.create()
 axios.interceptors.request.use(async function (config) {
-    const token = await authService.getAccessToken()
+    const token = authStore.token
+
     config.headers = {
         ...config.headers,
         Authorization: `Bearer ${token}`,
@@ -25,12 +29,14 @@ export interface IStore {
     postStore: PostStore
     commentStore: CommentStore
     feedStore: FeedStore
+    authStore: AuthStore
 }
 
 export const store: IStore = {
     postStore,
     commentStore,
     feedStore,
+    authStore,
 }
 
 export const StoreContext = createContext(store)

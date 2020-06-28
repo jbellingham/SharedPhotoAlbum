@@ -29,14 +29,17 @@ namespace SharedPhotoAlbum.Application.Feeds.Queries.GetFeed
 
         public async Task<FeedVm> Handle(GetFeedQuery request, CancellationToken cancellationToken)
         {
+            var feed = _db.Feeds.OrderByDescending(_ => _.CreatedBy)
+                    .Where(_ => _.Id == request.FeedId);
+
+            var posts = await feed.SelectMany(_ => _.Posts)
+                .ProjectTo<PostDto>(_mapper.ConfigurationProvider)
+                .ToListAsync(cancellationToken);
+
             return new FeedVm
             {
-                Posts = await _db.Posts
-                    .OrderByDescending(_ => _.Created)
-                    .Where(_ => request.FeedId == null ||
-                                _.FeedId == request.FeedId)
-                    .ProjectTo<PostDto>(_mapper.ConfigurationProvider)
-                    .ToListAsync(cancellationToken)
+                Name = await feed.Select(_ => _.Name).SingleOrDefaultAsync(cancellationToken),
+                Posts = posts
             };
         }
     }

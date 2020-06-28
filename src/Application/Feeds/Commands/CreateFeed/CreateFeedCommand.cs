@@ -17,10 +17,12 @@ namespace SharedPhotoAlbum.Application.Feeds.Commands.CreateFeed
     public class CreateFeedCommandHandler : IRequestHandler<CreateFeedCommand, long>
     {
         private readonly IApplicationDbContext _db;
+        private readonly ICurrentUserService _currentUser;
 
-        public CreateFeedCommandHandler(IApplicationDbContext db)
+        public CreateFeedCommandHandler(IApplicationDbContext db, ICurrentUserService currentUser)
         {
             _db = db ?? throw new ArgumentNullException(nameof(db));
+            _currentUser = currentUser ?? throw new ArgumentNullException(nameof(currentUser));
         }
 
         public async Task<long> Handle(CreateFeedCommand request, CancellationToken cancellationToken)
@@ -28,7 +30,8 @@ namespace SharedPhotoAlbum.Application.Feeds.Commands.CreateFeed
             var feed = new Feed
             {
                 Name = request.Name,
-                Description = request.Description
+                Description = request.Description,
+                OwnerId = _currentUser.UserId
             };
 
             await _db.Feeds.AddAsync(feed, cancellationToken);

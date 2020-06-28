@@ -3,6 +3,7 @@ using SharedPhotoAlbum.Application.Common.Mappings;
 using SharedPhotoAlbum.Domain.Entities;
 using NUnit.Framework;
 using System;
+using SharedPhotoAlbum.Application.Feeds.Queries.GetFeed;
 using SharedPhotoAlbum.Application.Posts.Queries.GetPosts;
 
 namespace SharedPhotoAlbum.Application.UnitTests.Common.Mappings
@@ -29,6 +30,7 @@ namespace SharedPhotoAlbum.Application.UnitTests.Common.Mappings
         }
         
         [Test]
+        [TestCase(typeof(Feed), typeof(FeedVm))]
         [TestCase(typeof(StoredMedia), typeof(StoredMediaDto))]
         [TestCase(typeof(Post), typeof(PostDto))]
         [TestCase(typeof(Comment), typeof(CommentDto))]

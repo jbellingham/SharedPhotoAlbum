@@ -3,7 +3,7 @@ import { Form, Button, Row, Col } from 'react-bootstrap'
 import ProfilePicture, { IProfilePictureProps } from '../../shared/ProfilePicture'
 import { useStore } from '../../../stores/StoreContext'
 import { CreatePostCommand, StoredMediaDto, MediaType } from '../../../Client'
-import { useLocation, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
 const profilePictureProps: IProfilePictureProps = {
     width: 50,
@@ -41,7 +41,9 @@ function NewPost(): JSX.Element {
             event.preventDefault()
             event.stopPropagation()
             if (postText) {
-                postStore.createPost(new CreatePostCommand({ text: postText, storedMedia: files, feedId: Number(feedId) }))
+                postStore.createPost(
+                    new CreatePostCommand({ text: postText, storedMedia: files, feedId: Number(feedId) }),
+                )
                 setPostTest('')
             }
         }

@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import logo from './logo.svg'
 import './App.scss'
 import Profile from './components/Profile'
-import Messages from './components/Messages'
 import Feed from './components/Feed'
 import { Container } from 'react-bootstrap'
 import AuthorizeRoute from './components/api-authorization/AuthorizeRoute'
@@ -34,7 +33,6 @@ function App(): JSX.Element {
                             </header>
                         </Route>
                         <Route path="/profile" component={Profile} />
-                        <Route path="/messages" component={Messages} />
                         <AuthorizeRoute path="/feed/:feedId" component={Feed} />
                         <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
                     </Switch>

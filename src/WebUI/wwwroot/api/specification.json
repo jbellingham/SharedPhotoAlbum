@@ -69,7 +69,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       },
       "get": {
         "tags": [
@@ -99,7 +104,12 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ]
       }
     },
     "/_configuration/{clientId}": {
@@ -231,6 +241,10 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
           "posts": {
             "type": "array",
             "nullable": true,

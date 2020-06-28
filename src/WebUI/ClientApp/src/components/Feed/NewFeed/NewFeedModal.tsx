@@ -37,6 +37,7 @@ function NewFeedModal(props: IModalProps): JSX.Element {
             new CreateFeedCommand({ name: feedName, description: feedDescription }),
         )
         history.push(`/feed/${feedId}`)
+        handleClose()
     }
 
     return (

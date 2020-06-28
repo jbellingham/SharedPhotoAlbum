@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { observer } from 'mobx-react'
 import { Row, Col } from 'react-bootstrap'
 import Post from '../Post'
@@ -10,15 +10,20 @@ import { useParams } from 'react-router-dom'
 const Feed = observer(() => {
     const { feedStore } = useStore()
     const { feedId } = useParams()
-    const { posts } = feedStore
-    if (!posts) {
+
+    useEffect(() => {
         feedStore.getFeed(feedId)
-    }
+    }, [])
+
+    const { posts, feed } = feedStore
 
     return (
         <div className="feed-container">
             <NewFeed />
             <Row>
+                <Col md={{ span: 4, offset: 4 }}>
+                    <div className="feed-name">{feed?.name}</div>
+                </Col>
                 <Col md={{ span: 4, offset: 4 }}>
                     <NewPost />
                 </Col>
