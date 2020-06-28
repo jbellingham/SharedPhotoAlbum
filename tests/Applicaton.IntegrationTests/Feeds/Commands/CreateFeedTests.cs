@@ -9,7 +9,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Feeds.Commands
 {
     using static Testing;
 
-    public class CreateFeedTests
+    public class CreateFeedTests : TestBase
     {
         [Test]
         public void ShouldRequireMinimumFields()
