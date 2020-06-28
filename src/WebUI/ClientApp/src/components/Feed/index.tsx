@@ -4,13 +4,20 @@ import { Row, Col } from 'react-bootstrap'
 import Post from '../Post'
 import NewPost from './NewPost'
 import { useStore } from '../../stores/StoreContext'
+import NewFeed from './NewFeed'
+import { useParams } from 'react-router-dom'
 
-const Dashboard = observer(() => {
-    const { postStore } = useStore()
-    const posts = postStore.posts
+const Feed = observer(() => {
+    const { feedStore } = useStore()
+    const { feedId } = useParams()
+    const { posts } = feedStore
+    if (!posts) {
+        feedStore.getFeed(feedId)
+    }
 
     return (
-        <div className="dashboard-container">
+        <div className="feed-container">
+            <NewFeed />
             <Row>
                 <Col md={{ span: 4, offset: 4 }}>
                     <NewPost />
@@ -30,4 +37,4 @@ const Dashboard = observer(() => {
     )
 })
 
-export default Dashboard
+export default Feed

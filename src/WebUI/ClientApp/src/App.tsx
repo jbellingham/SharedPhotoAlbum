@@ -4,8 +4,8 @@ import logo from './logo.svg'
 import './App.scss'
 import Profile from './components/Profile'
 import Messages from './components/Messages'
+import Feed from './components/Feed'
 import { Container } from 'react-bootstrap'
-import Dashboard from './components/Dashboard'
 import AuthorizeRoute from './components/api-authorization/AuthorizeRoute'
 import { ApplicationPaths } from './components/api-authorization/ApiAuthorizationConstants'
 import ApiAuthorizationRoutes from './components/api-authorization/ApiAuthorizationRoutes'
@@ -35,7 +35,7 @@ function App(): JSX.Element {
                         </Route>
                         <Route path="/profile" component={Profile} />
                         <Route path="/messages" component={Messages} />
-                        <AuthorizeRoute path="/dashboard" component={Dashboard} />
+                        <AuthorizeRoute path="/feed/:feedId" component={Feed} />
                         <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
                     </Switch>
                 </Container>

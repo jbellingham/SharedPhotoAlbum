@@ -15,5 +15,9 @@ namespace SharedPhotoAlbum.Domain.Entities
         public IList<Comment> Comments { get; set; } = new List<Comment>();
         
         public IList<StoredMedia> StoredMedia { get; set; } = new List<StoredMedia>();
+
+        public Feed Feed { get; set; }
+
+        public long FeedId { get; set; }
     }
 }

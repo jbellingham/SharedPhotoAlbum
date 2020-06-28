@@ -1,10 +1,9 @@
 import React from 'react'
 import { Row, Col } from 'react-bootstrap'
 import Showcase from './Showcase'
-import Request from './Request'
 import ProfilePicture, { IProfilePictureProps } from '../shared/ProfilePicture'
 
-function Profile() {
+function Profile(): JSX.Element {
     const profilePictureProps: IProfilePictureProps = {
         height: 200,
         width: 200,
@@ -18,7 +17,6 @@ function Profile() {
                 </Col>
             </Row>
             <span className="user-name d-block">Jesse Bellingham</span>
-            <Request />
             <Showcase />
         </>
     )

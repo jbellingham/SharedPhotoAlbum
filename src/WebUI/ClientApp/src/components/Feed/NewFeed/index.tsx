@@ -1,15 +1,16 @@
 import React from 'react'
 import { Button } from 'react-bootstrap'
-import RequestModal, { IModalProps } from './RequestModal'
+import { IModalProps } from './NewFeedModal'
+import NewFeedModal from './NewFeedModal'
 
-function Request() {
+function NewFeed(): JSX.Element {
     const [show, setShow] = React.useState(false)
 
-    const handleClickShow = () => {
+    const handleClickShow = (): void => {
         setShow(true)
     }
 
-    const handleClose = () => {
+    const handleClose = (): void => {
         setShow(false)
     }
 
@@ -21,11 +22,11 @@ function Request() {
     return (
         <>
             <Button variant="primary" onClick={handleClickShow}>
-                Request commission
+                Create new feed
             </Button>
-            <RequestModal {...modalProps} />
+            <NewFeedModal {...modalProps} />
         </>
     )
 }
 
-export default Request
+export default NewFeed

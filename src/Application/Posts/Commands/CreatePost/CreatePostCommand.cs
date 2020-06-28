@@ -13,7 +13,10 @@ namespace SharedPhotoAlbum.Application.Posts.Commands.CreatePost
     public class CreatePostCommand : IRequest<long>
     {
         public IList<StoredMediaDto> StoredMedia { get; set; } = new List<StoredMediaDto>();
+        
         public string Text { get; set; }
+
+        public long FeedId { get; set; }
     }
 
     public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, long>
@@ -35,6 +38,7 @@ namespace SharedPhotoAlbum.Application.Posts.Commands.CreatePost
             
             var entity = new Post
             {
+                FeedId = request.FeedId,
                 Text = request.Text,
                 StoredMedia = media
             };

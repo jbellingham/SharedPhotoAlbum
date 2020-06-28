@@ -14,6 +14,9 @@ namespace SharedPhotoAlbum.Application.Posts.Commands.CreatePost
             RuleFor(v => v.Text)
                 .NotEmpty().WithMessage("Post text is required.")
                 .MaximumLength(1000).WithMessage("Post text must not exceed 1000 characters.");
+
+            RuleFor(v => v.FeedId)
+                .NotEmpty().WithMessage("Post must be related to a feed.");
             // .MustAsync(BeUniqueTitle).WithMessage("The specified title already exists.");
         }
 

@@ -11,6 +11,9 @@ namespace SharedPhotoAlbum.Infrastructure.Persistence.Configurations
             builder.Property(t => t.Text)
                 .HasMaxLength(1000)
                 .IsRequired();
+
+            builder.Property(_ => _.FeedId)
+                .IsRequired();
         }
     }
 }
