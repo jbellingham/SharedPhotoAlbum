@@ -1,6 +1,7 @@
 import React from 'react'
 import { Container } from 'react-bootstrap'
-import Login from '../Accounts/Login'
+import { NavMenu } from '../NavMenu'
+// import Login from '../Accounts/Login'
 import CollapseContainer from './CollapseContainer'
 
 export interface ILoginProps {
@@ -12,15 +13,16 @@ function Layout(props: any) {
 
     return (
         <>
-            {loggedIn && <CollapseContainer setLoggedIn={setLoggedIn} />}
+            {/* {loggedIn && <CollapseContainer setLoggedIn={setLoggedIn} />} */}
+            <NavMenu />
             <div className="App">
-                {loggedIn ? (
-                    props.children
-                ) : (
-                    <div className="vertical-center justify-content-center">
+                {/* {loggedIn ? ( */}
+                   { props.children }
+                {/* ) : ( */}
+                    {/* <div className="vertical-center justify-content-center">
                         <Login setLoggedIn={setLoggedIn} />
                     </div>
-                )}
+                )} */}
             </div>
         </>
     )

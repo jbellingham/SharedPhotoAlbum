@@ -1,16 +1,10 @@
 import React from 'react'
 import { Button, Modal, Container, Form } from 'react-bootstrap'
 import { useHistory } from 'react-router-dom'
-import gql from 'graphql-tag'
-import { useMutation } from 'react-apollo'
+import { CreateFeedCommand } from '../../../Client'
+import { useStore } from '../../../stores/StoreContext'
 
-const CREATE_FEED = gql`
-    mutation createFeed($name: String!, $description: String) {
-        createFeed(name: $name, description: $description) {
-            _id
-        }
-    }
-`
+
 
 interface IModalProps {
     show: boolean
@@ -21,15 +15,16 @@ function NewFeed(props: IModalProps): JSX.Element {
     const history = useHistory()
     const [feedName, setFeedName] = React.useState('')
     const [feedDescription, setFeedDescription] = React.useState('')
-    const [createNewFeed] = useMutation(CREATE_FEED, {
-        refetchQueries: ['feeds'],
-        onCompleted({ createFeed }) {
-            setTimeout(() => {
-                props.handleClose()
-                history.push(`/${createFeed._id}`)
-            }, 500)
-        },
-    })
+    const {feedStore} = useStore()
+    // const [createNewFeed] = useMutation(CREATE_FEED, {
+    //     refetchQueries: ['feeds'],
+    //     onCompleted({ createFeed }) {
+    //         setTimeout(() => {
+    //             props.handleClose()
+    //             history.push(`/${createFeed._id}`)
+    //         }, 500)
+    //     },
+    // })
 
     const feedNameInputId = 'feedNameInput'
     const feedDescriptionInputId = 'feedDescriptionInput'
@@ -48,12 +43,11 @@ function NewFeed(props: IModalProps): JSX.Element {
 
     const handleSubmit = async (): Promise<void> => {
         if (feedName) {
-            await createNewFeed({
-                variables: {
-                    name: feedName,
-                    description: feedDescription,
-                },
-            })
+            const feedId = await feedStore.createFeed(new CreateFeedCommand({name: feedName, description: feedDescription}))
+            setTimeout(() => {
+                props.handleClose()
+                history.push(`/${feedId}`)
+            }, 500)
             setFeedName('')
             setFeedDescription('')
         }
