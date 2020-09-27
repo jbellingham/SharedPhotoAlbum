@@ -1,6 +1,8 @@
-@import "./components/Profile/Showcase/index.scss";
-@import "./components/Profile/index.scss";
-@import "./components/Messages/index.scss";
-@import "./components/Post/index.scss";
-@import "./components/Feed/index.scss";
-@import "./components/Feed/NewPost/index.scss";
+@import "~bootstrap/scss/bootstrap";
+@import './components/Feed/index.scss';
+@import './components/Feed/NewPost/index.scss';
+@import './components/Post/index.scss';
+@import './components/Accounts/index.scss';
+@import './components/Feed/FeedList/index.scss';
+@import './components/shared/CollapseContainer/index.scss';
+@import './components/shared/CollapseMenu/index.scss';

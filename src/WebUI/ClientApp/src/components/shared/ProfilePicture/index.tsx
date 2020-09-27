@@ -1,14 +1,30 @@
 import React from 'react'
 import { Image } from 'react-bootstrap'
-import profilePic from '../../../static/images/profile-pic.jpg'
+import { useQuery } from 'react-apollo'
+// import { GET_USER } from '../../../../api/users/methods'
 
-export interface IProfilePictureProps {
-    width: number
-    height: number
+interface IProfilePictureProps {
+    userId: string
 }
 
 function ProfilePicture(props: IProfilePictureProps) {
-    return <Image alt="Jesse Bellingham" src={profilePic} roundedCircle width={props.width} height={props.height} />
+    const { data, loading } = useQuery(GET_USER, {
+        variables: { userId: props.userId },
+    })
+
+    if (!loading) {
+        const { name, profilePicture } = data.getUser || {}
+        return (
+            <Image
+                alt={name}
+                src={profilePicture?.url}
+                roundedCircle
+                width={profilePicture?.width}
+                height={profilePicture?.height}
+            />
+        )
+    }
+    return null
 }
 
 export default ProfilePicture

@@ -1,3 +1,44 @@
-.status-input {
-    margin: 0.3em 0 0 1em;
+.new-post-container {
+    border-radius: 10px;
+    min-height: 140px;
+
+    .thumbnail-container {
+        max-width: 200px;
+        margin-right: 1em;
+    }
+    
+    .thumbnail-container:last-child {
+        margin-right: 0;
+    }
+
+    .post-in-progress-spinner {
+        width: 6rem;
+        height: 6rem;
+    }
+    
+    .status-input {
+        margin: 0.3em 0 0 1em;
+        .status-input-field {
+            display: inline;
+            width: 90%;
+        }
+        .status-input-submit {
+            color: #3dcc3d;
+            margin-left: 1em;
+            text-decoration: none;
+        }
+    }
+
+    .custom-file {
+        .custom-file-label {
+            text-align: center;
+        }
+        .custom-file-label::after {
+            display: none;
+        }
+    }
+
+    .life-event-button {
+        width: 100%;
+    }
 }

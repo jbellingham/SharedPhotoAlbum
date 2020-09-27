@@ -11,17 +11,32 @@
         margin-bottom: 0;
     }
 
-    .comments-container {        
-        margin-top: 1em;
-        p {
-            padding: 2px 5px;
-            font-size: 16px;
-            border-radius: 10px;
-        }
+    .image-container {
+        max-height: 500px;
+        max-width: 500px;
+        margin: 0 auto;
+    }
 
-        p.comment {
-            background-color: #3dcc3d;
-            color: white;
+    .comments-container {   
+        .comment {
+            margin-bottom: 1em;
+            margin-top: 1em;
+
+            .comment-body {
+                .commenter-name {
+                    font-weight: 500;
+                }
+                padding: 0.5em;
+                background-color: #3dcc3d;
+                border-radius: 10px;
+                span {
+                    font-size: 16px;
+                    color: white;
+                }
+            }
+            .comment-profile-picture-container {
+                margin-right: 1em;
+            }
         }
     }
 }

@@ -1,16 +1,28 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import './index.css'
 import App from './App'
+import './App.scss'
 import * as serviceWorker from './serviceWorker'
-import { store, StoreContext } from './stores/StoreContext'
+import {ApolloClient} from "apollo-client";
+import { ApolloLink } from 'apollo-link'
+import {HttpLink} from "apollo-boost";
+import { InMemoryCache } from 'apollo-cache-inmemory'
+import { ApolloProvider } from 'react-apollo'
+
+const client = new ApolloClient({
+    link: ApolloLink.from([
+        // new MeteorAccountsLink(),
+        new HttpLink({
+            uri: '/graphql',
+        }),
+    ]),
+    cache: new InMemoryCache(),
+})
 
 ReactDOM.render(
-    <React.StrictMode>
-        <StoreContext.Provider value={store}>
+        <ApolloProvider client={client}>
             <App />
-        </StoreContext.Provider>
-    </React.StrictMode>,
+        </ApolloProvider>,
     document.getElementById('root'),
 )
 

@@ -1,104 +1,117 @@
 import React from 'react'
-import { Form, Button, Row, Col } from 'react-bootstrap'
-import ProfilePicture, { IProfilePictureProps } from '../../shared/ProfilePicture'
-import { useStore } from '../../../stores/StoreContext'
-import { CreatePostCommand, StoredMediaDto, MediaType } from '../../../Client'
-import { useParams } from 'react-router-dom'
+import { Form, Button, Row, Col, Card, Spinner } from 'react-bootstrap'
+import ProfilePicture from '../../shared/ProfilePicture'
+import gql from 'graphql-tag'
+import { useMutation } from 'react-apollo'
+import UploadPreview from './UploadPreview'
 
-const profilePictureProps: IProfilePictureProps = {
-    width: 50,
-    height: 50,
+export interface INewPostProps {
+    feedId: string
+    refetchFeed: any
 }
 
-function toTitleCase(input: string): string {
-    input = input.toLowerCase()
-    return input.charAt(0).toUpperCase() + input.slice(1)
-}
+const CREATE_POST = gql`
+    mutation($text: String!, $feedId: String!, $files: [String]) {
+        createPost(text: $text, feedId: $feedId, files: $files) {
+            _id
+        }
+    }
+`
 
-function NewPost(): JSX.Element {
-    const { postStore } = useStore()
+function NewPost(props: INewPostProps): JSX.Element {
     const [postText, setPostTest] = React.useState('')
-    const [files] = React.useState(new Array<StoredMediaDto>())
-    const { feedId } = useParams()
+    const [files, setFiles] = React.useState([])
+    const [newPostInProgress, setNewPostInProgress] = React.useState(false)
+    const { feedId } = props
+
+    const [createPost] = useMutation(CREATE_POST)
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
         setPostTest(event.currentTarget.value)
     }
 
-    const getFileFromInput = (file: File): Promise<any> => {
-        return new Promise(function (resolve, reject) {
-            const reader = new FileReader()
-            reader.onerror = reject
-            reader.onload = (): void => {
-                resolve(reader.result)
-            }
-            reader.readAsDataURL(file) // here the file can be read in different way Text, DataUrl, ArrayBuffer
-        })
+    const createNewPost = async (e) => {
+        e.preventDefault()
+        e.stopPropagation()
+        if (postText || files.length > 0) {
+            setNewPostInProgress(true)
+            await createPost({ variables: { text: postText, feedId, files } })
+            props.refetchFeed({ id: feedId })
+            setFiles([])
+            setPostTest('')
+            setNewPostInProgress(false)
+        }
     }
 
     const onKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>): Promise<void> => {
         if (event.key === 'Enter') {
-            event.preventDefault()
-            event.stopPropagation()
-            if (postText) {
-                postStore.createPost(
-                    new CreatePostCommand({ text: postText, storedMedia: files, feedId: Number(feedId) }),
-                )
-                setPostTest('')
-            }
+            await createNewPost(event)
         }
     }
 
-    const manageUploadedFile = (binary: string, file: File): void => {
-        const mt = file.type.split('/')[0]
-        files.push({
-            content: binary,
-            mediaType: MediaType[toTitleCase(mt) as keyof typeof MediaType],
-            init: function () {
-                return
-            },
-            toJSON: function () {
-                return
-            },
-        })
-    }
-
     const onFileAdd = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        event.persist()
-        const files = event.currentTarget.files || []
-        Array.from(files).forEach((file) => {
-            getFileFromInput(file)
-                .then((binary) => {
-                    manageUploadedFile(binary, file)
-                })
-                .catch(function (reason) {
-                    console.log(`Error during upload ${reason}`)
-                    event.target.value = '' // to allow upload of same file if error occurs
-                })
+        const uploads = []
+        const fileList = Array.from(event.currentTarget.files || [])
+        fileList.forEach((file) => {
+            const fileReader = new FileReader()
+            fileReader.readAsDataURL(file)
+            fileReader.onload = () => {
+                uploads.push(fileReader.result)
+                if (uploads.length === fileList.length) {
+                    setFiles(uploads)
+                }
+            }
         })
     }
 
     return (
         <>
-            <Form>
-                <Row>
-                    <Col md={{ span: 1 }}>
-                        <ProfilePicture {...profilePictureProps} />
-                    </Col>
-                    <Col className="status-input align-middle">
-                        <Form.Control
-                            placeholder="Whats new?"
-                            value={postText}
-                            onKeyDown={onKeyDown}
-                            onChange={handleChange}
-                        />
-                    </Col>
-                </Row>
-                <Row className="justify-content-md-center">
-                    <Form.File multiple onChange={onFileAdd} />
-                    <Button variant="light">Life Event</Button>
-                </Row>
-            </Form>
+            <Card className="new-post-container mb-2">
+                <Card.Body>
+                    <div className="float-left">
+                        <ProfilePicture userId={null} />
+                    </div>
+                    {newPostInProgress ? (
+                        <div className="d-flex justify-content-center">
+                            <Spinner className="post-in-progress-spinner" animation="grow" variant="warning" />
+                        </div>
+                    ) : (
+                        <>
+                            <div className="mb-3">
+                                <Form>
+                                    <Row>
+                                        <Col className="status-input">
+                                            <Form.Control
+                                                className="status-input-field align-middle"
+                                                placeholder="Whats new?"
+                                                value={postText}
+                                                onKeyDown={onKeyDown}
+                                                onChange={handleChange}
+                                            />
+                                            <a
+                                                href="#"
+                                                className="fas fa-play fa-2x status-input-submit align-middle"
+                                                onClick={createNewPost}
+                                            ></a>
+                                        </Col>
+                                    </Row>
+                                    <Row className="justify-content-md-center mt-1">
+                                        <Col md={{ offset: 1, span: 3 }}>
+                                            <Form.File multiple onChange={onFileAdd} custom label="Photos/Videos" />
+                                        </Col>
+                                        <Col md={{ span: 3 }}>
+                                            <Button className="life-event-button" variant="light" disabled>
+                                                Life Event
+                                            </Button>
+                                        </Col>
+                                    </Row>
+                                </Form>
+                            </div>
+                            {files.length > 0 && <UploadPreview files={files} />}
+                        </>
+                    )}
+                </Card.Body>
+            </Card>
         </>
     )
 }

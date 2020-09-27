@@ -1,14 +1,51 @@
 import React from 'react'
 import { Card, Form } from 'react-bootstrap'
 import Comment from './Comment'
-import { IPostDto, CreateCommentCommand } from '../../Client'
-import { useStore } from '../../stores/StoreContext'
-import { observer } from 'mobx-react'
-import Media from './Media'
+import MediaContainer from './MediaContainer'
+import gql from 'graphql-tag'
+import { useQuery, useMutation } from 'react-apollo'
+import Zoom from './Zoom'
 
-const Post = observer((props: IPostDto) => {
+const GET_COMMENTS = gql`
+    query($postId: String!) {
+        comments(postId: $postId) {
+            text
+            likes
+            commenter {
+                _id
+                email
+                name
+            }
+        }
+    }
+`
+
+const CREATE_COMMENT = gql`
+    mutation createComment($text: String!, $postId: String!) {
+        createComment(text: $text, postId: $postId) {
+            _id
+        }
+    }
+`
+
+const Post = (props: any) => {
+    const { post } = props
     const [comment, setComment] = React.useState('')
-    const { commentStore } = useStore()
+    const [showZoom, setShowZoom] = React.useState(false)
+
+    const { data, loading } = useQuery(GET_COMMENTS, {
+        variables: { postId: post._id },
+    })
+
+    const [createComment] = useMutation(CREATE_COMMENT, {
+        onCompleted: () => setComment(''),
+        refetchQueries: [
+            {
+                query: GET_COMMENTS,
+                variables: { postId: post._id },
+            },
+        ],
+    })
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
         setComment(event.currentTarget.value)
@@ -18,22 +55,32 @@ const Post = observer((props: IPostDto) => {
         if (event.key === 'Enter') {
             event.preventDefault()
             event.stopPropagation()
-            if (comment) {
-                await commentStore.createComment(new CreateCommentCommand({ text: comment, postId: props.id }))
-                setComment('')
+            if (comment && post._id) {
+                createComment({ variables: { text: comment, postId: post._id } })
             }
         }
     }
 
+    const onMediaClick = () => {
+        setShowZoom(false) //!showZoom)
+    }
+
     return (
         <Card className="post-container">
-            <Card.Header>{props.text}</Card.Header>
-            {props.storedMedia && props.storedMedia.map((media) => <Media key={media.id} {...media} />)}
-            <Card.Footer className="text-center">
-                {props.comments && (
+            {post.text && <Card.Header>{post.text}</Card.Header>}
+            {post.media.length > 0 && (
+                <Card.Body>
+                    <MediaContainer media={post.media} onClick={onMediaClick} />
+                    <Zoom media={post.media} show={showZoom} />
+                </Card.Body>
+            )}
+            <Card.Body>
+                {loading ? (
+                    'Loading'
+                ) : (
                     <div className="comments-container">
-                        {props.comments.map((comment) => (
-                            <Comment {...comment} key={comment.id} />
+                        {data.comments.map((comment) => (
+                            <Comment {...comment} key={comment._id} />
                         ))}
                     </div>
                 )}
@@ -45,9 +92,9 @@ const Post = observer((props: IPostDto) => {
                         onChange={handleChange}
                     />
                 </Form>
-            </Card.Footer>
+            </Card.Body>
         </Card>
     )
-})
+}
 
 export default Post
