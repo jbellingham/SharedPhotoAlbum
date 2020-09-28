@@ -525,7 +525,7 @@ export interface IPostDto {
 }
 
 export class CommentDto implements ICommentDto {
-    id?: number;
+    id?: string;
     text?: string | undefined;
     likes?: number;
     postId?: number;
@@ -566,7 +566,7 @@ export class CommentDto implements ICommentDto {
 }
 
 export interface ICommentDto {
-    id?: number;
+    id?: string;
     text?: string | undefined;
     likes?: number;
     postId?: number;

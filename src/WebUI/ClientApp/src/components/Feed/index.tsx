@@ -28,7 +28,9 @@ function Feed(): JSX.Element {
 
     const { feedId } = useParams<FeedParams>()
     useEffect(() => {
-        feedStore.getFeed(feedId as unknown as number)
+        if (feedId) {
+            feedStore.getFeed(feedId)
+        }
     }, [])
 
     // const { data, loading, refetch } = useQuery(GET_FEED, {
@@ -40,10 +42,10 @@ function Feed(): JSX.Element {
 
     // const { feedById: feed } = data || {}
 
-    // const canView: boolean = (!feedStore.isLoading && !feedId)// || feed?.isOwner || feed?.isActiveSubscription
+    const canView: boolean = (!feedStore.isLoading && feedId)// || feed?.isOwner || feed?.isActiveSubscription
 
     return useObserver(() => (
-        feedStore.feed ? (
+        canView ? (
         <div className="feed-container">
             {(!feedStore.isLoading && (
                 <Container fluid>

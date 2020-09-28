@@ -31,7 +31,7 @@ function NewPost(props: INewPostProps): JSX.Element {
             // feedStore.createFeed(new CreateFeedCommand({name: feedName, description: feedDescription}))
             await postStore.createPost(new CreatePostCommand({
                 text: postText,
-                feedId: feedId as number,
+                feedId,
                 // files
             }))
             setFiles([])

@@ -1,11 +1,12 @@
-﻿using SharedPhotoAlbum.Application.Common.Mappings;
+﻿using System;
+using SharedPhotoAlbum.Application.Common.Mappings;
 using SharedPhotoAlbum.Domain.Entities;
 
 namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
 {
     public class CommentDto : IMapFrom<Comment>
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         
         public string Text { get; set; }
         

@@ -10,7 +10,7 @@ class FeedStore {
 
     constructor(private feedsClient: IFeedsClient) {}
 
-    async getFeed(feedId: number | null): Promise<void> {
+    async getFeed(feedId: string | null): Promise<void> {
         if (!this.isLoading) {
             this.isLoading = true
             this.feedsClient.get(feedId).then((result) => {
@@ -23,7 +23,7 @@ class FeedStore {
         }
     }
 
-    async createFeed(feed: CreateFeedCommand): Promise<number> {
+    async createFeed(feed: CreateFeedCommand): Promise<string> {
         return await this.feedsClient.create(CreateFeedCommand.fromJS({ ...feed }))
     }
 }
