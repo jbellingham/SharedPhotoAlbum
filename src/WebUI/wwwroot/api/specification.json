@@ -30,8 +30,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int64"
+                  "type": "string",
+                  "format": "guid"
                 }
               }
             }
@@ -63,8 +63,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int64"
+                  "type": "string",
+                  "format": "guid"
                 }
               }
             }
@@ -86,8 +86,8 @@
             "name": "feedId",
             "in": "query",
             "schema": {
-              "type": "integer",
-              "format": "int64",
+              "type": "string",
+              "format": "guid",
               "nullable": true
             },
             "x-position": 1
@@ -169,8 +169,8 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "integer",
-                  "format": "int64"
+                  "type": "string",
+                  "format": "guid"
                 }
               }
             }
@@ -218,8 +218,8 @@
             "nullable": true
           },
           "postId": {
-            "type": "integer",
-            "format": "int64"
+            "type": "string",
+            "format": "guid"
           }
         }
       },
@@ -361,8 +361,8 @@
             "nullable": true
           },
           "feedId": {
-            "type": "integer",
-            "format": "int64"
+            "type": "string",
+            "format": "guid"
           }
         }
       },

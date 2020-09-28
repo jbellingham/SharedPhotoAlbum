@@ -22,7 +22,7 @@ namespace SharedPhotoAlbum.Application.Common.Behaviours
         public async Task Process(TRequest request, CancellationToken cancellationToken)
         {
             var requestName = typeof(TRequest).Name;
-            var userId = _currentUserService.UserId ?? string.Empty;
+            var userId = _currentUserService.UserId.ToString();
             string userName = string.Empty;
 
             if (!string.IsNullOrWhiteSpace(userId))

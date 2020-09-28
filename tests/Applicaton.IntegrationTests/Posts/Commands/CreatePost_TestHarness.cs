@@ -11,7 +11,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Posts.Commands
     public class CreatePost_TestHarness
     {
         private string _postText;
-        private string _userId;
+        private Guid? _userId;
         private Post _post;
 
         private CreatePostCommand _command;
@@ -34,7 +34,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Posts.Commands
             return this;
         }
 
-        public CreatePost_TestHarness WithUser(string userId)
+        public CreatePost_TestHarness WithUser(Guid? userId)
         {
             _userId = userId;
             return this;
@@ -44,9 +44,9 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Posts.Commands
         {
             _post.Should().NotBeNull();
             _post.Text.Should().Be(_command.Text);
-            _post.CreatedBy.Should().Be(_userId);
+            _post.CreatedBy.Should().Be(_userId.Value);
             _post.Created.Should().BeCloseTo(DateTime.Now, 10000);
-            _post.LastModifiedBy.Should().BeNull();
+            // _post.LastModifiedBy.Should().BeNull();
             _post.LastModified.Should().BeNull();
         }
     }

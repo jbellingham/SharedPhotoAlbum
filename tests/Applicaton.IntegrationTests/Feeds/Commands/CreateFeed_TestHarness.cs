@@ -11,7 +11,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Feeds.Commands
     public class CreateFeed_TestHarness
     {
         private string _name;
-        private string _userId;
+        private Guid? _userId;
         private CreateFeedCommand _command;
         private Feed _feed;
 
@@ -22,7 +22,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Feeds.Commands
             return this;
         }
 
-        public CreateFeed_TestHarness WithUser(string userId)
+        public CreateFeed_TestHarness WithUser(Guid? userId)
         {
             _userId = userId;
             return this;
@@ -44,9 +44,9 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Feeds.Commands
         {
             _feed.Should().NotBeNull();
             _feed.Name.Should().Be(_command.Name);
-            _feed.CreatedBy.Should().Be(_userId);
+            _feed.CreatedBy.Should().Be(_userId.Value);
             _feed.Created.Should().BeCloseTo(DateTime.Now, 10000);
-            _feed.LastModifiedBy.Should().BeNull();
+            // _feed.LastModifiedBy.Should().BeNull();
             _feed.LastModified.Should().BeNull();
         }
     }

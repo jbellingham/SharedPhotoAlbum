@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using MediatR;
@@ -90,17 +91,17 @@ namespace SharedPhotoAlbum.Application.IntegrationTests
 
         private class CurrentUserService : ICurrentUserService
         {
-            public string UserId => _currentUserId;
+            public Guid UserId => _currentUserId ?? Guid.Empty;
         }
 
-        private static string _currentUserId;
+        private static Guid? _currentUserId;
 
-        public static async Task<string> RunAsDefaultUserAsync()
+        public static async Task<Guid?> RunAsDefaultUserAsync()
         {
             return await RunAsUserAsync("test@local", "Testing1234!");
         }
 
-        public static async Task<string> RunAsUserAsync(string userName, string password)
+        public static async Task<Guid?> RunAsUserAsync(string userName, string password)
         {
             using var scope = _scopeFactory.CreateScope();
 
@@ -125,7 +126,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests
             }
         }
 
-        public static async Task<T> FindAsync<T>(long id)
+        public static async Task<T> FindAsync<T>(Guid id)
             where T : class
         {
             using var scope = _scopeFactory.CreateScope();

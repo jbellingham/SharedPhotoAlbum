@@ -10,7 +10,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export interface ICommentsClient {
-    create(command: CreateCommentCommand): Promise<number>;
+    create(command: CreateCommentCommand): Promise<string>;
 }
 
 export class CommentsClient implements ICommentsClient {
@@ -23,7 +23,7 @@ export class CommentsClient implements ICommentsClient {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
 
-    create(command: CreateCommentCommand): Promise<number> {
+    create(command: CreateCommentCommand): Promise<string> {
         let url_ = this.baseUrl + "/api/Comments";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -44,7 +44,7 @@ export class CommentsClient implements ICommentsClient {
         });
     }
 
-    protected processCreate(response: AxiosResponse): Promise<number> {
+    protected processCreate(response: AxiosResponse): Promise<string> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -64,13 +64,13 @@ export class CommentsClient implements ICommentsClient {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<number>(<any>null);
+        return Promise.resolve<string>(<any>null);
     }
 }
 
 export interface IFeedsClient {
-    create(command: CreateFeedCommand): Promise<number>;
-    get(feedId: number | null | undefined): Promise<FeedVm>;
+    create(command: CreateFeedCommand): Promise<string>;
+    get(feedId: string | null | undefined): Promise<FeedVm>;
 }
 
 export class FeedsClient implements IFeedsClient {
@@ -83,7 +83,7 @@ export class FeedsClient implements IFeedsClient {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
 
-    create(command: CreateFeedCommand): Promise<number> {
+    create(command: CreateFeedCommand): Promise<string> {
         let url_ = this.baseUrl + "/api/Feeds";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -104,7 +104,7 @@ export class FeedsClient implements IFeedsClient {
         });
     }
 
-    protected processCreate(response: AxiosResponse): Promise<number> {
+    protected processCreate(response: AxiosResponse): Promise<string> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -124,10 +124,10 @@ export class FeedsClient implements IFeedsClient {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<number>(<any>null);
+        return Promise.resolve<string>(<any>null);
     }
 
-    get(feedId: number | null | undefined): Promise<FeedVm> {
+    get(feedId: string | null | undefined): Promise<FeedVm> {
         let url_ = this.baseUrl + "/api/Feeds?";
         if (feedId !== undefined)
             url_ += "feedId=" + encodeURIComponent("" + feedId) + "&"; 
@@ -229,7 +229,7 @@ export class OidcConfigurationClient implements IOidcConfigurationClient {
 }
 
 export interface IPostsClient {
-    create(command: CreatePostCommand): Promise<number>;
+    create(command: CreatePostCommand): Promise<string>;
     get(): Promise<PostsVm>;
 }
 
@@ -243,7 +243,7 @@ export class PostsClient implements IPostsClient {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
 
-    create(command: CreatePostCommand): Promise<number> {
+    create(command: CreatePostCommand): Promise<string> {
         let url_ = this.baseUrl + "/api/Posts";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -264,7 +264,7 @@ export class PostsClient implements IPostsClient {
         });
     }
 
-    protected processCreate(response: AxiosResponse): Promise<number> {
+    protected processCreate(response: AxiosResponse): Promise<string> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -284,7 +284,7 @@ export class PostsClient implements IPostsClient {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<number>(<any>null);
+        return Promise.resolve<string>(<any>null);
     }
 
     get(): Promise<PostsVm> {
@@ -330,7 +330,7 @@ export class PostsClient implements IPostsClient {
 
 export class CreateCommentCommand implements ICreateCommentCommand {
     text?: string | undefined;
-    postId?: number;
+    postId?: string;
 
     constructor(data?: ICreateCommentCommand) {
         if (data) {
@@ -365,7 +365,7 @@ export class CreateCommentCommand implements ICreateCommentCommand {
 
 export interface ICreateCommentCommand {
     text?: string | undefined;
-    postId?: number;
+    postId?: string;
 }
 
 export class CreateFeedCommand implements ICreateFeedCommand {
@@ -632,7 +632,7 @@ export enum MediaType {
 export class CreatePostCommand implements ICreatePostCommand {
     storedMedia?: StoredMediaDto[] | undefined;
     text?: string | undefined;
-    feedId?: number;
+    feedId?: string;
 
     constructor(data?: ICreatePostCommand) {
         if (data) {
@@ -678,7 +678,7 @@ export class CreatePostCommand implements ICreatePostCommand {
 export interface ICreatePostCommand {
     storedMedia?: StoredMediaDto[] | undefined;
     text?: string | undefined;
-    feedId?: number;
+    feedId?: string;
 }
 
 export class PostsVm implements IPostsVm {

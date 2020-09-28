@@ -39,7 +39,7 @@ namespace SharedPhotoAlbum.Application.Common.Behaviours
             if (elapsedMilliseconds > 500)
             {
                 var requestName = typeof(TRequest).Name;
-                var userId = _currentUserService.UserId ?? string.Empty;
+                var userId = _currentUserService.UserId.ToString();
                 var userName = string.Empty;
 
                 if (!string.IsNullOrWhiteSpace(userId))

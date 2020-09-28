@@ -6,7 +6,7 @@ namespace SharedPhotoAlbum.Domain.Entities
 {
     public class Post : AuditableEntity
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         
         public string Text { get; set; }
         
@@ -18,6 +18,6 @@ namespace SharedPhotoAlbum.Domain.Entities
 
         public Feed Feed { get; set; }
 
-        public long FeedId { get; set; }
+        public Guid FeedId { get; set; }
     }
 }

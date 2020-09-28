@@ -1,4 +1,5 @@
-﻿using SharedPhotoAlbum.Application.Common.Interfaces;
+﻿using System;
+using SharedPhotoAlbum.Application.Common.Interfaces;
 using SharedPhotoAlbum.Application.Common.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,8 @@ namespace SharedPhotoAlbum.Infrastructure.Identity
 
         public async Task<string> GetUserNameAsync(string userId)
         {
-            var user = await _userManager.Users.FirstAsync(u => u.Id == userId);
+            var id = Guid.Parse(userId);
+            var user = await _userManager.Users.FirstAsync(u => u.Id == id);
 
             return user.UserName;
         }
@@ -34,12 +36,13 @@ namespace SharedPhotoAlbum.Infrastructure.Identity
 
             var result = await _userManager.CreateAsync(user, password);
 
-            return (result.ToApplicationResult(), user.Id);
+            return (result.ToApplicationResult(), user.Id.ToString());
         }
 
         public async Task<Result> DeleteUserAsync(string userId)
         {
-            var user = _userManager.Users.SingleOrDefault(u => u.Id == userId);
+            var id = Guid.Parse(userId);
+            var user = _userManager.Users.SingleOrDefault(u => u.Id == id);
 
             if (user != null)
             {

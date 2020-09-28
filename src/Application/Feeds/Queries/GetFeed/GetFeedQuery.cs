@@ -13,7 +13,7 @@ namespace SharedPhotoAlbum.Application.Feeds.Queries.GetFeed
 {
     public class GetFeedQuery : IRequest<FeedVm>
     {
-        public long? FeedId { get; set; }
+        public Guid? FeedId { get; set; }
     }
 
     public class GetFeedCommandHandler : IRequestHandler<GetFeedQuery, FeedVm>

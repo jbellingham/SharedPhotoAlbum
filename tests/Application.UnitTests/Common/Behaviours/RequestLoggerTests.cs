@@ -28,7 +28,7 @@ namespace SharedPhotoAlbum.Application.UnitTests.Common.Behaviours
         [Test]
         public async Task ShouldCallGetUserNameAsyncOnceIfAuthenticated()
         {
-            _currentUserService.Setup(x => x.UserId).Returns("Administrator");
+            // _currentUserService.Setup(x => x.UserId).Returns("Administrator");
 
             var requestLogger = new RequestLogger<CreatePostCommand>(_logger.Object, _currentUserService.Object, _identityService.Object);
 

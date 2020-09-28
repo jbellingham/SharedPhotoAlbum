@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedPhotoAlbum.Application.Posts.Commands.CreatePost;
@@ -10,7 +11,7 @@ namespace SharedPhotoAlbum.WebUI.Controllers
     public class PostsController : ApiController
     {
         [HttpPost]
-        public async Task<ActionResult<long>> Create(CreatePostCommand command)
+        public async Task<ActionResult<Guid>> Create(CreatePostCommand command)
         {
             return await Mediator.Send(command);
         }

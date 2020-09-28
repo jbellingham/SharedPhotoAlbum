@@ -7,14 +7,14 @@ using SharedPhotoAlbum.Domain.Entities;
 
 namespace SharedPhotoAlbum.Application.Feeds.Commands.CreateFeed
 {
-    public class CreateFeedCommand : IRequest<long>
+    public class CreateFeedCommand : IRequest<Guid>
     {
         public string Name { get; set; }
 
         public string Description { get; set; }
     }
 
-    public class CreateFeedCommandHandler : IRequestHandler<CreateFeedCommand, long>
+    public class CreateFeedCommandHandler : IRequestHandler<CreateFeedCommand, Guid>
     {
         private readonly IApplicationDbContext _db;
         private readonly ICurrentUserService _currentUser;
@@ -25,7 +25,7 @@ namespace SharedPhotoAlbum.Application.Feeds.Commands.CreateFeed
             _currentUser = currentUser ?? throw new ArgumentNullException(nameof(currentUser));
         }
 
-        public async Task<long> Handle(CreateFeedCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreateFeedCommand request, CancellationToken cancellationToken)
         {
             var feed = new Feed
             {

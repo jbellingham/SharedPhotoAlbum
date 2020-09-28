@@ -10,16 +10,16 @@ using SharedPhotoAlbum.Domain.Entities;
 
 namespace SharedPhotoAlbum.Application.Posts.Commands.CreatePost
 {
-    public class CreatePostCommand : IRequest<long>
+    public class CreatePostCommand : IRequest<Guid>
     {
         public IList<StoredMediaDto> StoredMedia { get; set; } = new List<StoredMediaDto>();
         
         public string Text { get; set; }
 
-        public long FeedId { get; set; }
+        public Guid FeedId { get; set; }
     }
 
-    public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, long>
+    public class CreatePostCommandHandler : IRequestHandler<CreatePostCommand, Guid>
     {
         private readonly IApplicationDbContext _dbContext;
 
@@ -28,7 +28,7 @@ namespace SharedPhotoAlbum.Application.Posts.Commands.CreatePost
             _dbContext = dbContext ?? throw new ArgumentNullException(nameof(dbContext));
         }
         
-        public async Task<long> Handle(CreatePostCommand request, CancellationToken cancellationToken)
+        public async Task<Guid> Handle(CreatePostCommand request, CancellationToken cancellationToken)
         {
             var media = request.StoredMedia.Select(_ => new StoredMedia
             {

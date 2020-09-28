@@ -9,9 +9,10 @@ namespace SharedPhotoAlbum.WebUI.Services
     {
         public CurrentUserService(IHttpContextAccessor httpContextAccessor)
         {
-            UserId = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+            Guid.TryParse(httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier), out var id);
+            UserId = id;
         }
 
-        public string UserId { get; }
+        public Guid UserId { get; }
     }
 }

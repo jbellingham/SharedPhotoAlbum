@@ -28,9 +28,10 @@ function NewPost(props: INewPostProps): JSX.Element {
         e.stopPropagation()
         if (postText || files.length > 0) {
             setNewPostInProgress(true)
+            // feedStore.createFeed(new CreateFeedCommand({name: feedName, description: feedDescription}))
             await postStore.createPost(new CreatePostCommand({
                 text: postText,
-                feedId: feedId as unknown as number,
+                feedId: feedId as number,
                 // files
             }))
             setFiles([])

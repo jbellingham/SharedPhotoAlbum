@@ -1,4 +1,5 @@
-﻿using SharedPhotoAlbum.Application.Common.Interfaces;
+﻿using System;
+using SharedPhotoAlbum.Application.Common.Interfaces;
 using SharedPhotoAlbum.Domain.Common;
 using SharedPhotoAlbum.Domain.Entities;
 using IdentityServer4.EntityFramework.Options;
@@ -9,11 +10,10 @@ using System.Data;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 
 namespace SharedPhotoAlbum.Infrastructure.Persistence
 {
-    public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>, IApplicationDbContext
+    public class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser, ApplicationRole, Guid>, IApplicationDbContext
     {
         private readonly ICurrentUserService _currentUserService;
         private readonly IDateTime _dateTime;
