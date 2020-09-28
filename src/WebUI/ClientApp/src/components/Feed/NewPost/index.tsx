@@ -4,19 +4,12 @@ import ProfilePicture from '../../shared/ProfilePicture'
 import gql from 'graphql-tag'
 import { useMutation } from 'react-apollo'
 import UploadPreview from './UploadPreview'
+import { useStore } from '../../../stores/StoreContext'
+import { CreatePostCommand } from '../../../Client'
 
 export interface INewPostProps {
     feedId: string
-    refetchFeed: any
 }
-
-const CREATE_POST = gql`
-    mutation($text: String!, $feedId: String!, $files: [String]) {
-        createPost(text: $text, feedId: $feedId, files: $files) {
-            _id
-        }
-    }
-`
 
 function NewPost(props: INewPostProps): JSX.Element {
     const [postText, setPostTest] = React.useState('')
@@ -24,7 +17,7 @@ function NewPost(props: INewPostProps): JSX.Element {
     const [newPostInProgress, setNewPostInProgress] = React.useState(false)
     const { feedId } = props
 
-    const [createPost] = useMutation(CREATE_POST)
+    const { postStore } = useStore()
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
         setPostTest(event.currentTarget.value)
@@ -35,8 +28,11 @@ function NewPost(props: INewPostProps): JSX.Element {
         e.stopPropagation()
         if (postText || files.length > 0) {
             setNewPostInProgress(true)
-            await createPost({ variables: { text: postText, feedId, files } })
-            props.refetchFeed({ id: feedId })
+            await postStore.createPost(new CreatePostCommand({
+                text: postText,
+                feedId: feedId as unknown as number,
+                // files
+            }))
             setFiles([])
             setPostTest('')
             setNewPostInProgress(false)

@@ -3,8 +3,8 @@ using SharedPhotoAlbum.Infrastructure.Identity;
 using SharedPhotoAlbum.Infrastructure.Persistence;
 using SharedPhotoAlbum.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using SharedPhotoAlbum.Domain.Entities;
 
@@ -38,12 +38,17 @@ namespace SharedPhotoAlbum.Infrastructure
             
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+            
+            services.AddAuthentication()
+                .AddIdentityServerJwt()
+                .AddFacebook(facebookOptions =>
+                {
+                    facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
+                    facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
+                });
 
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IIdentityService, IdentityService>();
-
-            services.AddAuthentication()
-                .AddIdentityServerJwt();
 
             return services;
         }

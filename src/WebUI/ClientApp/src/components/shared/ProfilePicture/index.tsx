@@ -8,22 +8,22 @@ interface IProfilePictureProps {
 }
 
 function ProfilePicture(props: IProfilePictureProps) {
-    const { data, loading } = useQuery(GET_USER, {
-        variables: { userId: props.userId },
-    })
+    // const { data, loading } = useQuery(GET_USER, {
+    //     variables: { userId: props.userId },
+    // })
 
-    if (!loading) {
-        const { name, profilePicture } = data.getUser || {}
-        return (
-            <Image
-                alt={name}
-                src={profilePicture?.url}
-                roundedCircle
-                width={profilePicture?.width}
-                height={profilePicture?.height}
-            />
-        )
-    }
+    // if (!loading) {
+    //     const { name, profilePicture } = data.getUser || {}
+    //     return (
+    //         <Image
+    //             alt={name}
+    //             src={profilePicture?.url}
+    //             roundedCircle
+    //             width={profilePicture?.width}
+    //             height={profilePicture?.height}
+    //         />
+    //     )
+    // }
     return null
 }
 

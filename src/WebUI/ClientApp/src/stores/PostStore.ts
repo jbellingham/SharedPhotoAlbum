@@ -2,7 +2,7 @@ import { action, decorate, observable } from 'mobx'
 import { PostDto, IPostsClient, CreatePostCommand } from '../Client'
 
 class PostStore {
-    posts: PostDto[] | undefined = []
+    posts: PostDto[] = []
 
     constructor(private postClient: IPostsClient) {}
 

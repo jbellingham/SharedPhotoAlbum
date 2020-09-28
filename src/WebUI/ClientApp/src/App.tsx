@@ -1,12 +1,12 @@
 import React from 'react'
 import Feed from './components/Feed'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
-import AuthorizedRoute from './components/shared/AuthorizedRoute'
 import { CloudinaryContext } from 'cloudinary-react'
 import Invite from './components/Invite'
 import { ApplicationPaths } from './components/api-authorization/ApiAuthorizationConstants'
 import ApiAuthorizationRoutes from './components/api-authorization/ApiAuthorizationRoutes'
 import { store, StoreContext } from './stores/StoreContext'
+import AuthorizeRoute from './components/api-authorization/AuthorizeRoute'
 
 function App() {
     const [cloudName] = React.useState()//Meteor.settings.public.cloudinary.cloudName)
@@ -17,9 +17,9 @@ function App() {
             <Router>
                 <Switch>
                     <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
-                    <AuthorizedRoute path="/invite/:inviteCode" component={Invite} />
-                    <AuthorizedRoute path="/:feedId" component={Feed} />
-                    <AuthorizedRoute path="/" component={Feed} />
+                    <AuthorizeRoute path="/invite/:inviteCode" component={Invite} />
+                    <AuthorizeRoute path="/:feedId" component={Feed} />
+                    <AuthorizeRoute path="/" component={Feed} />
                 </Switch>
             </Router>
             </StoreContext.Provider>

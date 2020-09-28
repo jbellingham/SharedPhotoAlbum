@@ -2,9 +2,11 @@ import { CreateFeedCommand, IFeedsClient, IPostDto, IFeedVm } from '../Client'
 import { decorate, action, observable } from 'mobx'
 
 class FeedStore {
-    posts: IPostDto[] | undefined = []
+    posts: IPostDto[] = []
     isLoading = false
-    feed: IFeedVm | undefined
+    feed: IFeedVm = observable({
+        name: ""
+    })
 
     constructor(private feedsClient: IFeedsClient) {}
 
@@ -12,7 +14,7 @@ class FeedStore {
         if (!this.isLoading) {
             this.isLoading = true
             this.feedsClient.get(feedId).then((result) => {
-                this.feed = result
+                this.feed.name = result.name
                 this.isLoading = false
                 if (result.posts) {
                     this.posts?.push(...result.posts)
@@ -27,6 +29,7 @@ class FeedStore {
 }
 
 decorate(FeedStore, {
+    isLoading: observable,
     feed: observable,
     posts: observable,
     getFeed: action,

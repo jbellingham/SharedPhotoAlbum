@@ -31,11 +31,6 @@ namespace WebUI
         {
             services.AddApplication();
             services.AddInfrastructure(Configuration);
-            services.AddAuthentication().AddFacebook(facebookOptions =>
-            {
-                facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
-                facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
-            });
 
             services.AddScoped<ICurrentUserService, CurrentUserService>();
 
@@ -46,7 +41,7 @@ namespace WebUI
 
             services.AddControllersWithViews(options => 
                 options.Filters.Add(new ApiExceptionFilter()));
-
+            
             services.AddRazorPages();
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration => { configuration.RootPath = "ClientApp/build"; });
