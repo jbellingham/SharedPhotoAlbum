@@ -1,8 +1,12 @@
-﻿using SharedPhotoAlbum.Application.Common.Interfaces;
+﻿using System.Security.Claims;
+using System.Threading.Tasks;
+using IdentityModel;
+using SharedPhotoAlbum.Application.Common.Interfaces;
 using SharedPhotoAlbum.Infrastructure.Identity;
 using SharedPhotoAlbum.Infrastructure.Persistence;
 using SharedPhotoAlbum.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OAuth;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +50,22 @@ namespace SharedPhotoAlbum.Infrastructure
                 {
                     facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
                     facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
+                    facebookOptions.Fields.Add("picture");
+                    facebookOptions.ClaimActions.MapCustomJson(JwtClaimTypes.Picture,
+                        json => json.GetProperty("picture").GetProperty("data")
+                        .GetProperty("url").ToString());
+                    facebookOptions.Events = new OAuthEvents
+                    {
+                        OnCreatingTicket = context =>
+                        {
+                            var identity = (ClaimsIdentity) context.Principal.Identity;
+                            var profilePicture = context.User.GetProperty("picture").GetProperty("data")
+                                .GetProperty("url").ToString();
+                            
+                            identity.AddClaim(new Claim(JwtClaimTypes.Picture, profilePicture));
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
 
             services.AddTransient<IDateTime, DateTimeService>();

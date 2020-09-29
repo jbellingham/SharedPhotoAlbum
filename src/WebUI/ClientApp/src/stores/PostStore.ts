@@ -1,12 +1,13 @@
-import { action, decorate, observable } from 'mobx'
-import { PostDto, IPostsClient, CreatePostCommand } from '../Client'
+import { action, observable } from 'mobx'
+import { IPostsClient, CreatePostCommand, IPostDto } from '../Client'
 
 class PostStore {
     @observable
-    posts: PostDto[] = []
+    posts: IPostDto[] = []
 
     constructor(private postClient: IPostsClient) {}
 
+    @action
     async createPost(post: CreatePostCommand): Promise<void> {
         await this.postClient.create(CreatePostCommand.fromJS({ ...post }))
         this.posts?.unshift(post)

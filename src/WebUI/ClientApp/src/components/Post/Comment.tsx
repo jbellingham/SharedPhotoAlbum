@@ -1,29 +1,20 @@
 import React, { ReactElement } from 'react'
-import { CommentModel } from '../../../api/comments/comments'
+import { ICommentDto } from '../../Client'
 import ProfilePicture from '../shared/ProfilePicture'
 
-interface ICommentProps {
-    text: string
-    likes: number
-    commenter: {
-        _id: string
-        email: string
-        name: string
-    }
-}
-
-function Comment(props: ICommentProps): ReactElement {
+function Comment(props: ICommentDto): ReactElement {
+    const { text } = props
     return (
         <div className="comment">
             <div className="d-flex flex-row">
                 <div className="comment-profile-picture-container">
-                    <ProfilePicture userId={props.commenter._id} />
+                    {/* <ProfilePicture userId={props.commenter.id} /> */}
                 </div>
                 <div className="comment-body">
-                    <span className="commenter-name">{props.commenter.name || props.commenter.email}</span>
+                    {/* <span className="commenter-name">{props.commenter.name || props.commenter.email}</span> */}
                     <span>
                         <br />
-                        {props.text}
+                        {text}
                     </span>
                 </div>
                 <br />

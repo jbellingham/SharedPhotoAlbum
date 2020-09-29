@@ -12,9 +12,6 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Posts.Queries
     
     public class GetPostsTests : TestBase
     {
-        private readonly IApplicationDbContext _db;
-        private readonly ICurrentUserService _currentUserService;
-
         [Test]
         public async Task ShouldGetPostsForFeed()
         {

@@ -5,6 +5,7 @@ import PostStore from './PostStore'
 class CommentStore {
     constructor(private commentClient: CommentsClient, private postStore: PostStore) {}
 
+    @action
     async createComment(comment: CreateCommentCommand): Promise<void> {
         const id = await this.commentClient.create(comment)
         const post = this.postStore.posts?.find((post: PostDto) => post.id === comment.postId)
@@ -23,9 +24,5 @@ class CommentStore {
         })
     }
 }
-
-decorate(CommentStore, {
-    createComment: action,
-})
 
 export default CommentStore

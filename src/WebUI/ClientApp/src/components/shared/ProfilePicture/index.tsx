@@ -1,29 +1,22 @@
 import React from 'react'
 import { Image } from 'react-bootstrap'
-import { useQuery } from 'react-apollo'
-// import { GET_USER } from '../../../../api/users/methods'
+import { useStore } from '../../../stores/StoreContext'
 
-interface IProfilePictureProps {
-    userId: string
-}
-
-function ProfilePicture(props: IProfilePictureProps) {
-    // const { data, loading } = useQuery(GET_USER, {
-    //     variables: { userId: props.userId },
-    // })
-
-    // if (!loading) {
-    //     const { name, profilePicture } = data.getUser || {}
-    //     return (
-    //         <Image
-    //             alt={name}
-    //             src={profilePicture?.url}
-    //             roundedCircle
-    //             width={profilePicture?.width}
-    //             height={profilePicture?.height}
-    //         />
-    //     )
-    // }
+function ProfilePicture() {
+    const { userStore } = useStore()
+    const { loading, profilePictureUrl } = userStore
+    if (!loading) {
+        // const { name, profilePicture } = data.getUser || {}
+        return (
+            <Image
+                // alt={name}
+                src={profilePictureUrl}
+                roundedCircle
+                width={100}//profilePicture?.width}
+                height={100}//profilePicture?.height}
+            />
+        )
+    }
     return null
 }
 

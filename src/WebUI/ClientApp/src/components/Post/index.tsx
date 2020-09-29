@@ -2,14 +2,19 @@ import React from 'react'
 import { Card, Form } from 'react-bootstrap'
 import Comment from './Comment'
 import MediaContainer from './MediaContainer'
-import gql from 'graphql-tag'
-import { useQuery, useMutation } from 'react-apollo'
 import Zoom from './Zoom'
+import { CreateCommentCommand, IPostDto } from '../../Client'
+import { useStore } from '../../stores/StoreContext'
 
-const Post = (props: any) => {
+interface IPostProps {
+    post: IPostDto
+}
+
+const Post = (props: IPostProps) => {
     const { post } = props
     const [comment, setComment] = React.useState('')
     const [showZoom, setShowZoom] = React.useState(false)
+    const { commentStore } = useStore()
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
         setComment(event.currentTarget.value)
@@ -19,8 +24,8 @@ const Post = (props: any) => {
         if (event.key === 'Enter') {
             event.preventDefault()
             event.stopPropagation()
-            if (comment && post._id) {
-                // createComment({ variables: { text: comment, postId: post._id } })
+            if (comment && post.id) {
+                await commentStore.createComment(new CreateCommentCommand({text: comment, postId: post.id}))
             }
         }
     }
@@ -28,6 +33,8 @@ const Post = (props: any) => {
     const onMediaClick = () => {
         setShowZoom(false) //!showZoom)
     }
+
+    const { comments } = post
 
     return (
         <Card className="post-container">
@@ -38,8 +45,14 @@ const Post = (props: any) => {
                     <Zoom media={post.media} show={showZoom} />
                 </Card.Body>
             )} */}
-            {/* <Card.Body>
-                {loading ? (
+            <Card.Body>
+                {comments?.length > 0 &&
+                    <div className="comments-container">
+                        {comments.map((comment) => (
+                            <Comment {...comment} key={comment.id} />
+                        ))}
+                    </div>}
+                {/* {loading ? (
                     'Loading'
                 ) : (
                     <div className="comments-container">
@@ -47,7 +60,7 @@ const Post = (props: any) => {
                             <Comment {...comment} key={comment._id} />
                         ))}
                     </div>
-                )}
+                )} */}
                 <Form>
                     <Form.Control
                         placeholder="Write a comment..."
@@ -56,7 +69,7 @@ const Post = (props: any) => {
                         onChange={handleChange}
                     />
                 </Form>
-            </Card.Body> */}
+            </Card.Body>
         </Card>
     )
 }
