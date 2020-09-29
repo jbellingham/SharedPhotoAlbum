@@ -12,6 +12,7 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
 {
     public class GetPostsQuery : IRequest<PostsVm>
     {
+        public Guid FeedId { get; set; }
     }
 
     public class GetPostsQueryHandler : IRequestHandler<GetPostsQuery, PostsVm>
@@ -30,6 +31,7 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
             return new PostsVm
             {
                 Posts = await _dbContext.Posts
+                    .Where(_ => _.FeedId == request.FeedId)
                     .OrderByDescending(_ => _.Created)
                     .ProjectTo<PostDto>(_mapper.ConfigurationProvider)
                     .ToListAsync(cancellationToken) 

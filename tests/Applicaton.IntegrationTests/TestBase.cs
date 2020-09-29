@@ -12,6 +12,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests
         public async Task TestSetUp()
         {
             await ResetState();
+            await SeedDatabase();
         }
     }
 }

@@ -13,6 +13,7 @@ using Npgsql;
 using NUnit.Framework;
 using Respawn;
 using SharedPhotoAlbum.Application.Common.Interfaces;
+using SharedPhotoAlbum.Application.IntegrationTests.Seeds;
 using SharedPhotoAlbum.Domain.Entities;
 using SharedPhotoAlbum.Infrastructure.Persistence;
 using WebUI;
@@ -91,25 +92,27 @@ namespace SharedPhotoAlbum.Application.IntegrationTests
 
         private class CurrentUserService : ICurrentUserService
         {
-            public Guid UserId => _currentUserId ?? Guid.Empty;
+            public Guid UserId => _currentUserId;
         }
 
-        private static Guid? _currentUserId;
+        private static Guid _currentUserId;
 
-        public static async Task<Guid?> RunAsDefaultUserAsync()
+        public static async Task<Guid> RunAsDefaultUserAsync()
         {
-            return await RunAsUserAsync("test@local", "Testing1234!");
+            return await RunAsUserAsync(UserSeed.DefaultUser);
         }
 
-        public static async Task<Guid?> RunAsUserAsync(string userName, string password)
+        private static async Task<Guid> RunAsUserAsync(ApplicationUser user)
         {
             using var scope = _scopeFactory.CreateScope();
 
             var userManager = scope.ServiceProvider.GetService<UserManager<ApplicationUser>>();
 
-            var user = new ApplicationUser { UserName = userName, Email = userName };
-
-            var result = await userManager.CreateAsync(user, password);
+            var userResult = await userManager.FindByEmailAsync(user.UserName);
+            if (userResult == null)
+            {
+                await userManager.CreateAsync(user, UserSeed.DefaultPassword);
+            }
 
             _currentUserId = user.Id;
 
@@ -122,7 +125,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests
             {
                 await conn.OpenAsync();
                 await _checkpoint.Reset(conn);
-                _currentUserId = null;
+                _currentUserId = Guid.Empty;
             }
         }
 
@@ -139,6 +142,15 @@ namespace SharedPhotoAlbum.Application.IntegrationTests
         [OneTimeTearDown]
         public void RunAfterAnyTests()
         {
+        }
+
+        public static async Task SeedDatabase()
+        {
+            using var scope = _scopeFactory.CreateScope();
+            var db = scope.ServiceProvider.GetService<ApplicationDbContext>();
+            var userId = await RunAsDefaultUserAsync();
+            await FeedSeed.Seed(db, userId);
+            await PostSeed.Seed(db, userId);
         }
     }
 }
