@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using SharedPhotoAlbum.Application.Comments.Commands.CreateComment;
+using SharedPhotoAlbum.Application.Feeds.Commands.CreateFeed;
 using SharedPhotoAlbum.Application.Posts.Commands.CreatePost;
 using SharedPhotoAlbum.Domain.Entities;
 
@@ -30,9 +31,17 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Comments.Commands
 
         public async Task<CreateComment_TestHarness> Build()
         {
+            var feedCommand = new CreateFeedCommand
+            {
+                Description = "Some feed",
+                Name = "Some feed"
+            };
+            var feedId = await SendAsync(feedCommand);
+            
             var postCommand = new CreatePostCommand
             {
-                Text = "Some post"
+                Text = "Some post",
+                FeedId = feedId
             };
             var postId = await SendAsync(postCommand);
 

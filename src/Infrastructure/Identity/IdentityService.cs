@@ -21,9 +21,9 @@ namespace SharedPhotoAlbum.Infrastructure.Identity
         public async Task<string> GetUserNameAsync(string userId)
         {
             var id = Guid.Parse(userId);
-            var user = await _userManager.Users.FirstAsync(u => u.Id == id);
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == id);
 
-            return user.UserName;
+            return user?.UserName;
         }
 
         public async Task<(Result Result, string UserId)> CreateUserAsync(string userName, string password)

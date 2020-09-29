@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using FluentAssertions;
+using SharedPhotoAlbum.Application.Feeds.Commands.CreateFeed;
 using SharedPhotoAlbum.Application.Posts.Commands.CreatePost;
 using SharedPhotoAlbum.Domain.Entities;
 
@@ -24,9 +25,17 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Posts.Commands
 
         public async Task<CreatePost_TestHarness> Build()
         {
+            var feedCommand = new CreateFeedCommand
+            {
+                Description = "Some feed",
+                Name = "Some feed"
+            };
+            var feedId = await SendAsync(feedCommand);
+            
             _command = new CreatePostCommand
             {
-                Text = _postText
+                Text = _postText,
+                FeedId = feedId
             };
 
             var postId = await SendAsync(_command);
