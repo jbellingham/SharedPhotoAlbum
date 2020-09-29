@@ -13,6 +13,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Seeds
 
         public static async Task Seed(IApplicationDbContext db, Guid userId)
         {
+            UserFeeds = new Dictionary<Guid, Feed>();
             var feed = new Feed
             {
                 OwnerId = userId,
