@@ -14,9 +14,10 @@ interface FeedParams {
     feedId: string
 }
 
-function Feed(): JSX.Element {
+const Feed = observer(() => {
     const [showNewFeedModal, setShowNewFeedModal] = React.useState(false)
     const { feedStore } = useStore()
+    const { feedName, isLoading, posts } = feedStore
     const toggleNewFeedModal = (e: React.MouseEvent) => {
         e.preventDefault()
         setShowNewFeedModal(!showNewFeedModal)
@@ -42,16 +43,16 @@ function Feed(): JSX.Element {
 
     // const { feedById: feed } = data || {}
 
-    const canView: boolean = (!feedStore.isLoading && feedId)// || feed?.isOwner || feed?.isActiveSubscription
+    const canView: boolean = (!isLoading && feedId)// || feed?.isOwner || feed?.isActiveSubscription
 
-    return useObserver(() => (
+    return (
         canView ? (
         <div className="feed-container">
-            {(!feedStore.isLoading && (
+            {(!isLoading && (
                 <Container fluid>
                     <Row>
                         <Col xs={{ span: 12 }} lg={{ span: 7, offset: 2 }}>
-                            <h1>{feedStore.feed?.name}</h1>
+                            <h1>{feedName}</h1>
                             {/* {feed.isOwner && */}
                             <NewPost feedId={feedId} />
                             <PostList feedId={feedId} />
@@ -74,7 +75,7 @@ function Feed(): JSX.Element {
             .
             <NewFeed show={showNewFeedModal} handleClose={handleNewFeedModalClose} />
         </div>
-    )))
-}
+    ))
+})
 
 export default Feed

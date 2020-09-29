@@ -33,6 +33,7 @@ namespace SharedPhotoAlbum.Application.Feeds.Queries.GetFeed
                     .Where(_ => _.Id == request.FeedId);
 
             var posts = await feed.SelectMany(_ => _.Posts)
+                .OrderByDescending(_ => _.Created)
                 .ProjectTo<PostDto>(_mapper.ConfigurationProvider)
                 .ToListAsync(cancellationToken);
 

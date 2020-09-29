@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SharedPhotoAlbum.Application.Common.Mappings;
 using SharedPhotoAlbum.Domain.Entities;
 
@@ -6,7 +7,7 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
 {
     public class PostDto : IMapFrom<Post>
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         
         public string LinkUrl { get; set; }
         

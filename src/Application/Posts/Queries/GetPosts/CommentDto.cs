@@ -12,6 +12,6 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
         
         public int Likes { get; set; }
         
-        public long PostId { get; set; }
+        public Guid PostId { get; set; }
     }
 }

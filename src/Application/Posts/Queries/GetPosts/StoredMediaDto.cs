@@ -1,4 +1,5 @@
-﻿using SharedPhotoAlbum.Application.Common.Mappings;
+﻿using System;
+using SharedPhotoAlbum.Application.Common.Mappings;
 using SharedPhotoAlbum.Domain.Entities;
 using SharedPhotoAlbum.Domain.Enums;
 
@@ -6,7 +7,7 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
 {
     public class StoredMediaDto : IMapFrom<StoredMedia>
     {
-        public long Id { get; set; }
+        public Guid Id { get; set; }
         
         public string Name { get; set; }
         
@@ -14,6 +15,6 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
         
         public string Content { get; set; }
         
-        public long PostId { get; set; }
+        public Guid PostId { get; set; }
     }
 }

@@ -24,7 +24,7 @@ axios.interceptors.request.use(async function (config) {
 
 const postStore = new PostStore(new PostsClient(baseUrl, axios))
 const commentStore = new CommentStore(new CommentsClient(baseUrl, axios), postStore)
-const feedStore = new FeedStore(new FeedsClient(baseUrl, axios))
+const feedStore = new FeedStore(postStore, new FeedsClient(baseUrl, axios))
 
 export interface IStore {
     postStore: PostStore

@@ -1,23 +1,25 @@
-import { CreateFeedCommand, IFeedsClient, IPostDto, IFeedVm } from '../Client'
+import { CreateFeedCommand, IFeedsClient, IPostDto } from '../Client'
 import { decorate, action, observable } from 'mobx'
+import PostStore from './PostStore'
 
 class FeedStore {
-    posts: IPostDto[] = []
-    isLoading = false
-    feed: IFeedVm = observable({
-        name: ""
-    })
+    @observable
+    feedName: string | undefined = ""
 
-    constructor(private feedsClient: IFeedsClient) {}
+    @observable
+    isLoading: boolean = false
+
+    constructor(private postStore: PostStore, private feedsClient: IFeedsClient) { }
 
     async getFeed(feedId: string | null): Promise<void> {
         if (!this.isLoading) {
             this.isLoading = true
             this.feedsClient.get(feedId).then((result) => {
-                this.feed.name = result.name
+                this.feedName = result.name
                 this.isLoading = false
                 if (result.posts) {
-                    this.posts?.push(...result.posts)
+                    this.postStore.posts?.push(...result.posts)
+                    //this.posts?.push(...result.posts)
                 }
             })
         }
@@ -27,13 +29,5 @@ class FeedStore {
         return await this.feedsClient.create(CreateFeedCommand.fromJS({ ...feed }))
     }
 }
-
-decorate(FeedStore, {
-    isLoading: observable,
-    feed: observable,
-    posts: observable,
-    getFeed: action,
-    createFeed: action,
-})
 
 export default FeedStore

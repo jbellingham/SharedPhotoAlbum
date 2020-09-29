@@ -37,6 +37,7 @@ export class AuthorizeService {
         const user = await this.userManager.getUser();
         if (user && user.expired) {
             await this.signIn({})
+            user = await this.userManager.getUser();
         }
         return user && user.access_token;
     }

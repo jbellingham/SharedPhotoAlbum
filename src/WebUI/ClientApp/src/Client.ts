@@ -457,7 +457,7 @@ export interface IFeedVm {
 }
 
 export class PostDto implements IPostDto {
-    id?: number;
+    id?: string;
     linkUrl?: string | undefined;
     text?: string | undefined;
     comments?: CommentDto[] | undefined;
@@ -517,7 +517,7 @@ export class PostDto implements IPostDto {
 }
 
 export interface IPostDto {
-    id?: number;
+    id?: string;
     linkUrl?: string | undefined;
     text?: string | undefined;
     comments?: CommentDto[] | undefined;
@@ -528,7 +528,7 @@ export class CommentDto implements ICommentDto {
     id?: string;
     text?: string | undefined;
     likes?: number;
-    postId?: number;
+    postId?: string;
 
     constructor(data?: ICommentDto) {
         if (data) {
@@ -569,15 +569,15 @@ export interface ICommentDto {
     id?: string;
     text?: string | undefined;
     likes?: number;
-    postId?: number;
+    postId?: string;
 }
 
 export class StoredMediaDto implements IStoredMediaDto {
-    id?: number;
+    id?: string;
     name?: string | undefined;
     mediaType?: MediaType;
     content?: string | undefined;
-    postId?: number;
+    postId?: string;
 
     constructor(data?: IStoredMediaDto) {
         if (data) {
@@ -617,11 +617,11 @@ export class StoredMediaDto implements IStoredMediaDto {
 }
 
 export interface IStoredMediaDto {
-    id?: number;
+    id?: string;
     name?: string | undefined;
     mediaType?: MediaType;
     content?: string | undefined;
-    postId?: number;
+    postId?: string;
 }
 
 export enum MediaType {

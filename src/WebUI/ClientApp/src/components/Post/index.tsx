@@ -6,46 +6,10 @@ import gql from 'graphql-tag'
 import { useQuery, useMutation } from 'react-apollo'
 import Zoom from './Zoom'
 
-const GET_COMMENTS = gql`
-    query($postId: String!) {
-        comments(postId: $postId) {
-            text
-            likes
-            commenter {
-                _id
-                email
-                name
-            }
-        }
-    }
-`
-
-const CREATE_COMMENT = gql`
-    mutation createComment($text: String!, $postId: String!) {
-        createComment(text: $text, postId: $postId) {
-            _id
-        }
-    }
-`
-
 const Post = (props: any) => {
     const { post } = props
     const [comment, setComment] = React.useState('')
     const [showZoom, setShowZoom] = React.useState(false)
-
-    const { data, loading } = useQuery(GET_COMMENTS, {
-        variables: { postId: post._id },
-    })
-
-    const [createComment] = useMutation(CREATE_COMMENT, {
-        onCompleted: () => setComment(''),
-        refetchQueries: [
-            {
-                query: GET_COMMENTS,
-                variables: { postId: post._id },
-            },
-        ],
-    })
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>): void => {
         setComment(event.currentTarget.value)
@@ -56,7 +20,7 @@ const Post = (props: any) => {
             event.preventDefault()
             event.stopPropagation()
             if (comment && post._id) {
-                createComment({ variables: { text: comment, postId: post._id } })
+                // createComment({ variables: { text: comment, postId: post._id } })
             }
         }
     }
@@ -68,13 +32,13 @@ const Post = (props: any) => {
     return (
         <Card className="post-container">
             {post.text && <Card.Header>{post.text}</Card.Header>}
-            {post.media.length > 0 && (
+            {/* {post.media.length > 0 && (
                 <Card.Body>
                     <MediaContainer media={post.media} onClick={onMediaClick} />
                     <Zoom media={post.media} show={showZoom} />
                 </Card.Body>
-            )}
-            <Card.Body>
+            )} */}
+            {/* <Card.Body>
                 {loading ? (
                     'Loading'
                 ) : (
@@ -92,7 +56,7 @@ const Post = (props: any) => {
                         onChange={handleChange}
                     />
                 </Form>
-            </Card.Body>
+            </Card.Body> */}
         </Card>
     )
 }
