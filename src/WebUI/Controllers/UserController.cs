@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Linq;
-using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityModel;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using SharedPhotoAlbum.Domain.Entities;
 
@@ -39,7 +38,9 @@ namespace SharedPhotoAlbum.WebUI.Controllers
             // }
             
             // add to onloginsuccess
-            var result = this.User.Claims.SingleOrDefault(_ => _.Type == JwtClaimTypes.Picture)?.Value;
+            var authResult = await HttpContext.AuthenticateAsync();
+            var identity = (ClaimsIdentity)this.User.Identity;
+            var result = identity.Claims.SingleOrDefault(_ => _.Type == JwtClaimTypes.Picture)?.Value;
             return result;
         }
     }

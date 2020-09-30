@@ -1,8 +1,12 @@
 import { CreateFeedCommand, FeedVm, IFeedDto, IFeedsClient, IPostDto } from '../Client'
-import { computed, observable } from 'mobx'
+import { action, computed, observable } from 'mobx'
 import PostStore from './PostStore'
 
 class FeedStore {
+    constructor(private postStore: PostStore, private feedsClient: IFeedsClient) {
+        this.getFeeds()
+    }
+
     @observable
     feedName: string | undefined = ""
 
@@ -22,11 +26,7 @@ class FeedStore {
         return this.feeds.filter(_ => _.isSubscription)
     }
 
-
-    constructor(private postStore: PostStore, private feedsClient: IFeedsClient) {
-        this.getFeeds()
-     }
-
+    @action
     async getFeed(feedId: string | null): Promise<void> {
         if (!this.isLoading) {
             this.isLoading = true
@@ -41,6 +41,7 @@ class FeedStore {
         }
     }
 
+    @action
     async getFeeds(): Promise<void> {
         if (!this.isLoading) {
             this.isLoading = true

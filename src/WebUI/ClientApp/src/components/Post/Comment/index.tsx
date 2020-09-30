@@ -1,6 +1,6 @@
 import React, { ReactElement } from 'react'
-import { ICommentDto } from '../../Client'
-import ProfilePicture from '../shared/ProfilePicture'
+import { ICommentDto } from '../../../Client'
+import ProfilePicture from '../../shared/ProfilePicture'
 
 function Comment(props: ICommentDto): ReactElement {
     const { text } = props
