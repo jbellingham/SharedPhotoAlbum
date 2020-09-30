@@ -1,12 +1,12 @@
 import React, { useCallback, useEffect } from 'react'
-import NewPost from './NewPost'
+import NewPost from '../Post/NewPost'
 import { useParams } from 'react-router-dom'
 import { Col, Row, Container } from 'react-bootstrap'
 import SubscriptionRequests from './SubscriptionRequests'
 import gql from 'graphql-tag'
 import { useQuery } from 'react-apollo'
 import NewFeed from './NewFeed'
-import PostList from '../Post/PostList'
+import PostList from '../Post/List'
 import { useStore } from '../../stores/StoreContext'
 import { observer, useObserver } from 'mobx-react'
 
@@ -17,7 +17,7 @@ interface FeedParams {
 const Feed = observer(() => {
     const [showNewFeedModal, setShowNewFeedModal] = React.useState(false)
     const { feedStore } = useStore()
-    const { feedName, isLoading, posts } = feedStore
+    const { feedName, isLoading } = feedStore
     const toggleNewFeedModal = (e: React.MouseEvent) => {
         e.preventDefault()
         setShowNewFeedModal(!showNewFeedModal)

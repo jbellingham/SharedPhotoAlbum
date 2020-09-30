@@ -187,6 +187,18 @@
           "Posts"
         ],
         "operationId": "Posts_Get",
+        "parameters": [
+          {
+            "name": "feedId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "guid",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
         "responses": {
           "200": {
             "description": "",
@@ -266,10 +278,101 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
+          "feeds": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/FeedDto"
+            }
+          }
+        }
+      },
+      "FeedDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
           "name": {
             "type": "string",
             "nullable": true
           },
+          "isOwner": {
+            "type": "boolean"
+          },
+          "isSubscription": {
+            "type": "boolean"
+          },
+          "shortCode": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "CreatePostCommand": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "storedMedia": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/StoredMediaDto"
+            }
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          },
+          "feedId": {
+            "type": "string",
+            "format": "guid"
+          }
+        }
+      },
+      "StoredMediaDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "mediaType": {
+            "$ref": "#/components/schemas/MediaType"
+          },
+          "content": {
+            "type": "string",
+            "nullable": true
+          },
+          "postId": {
+            "type": "string",
+            "format": "guid"
+          }
+        }
+      },
+      "MediaType": {
+        "type": "integer",
+        "description": "",
+        "x-enumNames": [
+          "Image",
+          "Video"
+        ],
+        "enum": [
+          0,
+          1
+        ]
+      },
+      "PostsVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
           "posts": {
             "type": "array",
             "nullable": true,
@@ -330,77 +433,6 @@
           "postId": {
             "type": "string",
             "format": "guid"
-          }
-        }
-      },
-      "StoredMediaDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "mediaType": {
-            "$ref": "#/components/schemas/MediaType"
-          },
-          "content": {
-            "type": "string",
-            "nullable": true
-          },
-          "postId": {
-            "type": "string",
-            "format": "guid"
-          }
-        }
-      },
-      "MediaType": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "Image",
-          "Video"
-        ],
-        "enum": [
-          0,
-          1
-        ]
-      },
-      "CreatePostCommand": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "storedMedia": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "$ref": "#/components/schemas/StoredMediaDto"
-            }
-          },
-          "text": {
-            "type": "string",
-            "nullable": true
-          },
-          "feedId": {
-            "type": "string",
-            "format": "guid"
-          }
-        }
-      },
-      "PostsVm": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "posts": {
-            "type": "array",
-            "nullable": true,
-            "items": {
-              "$ref": "#/components/schemas/PostDto"
-            }
           }
         }
       }

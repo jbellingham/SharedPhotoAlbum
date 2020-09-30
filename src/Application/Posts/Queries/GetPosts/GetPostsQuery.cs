@@ -12,7 +12,7 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
 {
     public class GetPostsQuery : IRequest<PostsVm>
     {
-        public Guid FeedId { get; set; }
+        public Guid? FeedId { get; set; }
     }
 
     public class GetPostsQueryHandler : IRequestHandler<GetPostsQuery, PostsVm>

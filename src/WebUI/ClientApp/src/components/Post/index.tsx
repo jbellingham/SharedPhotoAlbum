@@ -1,7 +1,7 @@
 import React from 'react'
 import { Card, Form } from 'react-bootstrap'
 import Comment from './Comment'
-import MediaContainer from './MediaContainer'
+import MediaContainer from './Media'
 import Zoom from './Zoom'
 import { CreateCommentCommand, IPostDto } from '../../Client'
 import { useStore } from '../../stores/StoreContext'

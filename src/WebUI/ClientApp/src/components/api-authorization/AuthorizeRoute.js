@@ -3,6 +3,7 @@ import { Component } from 'react'
 import { Route, Redirect } from 'react-router-dom'
 import { ApplicationPaths, QueryParameterNames } from './ApiAuthorizationConstants'
 import authService from './AuthorizeService'
+import Layout from '../shared/Layout'
 
 export default class AuthorizeRoute extends Component {
     constructor(props) {
@@ -36,7 +37,9 @@ export default class AuthorizeRoute extends Component {
             return <Route {...rest}
                 render={(props) => {
                     if (authenticated) {
-                        return <Component {...props} />
+                        return <Layout> 
+                            <Component {...props} />
+                        </Layout>
                     } else {
                         return <Redirect to={redirectUrl} />
                     }

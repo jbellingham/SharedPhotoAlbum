@@ -1,13 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using SharedPhotoAlbum.Application.Common.Interfaces;
-using SharedPhotoAlbum.Application.Posts.Queries.GetPosts;
 
 namespace SharedPhotoAlbum.Application.Feeds.Queries.GetFeed
 {
@@ -20,27 +19,26 @@ namespace SharedPhotoAlbum.Application.Feeds.Queries.GetFeed
     {
         private readonly IApplicationDbContext _db;
         private readonly IMapper _mapper;
+        private readonly ICurrentUserService _currentUserService;
 
-        public GetFeedCommandHandler(IApplicationDbContext db, IMapper mapper)
+        public GetFeedCommandHandler(IApplicationDbContext db, IMapper mapper, ICurrentUserService currentUserService)
         {
             _db = db ?? throw new ArgumentNullException(nameof(db));
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
+            _currentUserService = currentUserService ?? throw new ArgumentNullException(nameof(currentUserService));
         }
 
         public async Task<FeedVm> Handle(GetFeedQuery request, CancellationToken cancellationToken)
         {
-            var feed = _db.Feeds.OrderByDescending(_ => _.CreatedBy)
-                    .Where(_ => _.Id == request.FeedId);
-
-            var posts = await feed.SelectMany(_ => _.Posts)
-                .OrderByDescending(_ => _.Created)
-                .ProjectTo<PostDto>(_mapper.ConfigurationProvider)
-                .ToListAsync(cancellationToken);
+            var feeds = await _db.Feeds.OrderByDescending(_ => _.CreatedBy)
+                    .Where(_ => !request.FeedId.HasValue && _.OwnerId == _currentUserService.UserId ||
+                                _.Id == request.FeedId)
+                    .ToListAsync(cancellationToken);
+            
 
             return new FeedVm
             {
-                Name = await feed.Select(_ => _.Name).SingleOrDefaultAsync(cancellationToken),
-                Posts = posts
+                Feeds = feeds.Select(feed => _mapper.Map<FeedDto>(feed)).ToList()
             };
         }
     }

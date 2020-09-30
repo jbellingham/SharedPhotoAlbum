@@ -17,9 +17,12 @@ namespace SharedPhotoAlbum.WebUI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PostsVm>> Get()
+        public async Task<ActionResult<PostsVm>> Get(Guid? feedId)
         {
-            return await Mediator.Send(new GetPostsQuery());
+            return await Mediator.Send(new GetPostsQuery
+            {
+                FeedId = feedId
+            });
         }
     }
 }

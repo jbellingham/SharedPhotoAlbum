@@ -30,7 +30,7 @@ namespace SharedPhotoAlbum.Application.UnitTests.Common.Mappings
         }
         
         [Test]
-        [TestCase(typeof(Feed), typeof(FeedVm))]
+        [TestCase(typeof(Feed), typeof(FeedDto))]
         [TestCase(typeof(StoredMedia), typeof(StoredMediaDto))]
         [TestCase(typeof(Post), typeof(PostDto))]
         [TestCase(typeof(Comment), typeof(CommentDto))]

@@ -6,8 +6,7 @@ import { useHistory } from 'react-router-dom'
 
 function CollapseContainer({ setLoggedIn, children }: any) {
     const history = useHistory()
-    const { data, loading } = {}//useQuery()//GET_USER)
-    const { name } = data?.getUser || {}
+    const loading = false
 
     const toggleMenu = () => {
         collapseMenuEventEmitter.emit('toggle')
@@ -30,7 +29,7 @@ function CollapseContainer({ setLoggedIn, children }: any) {
                             </Button>
                         </Col>
 
-                        <Col md={{ span: 2, offset: 8 }}>{loading ? null : <span>Logged in as {name}</span>}</Col>
+                        <Col md={{ span: 2, offset: 8 }}>{loading ? null : <span>Logged in as {'poop'}</span>}</Col>
                         <Col md={{ span: 1 }}>
                             <Button variant="primary" onClick={logout}>
                                 Logout

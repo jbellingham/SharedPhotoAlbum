@@ -9,11 +9,10 @@ export interface ILoginProps {
 }
 
 function Layout(props: any) {
-    const [loggedIn, setLoggedIn] = React.useState()//!!Meteor.userId())
 
     return (
         <>
-            {/* {loggedIn && <CollapseContainer setLoggedIn={setLoggedIn} />} */}
+            <CollapseContainer />
             <NavMenu />
             <div className="App">
                 {/* {loggedIn ? ( */}

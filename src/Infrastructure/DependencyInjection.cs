@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using IdentityModel;
 using SharedPhotoAlbum.Application.Common.Interfaces;
@@ -44,6 +45,8 @@ namespace SharedPhotoAlbum.Infrastructure
             services.AddIdentityServer()
                 .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
             
+            // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            
             services.AddAuthentication()
                 .AddIdentityServerJwt()
                 .AddFacebook(facebookOptions =>
@@ -54,18 +57,6 @@ namespace SharedPhotoAlbum.Infrastructure
                     facebookOptions.ClaimActions.MapCustomJson(JwtClaimTypes.Picture,
                         json => json.GetProperty("picture").GetProperty("data")
                         .GetProperty("url").ToString());
-                    facebookOptions.Events = new OAuthEvents
-                    {
-                        OnCreatingTicket = context =>
-                        {
-                            var identity = (ClaimsIdentity) context.Principal.Identity;
-                            var profilePicture = context.User.GetProperty("picture").GetProperty("data")
-                                .GetProperty("url").ToString();
-                            
-                            identity.AddClaim(new Claim(JwtClaimTypes.Picture, profilePicture));
-                            return Task.CompletedTask;
-                        }
-                    };
                 });
 
             services.AddTransient<IDateTime, DateTimeService>();

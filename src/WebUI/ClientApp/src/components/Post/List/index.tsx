@@ -1,10 +1,10 @@
 import gql from 'graphql-tag'
 import { debounce } from 'lodash'
 import { observer } from 'mobx-react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useQuery } from 'react-apollo'
-import Post from '.'
-import { useStore } from '../../stores/StoreContext'
+import Post from '..'
+import { useStore } from '../../../stores/StoreContext'
 
 // export const GET_POSTS = gql`
 //     query postsByFeedId($feedId: String!, $skip: Int, $limit: Int) {
@@ -39,7 +39,10 @@ const PostList = observer((props: PostListProps) => {
     //     fetchPolicy: 'cache-and-network',
     // })
     const { postStore } = useStore()
-    const posts = postStore.posts
+    const { posts } = postStore
+    useEffect(() => {
+        postStore.getPosts(props.feedId)
+    }, [])
 
     // const { postsByFeedId: posts } = data || {}
 

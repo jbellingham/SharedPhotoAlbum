@@ -230,7 +230,7 @@ export class OidcConfigurationClient implements IOidcConfigurationClient {
 
 export interface IPostsClient {
     create(command: CreatePostCommand): Promise<string>;
-    get(): Promise<PostsVm>;
+    get(feedId: string | null | undefined): Promise<PostsVm>;
 }
 
 export class PostsClient implements IPostsClient {
@@ -287,8 +287,10 @@ export class PostsClient implements IPostsClient {
         return Promise.resolve<string>(<any>null);
     }
 
-    get(): Promise<PostsVm> {
-        let url_ = this.baseUrl + "/api/Posts";
+    get(feedId: string | null | undefined): Promise<PostsVm> {
+        let url_ = this.baseUrl + "/api/Posts?";
+        if (feedId !== undefined)
+            url_ += "feedId=" + encodeURIComponent("" + feedId) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <AxiosRequestConfig>{
@@ -464,8 +466,7 @@ export interface ICreateFeedCommand {
 }
 
 export class FeedVm implements IFeedVm {
-    name?: string | undefined;
-    posts?: PostDto[] | undefined;
+    feeds?: FeedDto[] | undefined;
 
     constructor(data?: IFeedVm) {
         if (data) {
@@ -478,11 +479,10 @@ export class FeedVm implements IFeedVm {
 
     init(_data?: any) {
         if (_data) {
-            this.name = _data["name"];
-            if (Array.isArray(_data["posts"])) {
-                this.posts = [] as any;
-                for (let item of _data["posts"])
-                    this.posts!.push(PostDto.fromJS(item));
+            if (Array.isArray(_data["feeds"])) {
+                this.feeds = [] as any;
+                for (let item of _data["feeds"])
+                    this.feeds!.push(FeedDto.fromJS(item));
             }
         }
     }
@@ -496,7 +496,211 @@ export class FeedVm implements IFeedVm {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.feeds)) {
+            data["feeds"] = [];
+            for (let item of this.feeds)
+                data["feeds"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface IFeedVm {
+    feeds?: FeedDto[] | undefined;
+}
+
+export class FeedDto implements IFeedDto {
+    id?: string;
+    name?: string | undefined;
+    isOwner?: boolean;
+    isSubscription?: boolean;
+    shortCode?: string | undefined;
+
+    constructor(data?: IFeedDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.isOwner = _data["isOwner"];
+            this.isSubscription = _data["isSubscription"];
+            this.shortCode = _data["shortCode"];
+        }
+    }
+
+    static fromJS(data: any): FeedDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new FeedDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
         data["name"] = this.name;
+        data["isOwner"] = this.isOwner;
+        data["isSubscription"] = this.isSubscription;
+        data["shortCode"] = this.shortCode;
+        return data; 
+    }
+}
+
+export interface IFeedDto {
+    id?: string;
+    name?: string | undefined;
+    isOwner?: boolean;
+    isSubscription?: boolean;
+    shortCode?: string | undefined;
+}
+
+export class CreatePostCommand implements ICreatePostCommand {
+    storedMedia?: StoredMediaDto[] | undefined;
+    text?: string | undefined;
+    feedId?: string;
+
+    constructor(data?: ICreatePostCommand) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["storedMedia"])) {
+                this.storedMedia = [] as any;
+                for (let item of _data["storedMedia"])
+                    this.storedMedia!.push(StoredMediaDto.fromJS(item));
+            }
+            this.text = _data["text"];
+            this.feedId = _data["feedId"];
+        }
+    }
+
+    static fromJS(data: any): CreatePostCommand {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreatePostCommand();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.storedMedia)) {
+            data["storedMedia"] = [];
+            for (let item of this.storedMedia)
+                data["storedMedia"].push(item.toJSON());
+        }
+        data["text"] = this.text;
+        data["feedId"] = this.feedId;
+        return data; 
+    }
+}
+
+export interface ICreatePostCommand {
+    storedMedia?: StoredMediaDto[] | undefined;
+    text?: string | undefined;
+    feedId?: string;
+}
+
+export class StoredMediaDto implements IStoredMediaDto {
+    id?: string;
+    name?: string | undefined;
+    mediaType?: MediaType;
+    content?: string | undefined;
+    postId?: string;
+
+    constructor(data?: IStoredMediaDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.name = _data["name"];
+            this.mediaType = _data["mediaType"];
+            this.content = _data["content"];
+            this.postId = _data["postId"];
+        }
+    }
+
+    static fromJS(data: any): StoredMediaDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StoredMediaDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["name"] = this.name;
+        data["mediaType"] = this.mediaType;
+        data["content"] = this.content;
+        data["postId"] = this.postId;
+        return data; 
+    }
+}
+
+export interface IStoredMediaDto {
+    id?: string;
+    name?: string | undefined;
+    mediaType?: MediaType;
+    content?: string | undefined;
+    postId?: string;
+}
+
+export enum MediaType {
+    Image = 0,
+    Video = 1,
+}
+
+export class PostsVm implements IPostsVm {
+    posts?: PostDto[] | undefined;
+
+    constructor(data?: IPostsVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["posts"])) {
+                this.posts = [] as any;
+                for (let item of _data["posts"])
+                    this.posts!.push(PostDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): PostsVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new PostsVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
         if (Array.isArray(this.posts)) {
             data["posts"] = [];
             for (let item of this.posts)
@@ -506,8 +710,7 @@ export class FeedVm implements IFeedVm {
     }
 }
 
-export interface IFeedVm {
-    name?: string | undefined;
+export interface IPostsVm {
     posts?: PostDto[] | undefined;
 }
 
@@ -625,159 +828,6 @@ export interface ICommentDto {
     text?: string | undefined;
     likes?: number;
     postId?: string;
-}
-
-export class StoredMediaDto implements IStoredMediaDto {
-    id?: string;
-    name?: string | undefined;
-    mediaType?: MediaType;
-    content?: string | undefined;
-    postId?: string;
-
-    constructor(data?: IStoredMediaDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.mediaType = _data["mediaType"];
-            this.content = _data["content"];
-            this.postId = _data["postId"];
-        }
-    }
-
-    static fromJS(data: any): StoredMediaDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new StoredMediaDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["mediaType"] = this.mediaType;
-        data["content"] = this.content;
-        data["postId"] = this.postId;
-        return data; 
-    }
-}
-
-export interface IStoredMediaDto {
-    id?: string;
-    name?: string | undefined;
-    mediaType?: MediaType;
-    content?: string | undefined;
-    postId?: string;
-}
-
-export enum MediaType {
-    Image = 0,
-    Video = 1,
-}
-
-export class CreatePostCommand implements ICreatePostCommand {
-    storedMedia?: StoredMediaDto[] | undefined;
-    text?: string | undefined;
-    feedId?: string;
-
-    constructor(data?: ICreatePostCommand) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["storedMedia"])) {
-                this.storedMedia = [] as any;
-                for (let item of _data["storedMedia"])
-                    this.storedMedia!.push(StoredMediaDto.fromJS(item));
-            }
-            this.text = _data["text"];
-            this.feedId = _data["feedId"];
-        }
-    }
-
-    static fromJS(data: any): CreatePostCommand {
-        data = typeof data === 'object' ? data : {};
-        let result = new CreatePostCommand();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.storedMedia)) {
-            data["storedMedia"] = [];
-            for (let item of this.storedMedia)
-                data["storedMedia"].push(item.toJSON());
-        }
-        data["text"] = this.text;
-        data["feedId"] = this.feedId;
-        return data; 
-    }
-}
-
-export interface ICreatePostCommand {
-    storedMedia?: StoredMediaDto[] | undefined;
-    text?: string | undefined;
-    feedId?: string;
-}
-
-export class PostsVm implements IPostsVm {
-    posts?: PostDto[] | undefined;
-
-    constructor(data?: IPostsVm) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            if (Array.isArray(_data["posts"])) {
-                this.posts = [] as any;
-                for (let item of _data["posts"])
-                    this.posts!.push(PostDto.fromJS(item));
-            }
-        }
-    }
-
-    static fromJS(data: any): PostsVm {
-        data = typeof data === 'object' ? data : {};
-        let result = new PostsVm();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.posts)) {
-            data["posts"] = [];
-            for (let item of this.posts)
-                data["posts"].push(item.toJSON());
-        }
-        return data; 
-    }
-}
-
-export interface IPostsVm {
-    posts?: PostDto[] | undefined;
 }
 
 export interface FileResponse {
