@@ -1,37 +1,38 @@
 import { action, observable } from 'mobx'
-import { IPostsClient, CreatePostCommand, IPostDto, CreateCommentCommand } from '../Client'
+import { IPostsClient, CreatePostCommand, CreateCommentCommand, IPostDto } from '../Client'
 
 class PostStore {
     @observable
     posts: IPostDto[] = []
 
-    constructor(private postClient: IPostsClient) { }
+    constructor(private postClient: IPostsClient) {}
 
     @action
     async createPost(post: CreatePostCommand): Promise<void> {
-        await this.postClient.create(CreatePostCommand.fromJS({ ...post }))
+        await this.postClient.create(post)
         this.posts?.unshift(post)
     }
 
     @action
     async getPosts(feedId: string): Promise<void> {
         const { posts } = await this.postClient.get(feedId)
-        this.posts.push(...posts)
+        this.posts = posts
     }
 
     @action
-    updateComments(comment: CreateCommentCommand, commentId: string) {
-        //this.getPostById(comment.postId)
-        this.posts.find(_ => _.id === comment.postId)?.comments?.push({
-            ...comment,
-            id: commentId,
-            init: function () {
-                return
-            },
-            toJSON: function () {
-                return
-            },
-        })
+    updateComments(comment: CreateCommentCommand, commentId: string): void {
+        this.posts
+            .find((_) => _.id === comment.postId)
+            ?.comments?.push({
+                ...comment,
+                id: commentId,
+                init: function () {
+                    return
+                },
+                toJSON: function () {
+                    return
+                },
+            })
         // if (post && !post?.comments) {
         //     post.comments = []
         // }
@@ -48,7 +49,7 @@ class PostStore {
     }
 
     getPostById(postId: string | undefined): IPostDto | undefined {
-        return this.posts.find(_ => _.id === postId)
+        return this.posts.find((_) => _.id === postId)
     }
 }
 

@@ -1,29 +1,27 @@
-import { CreateFeedCommand, FeedVm, IFeedDto, IFeedsClient, IPostDto } from '../Client'
+import { CreateFeedCommand, FeedDto, IFeedsClient } from '../Client'
 import { action, computed, observable } from 'mobx'
 import PostStore from './PostStore'
 
 class FeedStore {
-    constructor(private postStore: PostStore, private feedsClient: IFeedsClient) {
-        this.getFeeds()
-    }
+    constructor(private postStore: PostStore, private feedsClient: IFeedsClient) {}
 
     @observable
-    feedName: string | undefined = ""
+    feedName: string | undefined = ''
 
     @observable
-    isLoading: boolean = false
+    isLoading = false
 
     @observable
-    feeds: IFeedDto[] = []
+    feeds: FeedDto[] = []
 
     @computed
-    get myFeeds(): IFeedDto[] {
-        return this.feeds.filter(_ => _.isOwner)
+    get myFeeds(): FeedDto[] {
+        return this.feeds.filter((_) => _.isOwner)
     }
 
     @computed
-    get subscriptions(): IFeedDto[] {
-        return this.feeds.filter(_ => _.isSubscription)
+    get subscriptions(): FeedDto[] {
+        return this.feeds.filter((_) => _.isSubscription)
     }
 
     @action
@@ -33,10 +31,6 @@ class FeedStore {
             this.feedsClient.get(feedId).then((result) => {
                 this.feedName = result.name
                 this.isLoading = false
-                if (result.posts) {
-                    this.postStore.posts?.push(...result.posts)
-                    this.isLoading = false
-                }
             })
         }
     }
@@ -47,7 +41,7 @@ class FeedStore {
             this.isLoading = true
             this.feedsClient.get(null).then(({ feeds }) => {
                 if (feeds?.length > 0) {
-                    this.feeds.push(...feeds)
+                    this.feeds = feeds
                     this.isLoading = false
                 }
             })
@@ -55,10 +49,8 @@ class FeedStore {
     }
 
     async createFeed(feed: CreateFeedCommand): Promise<string> {
-        return await this.feedsClient.create(CreateFeedCommand.fromJS({ ...feed }))
+        return await this.feedsClient.create(feed)
     }
-
-
 }
 
 export default FeedStore

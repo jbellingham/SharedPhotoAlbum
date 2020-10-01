@@ -1,14 +1,12 @@
-import React, { useCallback, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import NewPost from '../Post/NewPost'
 import { useParams } from 'react-router-dom'
 import { Col, Row, Container } from 'react-bootstrap'
 import SubscriptionRequests from './SubscriptionRequests'
-import gql from 'graphql-tag'
-import { useQuery } from 'react-apollo'
 import NewFeed from './NewFeed'
 import PostList from '../Post/List'
 import { useStore } from '../../stores/StoreContext'
-import { observer, useObserver } from 'mobx-react'
+import { observer } from 'mobx-react'
 
 interface FeedParams {
     feedId: string
@@ -18,12 +16,12 @@ const Feed = observer(() => {
     const [showNewFeedModal, setShowNewFeedModal] = React.useState(false)
     const { feedStore } = useStore()
     const { feedName, isLoading } = feedStore
-    const toggleNewFeedModal = (e: React.MouseEvent) => {
+    const toggleNewFeedModal = (e: React.MouseEvent): void => {
         e.preventDefault()
         setShowNewFeedModal(!showNewFeedModal)
     }
 
-    const handleNewFeedModalClose = () => {
+    const handleNewFeedModalClose = (): void => {
         setShowNewFeedModal(!showNewFeedModal)
     }
 
@@ -34,19 +32,9 @@ const Feed = observer(() => {
         }
     }, [])
 
-    // const { data, loading, refetch } = useQuery(GET_FEED, {
-    //     variables: {
-    //         id: feedId,
-    //     },
-    //     fetchPolicy: 'cache-and-network',
-    // })
+    const canView: boolean = !isLoading && feedId // || feed?.isOwner || feed?.isActiveSubscription
 
-    // const { feedById: feed } = data || {}
-
-    const canView: boolean = (!isLoading && feedId)// || feed?.isOwner || feed?.isActiveSubscription
-
-    return (
-        canView ? (
+    return canView ? (
         <div className="feed-container">
             {(!isLoading && (
                 <Container fluid>
@@ -75,7 +63,7 @@ const Feed = observer(() => {
             .
             <NewFeed show={showNewFeedModal} handleClose={handleNewFeedModalClose} />
         </div>
-    ))
+    )
 })
 
 export default Feed

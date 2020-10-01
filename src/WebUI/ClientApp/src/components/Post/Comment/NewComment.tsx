@@ -17,7 +17,7 @@ function NewComment(props: INewCommentProps): JSX.Element {
             event.preventDefault()
             event.stopPropagation()
             if (comment && postId) {
-                await commentStore.createComment(new CreateCommentCommand({text: comment, postId: postId}))
+                await commentStore.createComment(new CreateCommentCommand({ text: comment, postId: postId }))
             }
         }
     }
@@ -26,14 +26,16 @@ function NewComment(props: INewCommentProps): JSX.Element {
         setComment(event.currentTarget.value)
     }
 
-    return <Form>
-        <Form.Control
-            placeholder="Write a comment..."
-            value={comment}
-            onKeyDown={onKeyDown}
-            onChange={handleChange}
-        />
-    </Form>
+    return (
+        <Form>
+            <Form.Control
+                placeholder="Write a comment..."
+                value={comment}
+                onKeyDown={onKeyDown}
+                onChange={handleChange}
+            />
+        </Form>
+    )
 }
 
 export default NewComment

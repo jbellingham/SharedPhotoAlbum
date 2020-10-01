@@ -1,8 +1,6 @@
 import React from 'react'
 import { Form, Button, Row, Col, Card, Spinner } from 'react-bootstrap'
 import ProfilePicture from '../../shared/ProfilePicture'
-import gql from 'graphql-tag'
-import { useMutation } from 'react-apollo'
 import UploadPreview from './UploadPreview'
 import { useStore } from '../../../stores/StoreContext'
 import { CreatePostCommand } from '../../../Client'
@@ -23,16 +21,18 @@ function NewPost(props: INewPostProps): JSX.Element {
         setPostTest(event.currentTarget.value)
     }
 
-    const createNewPost = async (e) => {
+    const createNewPost = async (e: React.KeyboardEvent<HTMLInputElement>) => {
         e.preventDefault()
         e.stopPropagation()
         if (postText || files.length > 0) {
             setNewPostInProgress(true)
-            await postStore.createPost(new CreatePostCommand({
-                text: postText,
-                feedId,
-                // files
-            }))
+            await postStore.createPost(
+                new CreatePostCommand({
+                    text: postText,
+                    feedId,
+                    // files
+                }),
+            )
             setFiles([])
             setPostTest('')
             setNewPostInProgress(false)

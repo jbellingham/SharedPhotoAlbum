@@ -10,15 +10,17 @@ interface ICommentsListProps {
 const CommentsList = observer((props: ICommentsListProps) => {
     const { commentStore } = useStore()
     const comments = commentStore.getComments(props.postId)
-    return <>
-        {comments?.length > 0 ?
-            <div className="comments-container">
-                {comments.map((comment) => (
-                    <Comment {...comment} key={comment.id} />
-                ))}
-            </div> : null
-        }
-    </>
+    return (
+        <>
+            {comments?.length > 0 ? (
+                <div className="comments-container">
+                    {comments.map((comment) => (
+                        <Comment {...comment} key={comment.id} />
+                    ))}
+                </div>
+            ) : null}
+        </>
+    )
 })
 
 export default CommentsList

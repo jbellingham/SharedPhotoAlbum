@@ -4,8 +4,6 @@ import { useHistory } from 'react-router-dom'
 import { CreateFeedCommand } from '../../../Client'
 import { useStore } from '../../../stores/StoreContext'
 
-
-
 interface IModalProps {
     show: boolean
     handleClose: () => void
@@ -15,16 +13,7 @@ function NewFeed(props: IModalProps): JSX.Element {
     const history = useHistory()
     const [feedName, setFeedName] = React.useState('')
     const [feedDescription, setFeedDescription] = React.useState('')
-    const {feedStore} = useStore()
-    // const [createNewFeed] = useMutation(CREATE_FEED, {
-    //     refetchQueries: ['feeds'],
-    //     onCompleted({ createFeed }) {
-    //         setTimeout(() => {
-    //             props.handleClose()
-    //             history.push(`/${createFeed._id}`)
-    //         }, 500)
-    //     },
-    // })
+    const { feedStore } = useStore()
 
     const feedNameInputId = 'feedNameInput'
     const feedDescriptionInputId = 'feedDescriptionInput'
@@ -43,7 +32,9 @@ function NewFeed(props: IModalProps): JSX.Element {
 
     const handleSubmit = async (): Promise<void> => {
         if (feedName) {
-            const feedId = await feedStore.createFeed(new CreateFeedCommand({name: feedName, description: feedDescription}))
+            const feedId = await feedStore.createFeed(
+                new CreateFeedCommand({ name: feedName, description: feedDescription }),
+            )
             setTimeout(() => {
                 props.handleClose()
                 history.push(`/${feedId}`)

@@ -1,8 +1,6 @@
-import gql from 'graphql-tag'
 import { debounce } from 'lodash'
 import { observer } from 'mobx-react'
 import React, { useEffect } from 'react'
-import { useQuery } from 'react-apollo'
 import Post from '..'
 import { useStore } from '../../../stores/StoreContext'
 
@@ -30,14 +28,6 @@ interface PostListProps {
 
 const PostList = observer((props: PostListProps) => {
     const offset = 200
-    // const { data, loading, fetchMore } = useQuery(GET_POSTS, {
-    //     variables: {
-    //         feedId: props.feedId,
-    //         skip: 0,
-    //         limit: 5,
-    //     },
-    //     fetchPolicy: 'cache-and-network',
-    // })
     const { postStore } = useStore()
     const { posts } = postStore
     useEffect(() => {
@@ -65,7 +55,15 @@ const PostList = observer((props: PostListProps) => {
     //         })
     //     }
     // }, 100)
-    return posts?.length > 0 ? <>{posts?.map((post) => <Post post={post} key={post.id} />)}</> : <span>Loading ...</span>
+    return posts?.length > 0 ? (
+        <>
+            {posts?.map((post) => (
+                <Post post={post} key={post.id} />
+            ))}
+        </>
+    ) : (
+        <span>Loading ...</span>
+    )
 })
 
 export default PostList
