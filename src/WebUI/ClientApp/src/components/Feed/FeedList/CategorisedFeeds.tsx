@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { observer } from "mobx-react";
-import { IFeedDto } from "../../../Client";
-import { Button } from 'react-bootstrap';
-import { useHistory, useParams } from 'react-router-dom';
+import { observer } from 'mobx-react'
+import { IFeedDto } from '../../../Client'
+import { Button } from 'react-bootstrap'
+import { useHistory, useParams } from 'react-router-dom'
 
 export interface ICategorisedFeedsProps {
     feeds: IFeedDto[]
@@ -34,17 +34,15 @@ const CategorisedFeeds = observer((props: ICategorisedFeedsProps) => {
             </p>
         )
     }
-    
+
     const { feeds, heading, emptyListMessage } = props
 
-    return <>
-        <h5>{heading}</h5>
-        {feeds.length > 0 ? (
-            feeds.map(feed => renderButton(feed))
-        ) : (
-            <span>{emptyListMessage}</span>
-        )}
-    </>
+    return (
+        <>
+            <h5>{heading}</h5>
+            {feeds.length > 0 ? feeds.map((feed) => renderButton(feed)) : <span>{emptyListMessage}</span>}
+        </>
+    )
 })
 
 export default CategorisedFeeds

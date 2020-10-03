@@ -18,6 +18,7 @@ function NewComment(props: INewCommentProps): JSX.Element {
             event.stopPropagation()
             if (comment && postId) {
                 await commentStore.createComment(new CreateCommentCommand({ text: comment, postId: postId }))
+                setComment('')
             }
         }
     }

@@ -2,7 +2,7 @@
 using SharedPhotoAlbum.Application.Common.Mappings;
 using SharedPhotoAlbum.Domain.Entities;
 
-namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
+namespace SharedPhotoAlbum.Application.Comments.Queries.GetComments
 {
     public class CommentDto : IMapFrom<Comment>
     {

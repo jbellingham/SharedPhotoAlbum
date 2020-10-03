@@ -6,6 +6,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using SharedPhotoAlbum.Application.Comments.Queries.GetComments;
 using SharedPhotoAlbum.Application.Common.Interfaces;
 
 namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
@@ -33,8 +34,29 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
                 Posts = await _dbContext.Posts
                     .Where(_ => _.FeedId == request.FeedId)
                     .OrderByDescending(_ => _.Created)
-                    .ProjectTo<PostDto>(_mapper.ConfigurationProvider)
-                    .ToListAsync(cancellationToken) 
+                    .Select(_ => new PostDto
+                    {
+                        Id = _.Id,
+                        LinkUrl = _.LinkUrl,
+                        Text = _.Text,
+                        Comments = _.Comments.OrderBy(c => c.Created)
+                            .Select(c => new CommentDto
+                            {
+                                Id = c.Id,
+                                Likes = c.Likes,
+                                Text = c.Text,
+                                PostId = c.PostId
+                            })
+                            .ToList(),
+                        StoredMedia = _.StoredMedia.Select(s => new StoredMediaDto
+                        {
+                            Id = s.Id,
+                            Content = s.Content,
+                            MediaType = s.MediaType,
+                            Name = s.Name,
+                            PostId = s.PostId
+                        }).ToList()
+                    }).ToListAsync(cancellationToken: cancellationToken)
             };
         }
     }

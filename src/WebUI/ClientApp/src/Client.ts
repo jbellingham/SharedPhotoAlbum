@@ -11,6 +11,7 @@ import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
 export interface ICommentsClient {
     create(command: CreateCommentCommand): Promise<string>;
+    get(postId: string | undefined): Promise<CommentsVm>;
 }
 
 export class CommentsClient implements ICommentsClient {
@@ -65,6 +66,50 @@ export class CommentsClient implements ICommentsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<string>(<any>null);
+    }
+
+    get(postId: string | undefined): Promise<CommentsVm> {
+        let url_ = this.baseUrl + "/api/Comments?";
+        if (postId === null)
+            throw new Error("The parameter 'postId' cannot be null.");
+        else if (postId !== undefined)
+            url_ += "postId=" + encodeURIComponent("" + postId) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processGet(_response);
+        });
+    }
+
+    protected processGet(response: AxiosResponse): Promise<CommentsVm> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = CommentsVm.fromJS(resultData200);
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<CommentsVm>(<any>null);
     }
 }
 
@@ -425,6 +470,98 @@ export interface ICreateCommentCommand {
     postId?: string;
 }
 
+export class CommentsVm implements ICommentsVm {
+    comments?: CommentDto[] | undefined;
+
+    constructor(data?: ICommentsVm) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["comments"])) {
+                this.comments = [] as any;
+                for (let item of _data["comments"])
+                    this.comments!.push(CommentDto.fromJS(item));
+            }
+        }
+    }
+
+    static fromJS(data: any): CommentsVm {
+        data = typeof data === 'object' ? data : {};
+        let result = new CommentsVm();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.comments)) {
+            data["comments"] = [];
+            for (let item of this.comments)
+                data["comments"].push(item.toJSON());
+        }
+        return data; 
+    }
+}
+
+export interface ICommentsVm {
+    comments?: CommentDto[] | undefined;
+}
+
+export class CommentDto implements ICommentDto {
+    id?: string;
+    text?: string | undefined;
+    likes?: number;
+    postId?: string;
+
+    constructor(data?: ICommentDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.text = _data["text"];
+            this.likes = _data["likes"];
+            this.postId = _data["postId"];
+        }
+    }
+
+    static fromJS(data: any): CommentDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new CommentDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["text"] = this.text;
+        data["likes"] = this.likes;
+        data["postId"] = this.postId;
+        return data; 
+    }
+}
+
+export interface ICommentDto {
+    id?: string;
+    text?: string | undefined;
+    likes?: number;
+    postId?: string;
+}
+
 export class CreateFeedCommand implements ICreateFeedCommand {
     name?: string | undefined;
     description?: string | undefined;
@@ -780,54 +917,6 @@ export interface IPostDto {
     text?: string | undefined;
     comments?: CommentDto[] | undefined;
     storedMedia?: StoredMediaDto[] | undefined;
-}
-
-export class CommentDto implements ICommentDto {
-    id?: string;
-    text?: string | undefined;
-    likes?: number;
-    postId?: string;
-
-    constructor(data?: ICommentDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.text = _data["text"];
-            this.likes = _data["likes"];
-            this.postId = _data["postId"];
-        }
-    }
-
-    static fromJS(data: any): CommentDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new CommentDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["text"] = this.text;
-        data["likes"] = this.likes;
-        data["postId"] = this.postId;
-        return data; 
-    }
-}
-
-export interface ICommentDto {
-    id?: string;
-    text?: string | undefined;
-    likes?: number;
-    postId?: string;
 }
 
 export interface FileResponse {

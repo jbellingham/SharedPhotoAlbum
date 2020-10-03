@@ -9,7 +9,7 @@ import Axios from 'axios'
 import { AuthorizeService } from '../components/api-authorization/AuthorizeService'
 
 const authService = new AuthorizeService()
-const baseUrl = 'https://localhost:5001'
+const baseUrl = 'https://localhost:5002'
 const authStore = new AuthStore(authService)
 
 const axios = Axios.create()
@@ -23,10 +23,16 @@ axios.interceptors.request.use(async function (config) {
     return config
 })
 
-const postStore = new PostStore(new PostsClient(baseUrl, axios))
-const commentStore = new CommentStore(new CommentsClient(baseUrl, axios), postStore)
-const feedStore = new FeedStore(postStore, new FeedsClient(baseUrl, axios))
-const userStore = new UserStore(new UserClient(baseUrl, axios))
+const clients = {
+    commentsClient: new CommentsClient(baseUrl, axios),
+    feedsClient: new FeedsClient(baseUrl, axios),
+    userClient: new UserClient(baseUrl, axios),
+}
+
+const postStore = new PostStore(new PostsClient(baseUrl, axios), clients.commentsClient)
+const commentStore = new CommentStore(clients.commentsClient, postStore)
+const feedStore = new FeedStore(postStore, clients.feedsClient)
+const userStore = new UserStore(clients.userClient)
 
 export interface IStore {
     postStore: PostStore
@@ -41,7 +47,7 @@ export const store: IStore = {
     commentStore,
     feedStore,
     authStore,
-    userStore
+    userStore,
 }
 
 export const StoreContext = createContext(store)

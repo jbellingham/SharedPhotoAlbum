@@ -1,26 +1,24 @@
 import React from 'react'
 import { Card, Form } from 'react-bootstrap'
-import Comment from './Comment'
 import MediaContainer from './Media'
 import Zoom from './Zoom'
-import { IPostDto } from '../../Client'
 import NewComment from './Comment/NewComment'
 import CommentsList from './Comment/List'
 import { observer } from 'mobx-react'
+import { Post as PostVm } from '../models/Post'
 
 interface IPostProps {
-    post: IPostDto
+    post: PostVm
 }
 
 const Post = observer((props: IPostProps) => {
     const { post } = props
+    const { comments } = post
     const [showZoom, setShowZoom] = React.useState(false)
 
     const onMediaClick = () => {
         setShowZoom(false) //!showZoom)
     }
-
-    const { comments } = post
 
     return (
         <Card className="post-container">
@@ -32,7 +30,7 @@ const Post = observer((props: IPostProps) => {
                 </Card.Body>
             )} */}
             <Card.Body>
-                <CommentsList postId={post.id} />
+                <CommentsList comments={comments} />
                 {/* {loading ? (
                     'Loading'
                 ) : (

@@ -3,7 +3,9 @@ using SharedPhotoAlbum.Application.Common.Mappings;
 using SharedPhotoAlbum.Domain.Entities;
 using NUnit.Framework;
 using System;
+using SharedPhotoAlbum.Application.Comments.Queries.GetComments;
 using SharedPhotoAlbum.Application.Feeds.Queries.GetFeed;
+using SharedPhotoAlbum.Application.Posts.Queries;
 using SharedPhotoAlbum.Application.Posts.Queries.GetPosts;
 
 namespace SharedPhotoAlbum.Application.UnitTests.Common.Mappings

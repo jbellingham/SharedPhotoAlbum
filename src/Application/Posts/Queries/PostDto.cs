@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using SharedPhotoAlbum.Application.Comments.Queries.GetComments;
 using SharedPhotoAlbum.Application.Common.Mappings;
+using SharedPhotoAlbum.Application.Posts.Queries.GetPosts;
 using SharedPhotoAlbum.Domain.Entities;
 
-namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
+namespace SharedPhotoAlbum.Application.Posts.Queries
 {
     public class PostDto : IMapFrom<Post>
     {

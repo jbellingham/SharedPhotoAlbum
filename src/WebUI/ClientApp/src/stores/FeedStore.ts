@@ -3,7 +3,9 @@ import { action, computed, observable } from 'mobx'
 import PostStore from './PostStore'
 
 class FeedStore {
-    constructor(private postStore: PostStore, private feedsClient: IFeedsClient) {}
+    constructor(private postStore: PostStore, private feedsClient: IFeedsClient) {
+        this.getFeeds()
+    }
 
     @observable
     feedName: string | undefined = ''

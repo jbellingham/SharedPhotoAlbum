@@ -37,6 +37,35 @@
             }
           }
         }
+      },
+      "get": {
+        "tags": [
+          "Comments"
+        ],
+        "operationId": "Comments_Get",
+        "parameters": [
+          {
+            "name": "postId",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "guid"
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentsVm"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/Feeds": {
@@ -260,6 +289,41 @@
           }
         }
       },
+      "CommentsVm": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "comments": {
+            "type": "array",
+            "nullable": true,
+            "items": {
+              "$ref": "#/components/schemas/CommentDto"
+            }
+          }
+        }
+      },
+      "CommentDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "text": {
+            "type": "string",
+            "nullable": true
+          },
+          "likes": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "postId": {
+            "type": "string",
+            "format": "guid"
+          }
+        }
+      },
       "CreateFeedCommand": {
         "type": "object",
         "additionalProperties": false,
@@ -411,28 +475,6 @@
             "items": {
               "$ref": "#/components/schemas/StoredMediaDto"
             }
-          }
-        }
-      },
-      "CommentDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "text": {
-            "type": "string",
-            "nullable": true
-          },
-          "likes": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "postId": {
-            "type": "string",
-            "format": "guid"
           }
         }
       }

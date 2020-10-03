@@ -1,11 +1,13 @@
-import { action, observable } from 'mobx'
-import { IPostsClient, CreatePostCommand, CreateCommentCommand, IPostDto } from '../Client'
+import { action, observable, set } from 'mobx'
+import { IPostsClient, CreatePostCommand, ICommentsClient } from '../Client'
+import { PostMapper } from '../mappers/PostMapper'
+import { Post } from '../components/models/Post'
 
 class PostStore {
     @observable
-    posts: IPostDto[] = []
+    posts: Post[] = []
 
-    constructor(private postClient: IPostsClient) {}
+    constructor(private postClient: IPostsClient, private commentsClient: ICommentsClient) {}
 
     @action
     async createPost(post: CreatePostCommand): Promise<void> {
@@ -16,39 +18,17 @@ class PostStore {
     @action
     async getPosts(feedId: string): Promise<void> {
         const { posts } = await this.postClient.get(feedId)
-        this.posts = posts
+        this.posts = posts?.map((dto) => PostMapper.fromDto(dto))
     }
 
     @action
-    updateComments(comment: CreateCommentCommand, commentId: string): void {
-        this.posts
-            .find((_) => _.id === comment.postId)
-            ?.comments?.push({
-                ...comment,
-                id: commentId,
-                init: function () {
-                    return
-                },
-                toJSON: function () {
-                    return
-                },
-            })
-        // if (post && !post?.comments) {
-        //     post.comments = []
-        // }
-        // post?.comments?.push({
-        //     ...comment,
-        //     id: commentId,
-        //     init: function () {
-        //         return
-        //     },
-        //     toJSON: function () {
-        //         return
-        //     },
-        // })
+    async updatePost(postId: string | undefined): Promise<void> {
+        const { comments } = await this.commentsClient.get(postId)
+        const post = this.posts.find((_) => _.id === postId)
+        post?.updateComments(comments)
     }
 
-    getPostById(postId: string | undefined): IPostDto | undefined {
+    getPostById(postId: string | undefined): Post | undefined {
         return this.posts.find((_) => _.id === postId)
     }
 }

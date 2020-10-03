@@ -1,8 +1,8 @@
 import React, { ReactElement } from 'react'
-import { ICommentDto } from '../../../Client'
+import { Comment as CommentModel } from '../../models/Comment'
 import ProfilePicture from '../../shared/ProfilePicture'
 
-function Comment(props: ICommentDto): ReactElement {
+function Comment(props: CommentModel): ReactElement {
     const { text } = props
     return (
         <div className="comment">

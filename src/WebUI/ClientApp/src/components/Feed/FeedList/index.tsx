@@ -5,7 +5,6 @@ import { useStore } from '../../../stores/StoreContext'
 import { observer } from 'mobx-react'
 import CategorisedFeeds, { ICategorisedFeedsProps } from './CategorisedFeeds'
 
-
 // export interface IFeedListProps {
 //     onFeedSelected: (feedId: string) => void
 //     selectedFeed: string
@@ -29,18 +28,19 @@ const FeedList = observer(() => {
 
     const myFeedsProps: ICategorisedFeedsProps = {
         feeds: myFeeds,
-        heading: "My Feeds",
-        emptyListMessage: "No feeds to display."
+        heading: 'My Feeds',
+        emptyListMessage: 'No feeds to display.',
     }
 
     const subscriptionsProps: ICategorisedFeedsProps = {
         feeds: subscriptions,
-        heading: "My Subscriptions",
-        emptyListMessage: "No subscriptions to display."
+        heading: 'My Subscriptions',
+        emptyListMessage: 'No subscriptions to display.',
     }
 
-    return (
-        feedStore.isLoading ? <span>Loading</span> :
+    return feedStore.isLoading ? (
+        <span>Loading</span>
+    ) : (
         <div className="feed-list-container">
             <div className="mb-2">
                 <Button variant="primary" onClick={() => setShowNewFeedModal(!showNewFeedModal)}>
