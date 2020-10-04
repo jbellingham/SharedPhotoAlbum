@@ -6,7 +6,6 @@ using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Configuration;
 using SharedPhotoAlbum.Domain.Enums;
-using SharedPhotoAlbum.Domain.ValueObjects;
 
 namespace SharedPhotoAlbum.Application.Services.Cdn
 {
@@ -14,11 +13,13 @@ namespace SharedPhotoAlbum.Application.Services.Cdn
     {
         private readonly ICloudinaryClient _client;
         private readonly string _environment;
+        private readonly string _uploadPreset;
         
         public CdnService(ICloudinaryClient client, IConfiguration configuration)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _environment = configuration["ASPNETCORE_ENVIRONMENT"]?.ToLower(CultureInfo.InvariantCulture) ?? "development";
+            _uploadPreset = configuration["Cloudinary:UploadPreset"];
         }
         
         public async Task<FileUploadResult> UploadFiles(UploadRequest request)
@@ -28,17 +29,6 @@ namespace SharedPhotoAlbum.Application.Services.Cdn
             FileUploadResult uploadResult = await UploadAllFiles(request);
             return uploadResult;
         }
-
-        // private async Task<FileUploadResult> UploadAllFiles(UploadRequest request)
-        // {
-        //     var uploadResult = new FileUploadResult();
-        //     foreach (File file in request.Files)
-        //     {
-        //         await UploadFile(file, uploadResult);
-        //     }
-        //
-        //     return uploadResult;
-        // }
 
         private async Task<FileUploadResult> UploadAllFiles(UploadRequest request)
         {
@@ -53,7 +43,7 @@ namespace SharedPhotoAlbum.Application.Services.Cdn
                         File = new FileDescription(file.DataUrl),
                         Folder = folder,
                         Transformation = new Transformation().Height(2000).Quality(60),
-                        UploadPreset = "fcqdexto"
+                        UploadPreset = _uploadPreset
                     });
                     
                     file.PublicId = result.PublicId;
@@ -70,16 +60,15 @@ namespace SharedPhotoAlbum.Application.Services.Cdn
                         File = new FileDescription(file.DataUrl),
                         Folder = folder,
                         Transformation = new Transformation().Height(2000).Quality(60),
-                        UploadPreset = "fcqdexto"
+                        UploadPreset = _uploadPreset
                     });
                 
                     file.PublicId = result.PublicId;
                     uploadResult.UploadResults.Add(new FileUploadResult.UploadResult
                     {
-                        Success = result.StatusCode == HttpStatusCode.Accepted,
+                        Success = result.StatusCode == HttpStatusCode.OK,
                         File = file
                     });
-                    // uploadResult.VideoUploadResults.Add(result);
                 }
             }
 

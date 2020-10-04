@@ -8,7 +8,7 @@ export class Post {
     id?: string
     linkUrl?: string | undefined
     text?: string | undefined
-    media?: Media[] | undefined
+    media: Media[] = []
 
     @observable
     comments: Comment[] = []

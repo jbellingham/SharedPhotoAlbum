@@ -7,8 +7,6 @@ using SharedPhotoAlbum.Infrastructure.Identity;
 using SharedPhotoAlbum.Infrastructure.Persistence;
 using SharedPhotoAlbum.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

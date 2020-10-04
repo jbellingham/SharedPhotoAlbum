@@ -1,0 +1,19 @@
+version: '3.4'
+
+services:
+  webui:
+    container_name: shared-photo-album
+    image: webui:latest
+    build:
+      context: .
+    env_file: .env
+    expose:
+      - "5000"
+  reverseproxy:
+    build:
+      context: ./reverse-proxy
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+    links :
+      - webui

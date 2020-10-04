@@ -26,14 +26,14 @@ const Feed = observer(() => {
     }
 
     const { feedId } = useParams<FeedParams>()
+    feedStore.setCurrentFeed(feedId)
     useEffect(() => {
         if (feedId) {
             feedStore.getFeed(feedId)
         }
     }, [])
 
-    const canView: boolean = !isLoading && feedId // || feed?.isOwner || feed?.isActiveSubscription
-
+    const canView: boolean = !isLoading && feedStore.canViewCurrentFeed
     return canView ? (
         <div className="feed-container">
             {(!isLoading && (

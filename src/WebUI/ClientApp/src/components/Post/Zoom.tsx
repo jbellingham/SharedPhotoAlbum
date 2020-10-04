@@ -1,15 +1,15 @@
 import React from 'react'
 import { Modal, Container, Carousel } from 'react-bootstrap'
 import { Image, Video } from 'cloudinary-react'
-import { MediaModel } from '../../../api/media/media'
+import { Media } from '../models/Media'
 
 interface IZoomProps {
     show: boolean
-    media: MediaModel[]
+    media: Media[]
 }
 
 function Zoom(props: IZoomProps) {
-    const renderMedia = (media: MediaModel) => {
+    const renderMedia = (media: Media) => {
         switch (media.mimeType) {
             case 'video/mp4':
             case 'video/mpeg':
@@ -41,7 +41,7 @@ function Zoom(props: IZoomProps) {
                 <Container fluid>
                     <Carousel interval={null}>
                         {props.media?.map((_) => (
-                            <Carousel.Item key={_._id}>
+                            <Carousel.Item key={_.id}>
                                 <div className="image-container d-flex justify-content-center">{renderMedia(_)}</div>
                             </Carousel.Item>
                         ))}

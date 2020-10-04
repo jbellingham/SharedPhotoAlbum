@@ -3,7 +3,11 @@ import { Collapse, Container, Navbar, NavbarBrand, NavbarToggler, NavItem, NavLi
 import { Link } from 'react-router-dom'
 import { LoginMenu } from '../../api-authorization/LoginMenu'
 
-export class NavMenu extends Component {
+interface INavMenuState {
+    collapsed: boolean
+}
+
+export class NavMenu extends Component<{}, INavMenuState> {
     static displayName = NavMenu.name
 
     constructor(props) {

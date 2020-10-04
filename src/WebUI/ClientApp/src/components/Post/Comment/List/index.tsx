@@ -4,7 +4,7 @@ import { Comment as CommentVm } from '../../../models/Comment'
 import { observer } from 'mobx-react'
 
 interface ICommentsListProps {
-    comments: CommentVm[] | undefined
+    comments: CommentVm[]
     // postId: string | undefined
 }
 

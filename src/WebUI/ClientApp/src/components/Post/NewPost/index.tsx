@@ -11,7 +11,7 @@ export interface INewPostProps {
 
 function NewPost(props: INewPostProps): JSX.Element {
     const [postText, setPostTest] = React.useState('')
-    const [files, setFiles] = React.useState([])
+    const [files, setFiles] = React.useState(new Array<string>())
     const [newPostInProgress, setNewPostInProgress] = React.useState(false)
     const { feedId } = props
 
@@ -21,9 +21,7 @@ function NewPost(props: INewPostProps): JSX.Element {
         setPostTest(event.currentTarget.value)
     }
 
-    const createNewPost = async (e: React.KeyboardEvent<HTMLInputElement>): void => {
-        e.preventDefault()
-        e.stopPropagation()
+    const handleCreatePost = async () => {
         if (postText || files.length > 0) {
             setNewPostInProgress(true)
             await postStore.createPost(
@@ -39,20 +37,28 @@ function NewPost(props: INewPostProps): JSX.Element {
         }
     }
 
+    const createNewPost = async (event: React.MouseEvent<HTMLAnchorElement>): Promise<void> => {
+        event.preventDefault()
+        event.stopPropagation()
+        await handleCreatePost()
+    }
+
     const onKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>): Promise<void> => {
         if (event.key === 'Enter') {
-            await createNewPost(event)
+            event.preventDefault()
+            event.stopPropagation()
+            await handleCreatePost()
         }
     }
 
     const onFileAdd = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        const uploads = []
+        const uploads = new Array<string>()
         const fileList = Array.from(event.currentTarget.files || [])
         fileList.forEach((file) => {
             const fileReader = new FileReader()
             fileReader.readAsDataURL(file)
             fileReader.onload = () => {
-                uploads.push(fileReader.result)
+                uploads.push(fileReader.result as string)
                 if (uploads.length === fileList.length) {
                     setFiles(uploads)
                 }
@@ -65,7 +71,7 @@ function NewPost(props: INewPostProps): JSX.Element {
             <Card className="new-post-container mb-2">
                 <Card.Body>
                     <div className="float-left">
-                        <ProfilePicture userId={null} />
+                        <ProfilePicture />
                     </div>
                     {newPostInProgress ? (
                         <div className="d-flex justify-content-center">
