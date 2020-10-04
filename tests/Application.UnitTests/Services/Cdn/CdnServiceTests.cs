@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CloudinaryDotNet.Actions;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
 using SharedPhotoAlbum.Application.Services.Cdn;
 using SharedPhotoAlbum.Domain.Enums;
-using SharedPhotoAlbum.Domain.Exceptions;
 using SharedPhotoAlbum.Domain.ValueObjects;
 
 namespace SharedPhotoAlbum.Application.UnitTests.Services.Cdn
@@ -16,6 +15,7 @@ namespace SharedPhotoAlbum.Application.UnitTests.Services.Cdn
     public class CdnServiceTests
     {
         private Mock<ICloudinaryClient> mockClient;
+        private IConfiguration configuration = new ConfigurationRoot(new List<IConfigurationProvider>());
 
         [SetUp]
         public void Setup()
@@ -26,7 +26,7 @@ namespace SharedPhotoAlbum.Application.UnitTests.Services.Cdn
         [Test]
         public async Task UploadFilesShouldReturnFileUploadResult()
         {
-            var cdn = new CdnService(mockClient.Object);
+            var cdn = new CdnService(mockClient.Object, configuration);
             var result = await cdn.UploadFiles(new UploadRequest());
             result.Should().BeOfType<FileUploadResult>();
         }
@@ -42,7 +42,7 @@ namespace SharedPhotoAlbum.Application.UnitTests.Services.Cdn
             
             var videoFile = File.For("data:video/mp4;dsadsafgf");
             var imageFile = File.For("data:image/jpg;dsadsafgf");
-            var cdn = new CdnService(mockClient.Object);
+            var cdn = new CdnService(mockClient.Object, configuration);
             var result = await cdn.UploadFiles(new UploadRequest { Files = new List<File> { videoFile, imageFile }});
             result.UploadResults.Count(_ => _.File.FileType == FileType.Image).Should().Be(1);
             result.UploadResults.Count(_ => _.File.FileType == FileType.Video).Should().Be(1);

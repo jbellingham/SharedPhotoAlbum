@@ -68,7 +68,9 @@ namespace SharedPhotoAlbum.Application.Services.Cdn
                     var result = await _client.UploadAsync(new VideoUploadParams
                     {
                         File = new FileDescription(file.DataUrl),
-                        Folder = folder
+                        Folder = folder,
+                        Transformation = new Transformation().Height(2000).Quality(60),
+                        UploadPreset = "fcqdexto"
                     });
                 
                     file.PublicId = result.PublicId;
