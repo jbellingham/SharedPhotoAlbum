@@ -9,19 +9,19 @@ import { store, StoreContext } from './stores/StoreContext'
 import AuthorizeRoute from './components/api-authorization/AuthorizeRoute'
 
 function App() {
-    const [cloudName] = React.useState()//Meteor.settings.public.cloudinary.cloudName)
+    const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME
 
     return (
         <CloudinaryContext cloudName={cloudName}>
             <StoreContext.Provider value={store}>
-            <Router>
-                <Switch>
-                    <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
-                    <AuthorizeRoute path="/invite/:inviteCode" component={Invite} />
-                    <AuthorizeRoute path="/:feedId" component={Feed} />
-                    <AuthorizeRoute path="/" component={Feed} />
-                </Switch>
-            </Router>
+                <Router>
+                    <Switch>
+                        <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
+                        <AuthorizeRoute path="/invite/:inviteCode" component={Invite} />
+                        <AuthorizeRoute path="/:feedId" component={Feed} />
+                        <AuthorizeRoute path="/" component={Feed} />
+                    </Switch>
+                </Router>
             </StoreContext.Provider>
         </CloudinaryContext>
     )

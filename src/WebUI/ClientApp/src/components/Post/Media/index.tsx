@@ -1,15 +1,15 @@
 import React from 'react'
 import { Carousel, CarouselItem } from 'react-bootstrap'
 import { Image, Video } from 'cloudinary-react'
-import { MediaModel } from '../../../api/media/media'
+import { Media } from '../../models/Media'
 
 export interface IMediaDto {
     onClick: () => void
-    media: MediaModel[]
+    media: Media[] | undefined
 }
 
 const MediaContainer = (props: IMediaDto): JSX.Element => {
-    const renderMedia = (media: MediaModel) => {
+    const renderMedia = (media: Media): JSX.Element => {
         switch (media.mimeType) {
             case 'video/mp4':
             case 'video/mpeg':
@@ -36,7 +36,7 @@ const MediaContainer = (props: IMediaDto): JSX.Element => {
     return (
         <Carousel interval={null} onClick={props.onClick}>
             {props.media?.map((_) => (
-                <CarouselItem key={_._id}>
+                <CarouselItem key={_.id}>
                     <div className="image-container d-flex justify-content-center">{renderMedia(_)}</div>
                 </CarouselItem>
             ))}

@@ -23,7 +23,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests
     [SetUpFixture]
     public class Testing
     {
-        private static IConfigurationRoot _configuration;
+        private static IConfiguration _configuration;
         private static IServiceScopeFactory _scopeFactory;
         private static Checkpoint _checkpoint;
 

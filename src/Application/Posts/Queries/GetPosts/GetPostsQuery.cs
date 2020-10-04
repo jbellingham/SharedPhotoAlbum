@@ -51,9 +51,8 @@ namespace SharedPhotoAlbum.Application.Posts.Queries.GetPosts
                         StoredMedia = _.StoredMedia.Select(s => new StoredMediaDto
                         {
                             Id = s.Id,
-                            Content = s.Content,
-                            MediaType = s.MediaType,
-                            Name = s.Name,
+                            PublicId = s.File.PublicId,
+                            MimeType = s.File.MimeType,
                             PostId = s.PostId
                         }).ToList()
                     }).ToListAsync(cancellationToken: cancellationToken)

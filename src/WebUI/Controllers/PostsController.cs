@@ -11,7 +11,7 @@ namespace SharedPhotoAlbum.WebUI.Controllers
     public class PostsController : ApiController
     {
         [HttpPost]
-        public async Task<ActionResult<Guid>> Create(CreatePostCommand command)
+        public async Task<ActionResult<CreatePostCommandResponse>> Create(CreatePostCommand command)
         {
             return await Mediator.Send(command);
         }

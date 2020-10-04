@@ -21,7 +21,7 @@ function NewPost(props: INewPostProps): JSX.Element {
         setPostTest(event.currentTarget.value)
     }
 
-    const createNewPost = async (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const createNewPost = async (e: React.KeyboardEvent<HTMLInputElement>): void => {
         e.preventDefault()
         e.stopPropagation()
         if (postText || files.length > 0) {
@@ -30,7 +30,7 @@ function NewPost(props: INewPostProps): JSX.Element {
                 new CreatePostCommand({
                     text: postText,
                     feedId,
-                    // files
+                    files,
                 }),
             )
             setFiles([])

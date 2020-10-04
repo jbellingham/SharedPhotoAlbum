@@ -1,4 +1,4 @@
-import { action, observable, set } from 'mobx'
+import { action, observable } from 'mobx'
 import { IPostsClient, CreatePostCommand, ICommentsClient } from '../Client'
 import { PostMapper } from '../mappers/PostMapper'
 import { Post } from '../components/models/Post'
@@ -12,7 +12,7 @@ class PostStore {
     @action
     async createPost(post: CreatePostCommand): Promise<void> {
         await this.postClient.create(post)
-        this.posts?.unshift(post)
+        await this.getPosts(post.feedId)
     }
 
     @action

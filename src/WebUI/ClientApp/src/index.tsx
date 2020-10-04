@@ -3,9 +3,9 @@ import ReactDOM from 'react-dom'
 import App from './App'
 import './App.scss'
 import * as serviceWorker from './serviceWorker'
-import {ApolloClient} from "apollo-client";
+import { ApolloClient } from 'apollo-client'
 import { ApolloLink } from 'apollo-link'
-import {HttpLink} from "apollo-boost";
+import { HttpLink } from 'apollo-boost'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import { ApolloProvider } from 'react-apollo'
 
@@ -20,9 +20,9 @@ const client = new ApolloClient({
 })
 
 ReactDOM.render(
-        <ApolloProvider client={client}>
-            <App />
-        </ApolloProvider>,
+    <ApolloProvider client={client}>
+        <App />
+    </ApolloProvider>,
     document.getElementById('root'),
 )
 

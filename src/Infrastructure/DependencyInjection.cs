@@ -61,6 +61,7 @@ namespace SharedPhotoAlbum.Infrastructure
 
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IIdentityService, IdentityService>();
+            services.AddSingleton(configuration);
 
             return services;
         }

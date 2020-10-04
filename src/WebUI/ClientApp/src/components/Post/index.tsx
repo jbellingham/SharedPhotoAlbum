@@ -23,12 +23,12 @@ const Post = observer((props: IPostProps) => {
     return (
         <Card className="post-container">
             {post.text && <Card.Header>{post.text}</Card.Header>}
-            {/* {post.media.length > 0 && (
+            {post.media.length > 0 && (
                 <Card.Body>
                     <MediaContainer media={post.media} onClick={onMediaClick} />
-                    <Zoom media={post.media} show={showZoom} />
+                    {/* <Zoom media={post.storedMedia} show={showZoom} /> */}
                 </Card.Body>
-            )} */}
+            )}
             <Card.Body>
                 <CommentsList comments={comments} />
                 {/* {loading ? (

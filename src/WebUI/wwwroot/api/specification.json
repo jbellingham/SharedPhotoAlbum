@@ -198,8 +198,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string",
-                  "format": "guid"
+                  "$ref": "#/components/schemas/CreatePostCommandResponse"
                 }
               }
             }
@@ -368,10 +367,20 @@
           },
           "isSubscription": {
             "type": "boolean"
-          },
-          "shortCode": {
+          }
+        }
+      },
+      "CreatePostCommandResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "postId": {
             "type": "string",
+            "format": "guid",
             "nullable": true
+          },
+          "success": {
+            "type": "boolean"
           }
         }
       },
@@ -379,11 +388,11 @@
         "type": "object",
         "additionalProperties": false,
         "properties": {
-          "storedMedia": {
+          "files": {
             "type": "array",
             "nullable": true,
             "items": {
-              "$ref": "#/components/schemas/StoredMediaDto"
+              "type": "string"
             }
           },
           "text": {
@@ -395,43 +404,6 @@
             "format": "guid"
           }
         }
-      },
-      "StoredMediaDto": {
-        "type": "object",
-        "additionalProperties": false,
-        "properties": {
-          "id": {
-            "type": "string",
-            "format": "guid"
-          },
-          "name": {
-            "type": "string",
-            "nullable": true
-          },
-          "mediaType": {
-            "$ref": "#/components/schemas/MediaType"
-          },
-          "content": {
-            "type": "string",
-            "nullable": true
-          },
-          "postId": {
-            "type": "string",
-            "format": "guid"
-          }
-        }
-      },
-      "MediaType": {
-        "type": "integer",
-        "description": "",
-        "x-enumNames": [
-          "Image",
-          "Video"
-        ],
-        "enum": [
-          0,
-          1
-        ]
       },
       "PostsVm": {
         "type": "object",
@@ -475,6 +447,28 @@
             "items": {
               "$ref": "#/components/schemas/StoredMediaDto"
             }
+          }
+        }
+      },
+      "StoredMediaDto": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "guid"
+          },
+          "publicId": {
+            "type": "string",
+            "nullable": true
+          },
+          "mimeType": {
+            "type": "string",
+            "nullable": true
+          },
+          "postId": {
+            "type": "string",
+            "format": "guid"
           }
         }
       }

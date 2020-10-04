@@ -38,8 +38,8 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Posts.Commands
                 FeedId = feedId
             };
 
-            var postId = await SendAsync(_command);
-            _post = await FindAsync<Post>(postId);
+            var createPostCommandResponse = await SendAsync(_command);
+            _post = await FindAsync<Post>(createPostCommandResponse.PostId.Value);
             return this;
         }
 

@@ -43,12 +43,12 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Comments.Commands
                 Text = "Some post",
                 FeedId = feedId
             };
-            var postId = await SendAsync(postCommand);
+            var createPostCommandResponse = await SendAsync(postCommand);
 
             _command = new CreateCommentCommand
             {
                 Text = _commentText,
-                PostId = postId
+                PostId = createPostCommandResponse.PostId.Value
             };
 
             var commentId = await SendAsync(_command);

@@ -15,7 +15,7 @@ namespace SharedPhotoAlbum.Application.Feeds.Queries.GetFeed
         
         public bool IsSubscription { get; set; }
         
-        public string ShortCode { get; set; }
+        // public string ShortCode { get; set; }
 
         public void Mapping(Profile profile)
         {

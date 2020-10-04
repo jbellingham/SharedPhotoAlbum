@@ -274,7 +274,7 @@ export class OidcConfigurationClient implements IOidcConfigurationClient {
 }
 
 export interface IPostsClient {
-    create(command: CreatePostCommand): Promise<string>;
+    create(command: CreatePostCommand): Promise<CreatePostCommandResponse>;
     get(feedId: string | null | undefined): Promise<PostsVm>;
 }
 
@@ -288,7 +288,7 @@ export class PostsClient implements IPostsClient {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
 
-    create(command: CreatePostCommand): Promise<string> {
+    create(command: CreatePostCommand): Promise<CreatePostCommandResponse> {
         let url_ = this.baseUrl + "/api/Posts";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -309,7 +309,7 @@ export class PostsClient implements IPostsClient {
         });
     }
 
-    protected processCreate(response: AxiosResponse): Promise<string> {
+    protected processCreate(response: AxiosResponse): Promise<CreatePostCommandResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -323,13 +323,13 @@ export class PostsClient implements IPostsClient {
             const _responseText = response.data;
             let result200: any = null;
             let resultData200  = _responseText;
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            result200 = CreatePostCommandResponse.fromJS(resultData200);
             return result200;
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<string>(<any>null);
+        return Promise.resolve<CreatePostCommandResponse>(<any>null);
     }
 
     get(feedId: string | null | undefined): Promise<PostsVm> {
@@ -651,7 +651,6 @@ export class FeedDto implements IFeedDto {
     name?: string | undefined;
     isOwner?: boolean;
     isSubscription?: boolean;
-    shortCode?: string | undefined;
 
     constructor(data?: IFeedDto) {
         if (data) {
@@ -668,7 +667,6 @@ export class FeedDto implements IFeedDto {
             this.name = _data["name"];
             this.isOwner = _data["isOwner"];
             this.isSubscription = _data["isSubscription"];
-            this.shortCode = _data["shortCode"];
         }
     }
 
@@ -685,7 +683,6 @@ export class FeedDto implements IFeedDto {
         data["name"] = this.name;
         data["isOwner"] = this.isOwner;
         data["isSubscription"] = this.isSubscription;
-        data["shortCode"] = this.shortCode;
         return data; 
     }
 }
@@ -695,11 +692,50 @@ export interface IFeedDto {
     name?: string | undefined;
     isOwner?: boolean;
     isSubscription?: boolean;
-    shortCode?: string | undefined;
+}
+
+export class CreatePostCommandResponse implements ICreatePostCommandResponse {
+    postId?: string | undefined;
+    success?: boolean;
+
+    constructor(data?: ICreatePostCommandResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.postId = _data["postId"];
+            this.success = _data["success"];
+        }
+    }
+
+    static fromJS(data: any): CreatePostCommandResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new CreatePostCommandResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["postId"] = this.postId;
+        data["success"] = this.success;
+        return data; 
+    }
+}
+
+export interface ICreatePostCommandResponse {
+    postId?: string | undefined;
+    success?: boolean;
 }
 
 export class CreatePostCommand implements ICreatePostCommand {
-    storedMedia?: StoredMediaDto[] | undefined;
+    files?: string[] | undefined;
     text?: string | undefined;
     feedId?: string;
 
@@ -714,10 +750,10 @@ export class CreatePostCommand implements ICreatePostCommand {
 
     init(_data?: any) {
         if (_data) {
-            if (Array.isArray(_data["storedMedia"])) {
-                this.storedMedia = [] as any;
-                for (let item of _data["storedMedia"])
-                    this.storedMedia!.push(StoredMediaDto.fromJS(item));
+            if (Array.isArray(_data["files"])) {
+                this.files = [] as any;
+                for (let item of _data["files"])
+                    this.files!.push(item);
             }
             this.text = _data["text"];
             this.feedId = _data["feedId"];
@@ -733,10 +769,10 @@ export class CreatePostCommand implements ICreatePostCommand {
 
     toJSON(data?: any) {
         data = typeof data === 'object' ? data : {};
-        if (Array.isArray(this.storedMedia)) {
-            data["storedMedia"] = [];
-            for (let item of this.storedMedia)
-                data["storedMedia"].push(item.toJSON());
+        if (Array.isArray(this.files)) {
+            data["files"] = [];
+            for (let item of this.files)
+                data["files"].push(item);
         }
         data["text"] = this.text;
         data["feedId"] = this.feedId;
@@ -745,66 +781,9 @@ export class CreatePostCommand implements ICreatePostCommand {
 }
 
 export interface ICreatePostCommand {
-    storedMedia?: StoredMediaDto[] | undefined;
+    files?: string[] | undefined;
     text?: string | undefined;
     feedId?: string;
-}
-
-export class StoredMediaDto implements IStoredMediaDto {
-    id?: string;
-    name?: string | undefined;
-    mediaType?: MediaType;
-    content?: string | undefined;
-    postId?: string;
-
-    constructor(data?: IStoredMediaDto) {
-        if (data) {
-            for (var property in data) {
-                if (data.hasOwnProperty(property))
-                    (<any>this)[property] = (<any>data)[property];
-            }
-        }
-    }
-
-    init(_data?: any) {
-        if (_data) {
-            this.id = _data["id"];
-            this.name = _data["name"];
-            this.mediaType = _data["mediaType"];
-            this.content = _data["content"];
-            this.postId = _data["postId"];
-        }
-    }
-
-    static fromJS(data: any): StoredMediaDto {
-        data = typeof data === 'object' ? data : {};
-        let result = new StoredMediaDto();
-        result.init(data);
-        return result;
-    }
-
-    toJSON(data?: any) {
-        data = typeof data === 'object' ? data : {};
-        data["id"] = this.id;
-        data["name"] = this.name;
-        data["mediaType"] = this.mediaType;
-        data["content"] = this.content;
-        data["postId"] = this.postId;
-        return data; 
-    }
-}
-
-export interface IStoredMediaDto {
-    id?: string;
-    name?: string | undefined;
-    mediaType?: MediaType;
-    content?: string | undefined;
-    postId?: string;
-}
-
-export enum MediaType {
-    Image = 0,
-    Video = 1,
 }
 
 export class PostsVm implements IPostsVm {
@@ -917,6 +896,54 @@ export interface IPostDto {
     text?: string | undefined;
     comments?: CommentDto[] | undefined;
     storedMedia?: StoredMediaDto[] | undefined;
+}
+
+export class StoredMediaDto implements IStoredMediaDto {
+    id?: string;
+    publicId?: string | undefined;
+    mimeType?: string | undefined;
+    postId?: string;
+
+    constructor(data?: IStoredMediaDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.id = _data["id"];
+            this.publicId = _data["publicId"];
+            this.mimeType = _data["mimeType"];
+            this.postId = _data["postId"];
+        }
+    }
+
+    static fromJS(data: any): StoredMediaDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new StoredMediaDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["id"] = this.id;
+        data["publicId"] = this.publicId;
+        data["mimeType"] = this.mimeType;
+        data["postId"] = this.postId;
+        return data; 
+    }
+}
+
+export interface IStoredMediaDto {
+    id?: string;
+    publicId?: string | undefined;
+    mimeType?: string | undefined;
+    postId?: string;
 }
 
 export interface FileResponse {
