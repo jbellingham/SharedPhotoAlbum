@@ -1,21 +1,11 @@
 import React from 'react'
 import FeedList from '../../Feed/FeedList'
-import { useParams, useHistory } from 'react-router-dom'
+import { useHistory } from 'react-router-dom'
 import { EventEmitter } from 'events'
-
-interface ICollapseMenuProps {
-    children: any
-}
 
 export const collapseMenuEventEmitter = new EventEmitter()
 
-function CollapseMenu(props: ICollapseMenuProps) {
-    // const [show, setShow] = React.useState(false)
-
-    // collapseMenuEventEmitter.on('toggle', () => {
-    //     setShow(!show)
-    // })
-
+function CollapseMenu() {
     const history = useHistory()
 
     const onFeedSelected = (selectedFeedId: string) => {
@@ -25,10 +15,9 @@ function CollapseMenu(props: ICollapseMenuProps) {
 
     return (
         <>
-            <div className='collapse-container collapse-slider collapse-show'>
+            <div className="collapse-container collapse-slider collapse-show">
                 <FeedList />
             </div>
-            {props.children}
         </>
     )
 }

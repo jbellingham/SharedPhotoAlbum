@@ -16,3 +16,11 @@ html {
 .box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
+
+.header {
+    position: sticky;
+    top: 0;
+    padding: 1em 0;
+    background: lightgreen;
+    z-index: 3;
+}

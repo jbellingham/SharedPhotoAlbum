@@ -1,27 +1,20 @@
 import React from 'react'
-import { Container } from 'react-bootstrap'
-import { NavMenu } from '../NavMenu'
+import { NavMenu } from './NavMenu'
 // import Login from '../Accounts/Login'
-import CollapseContainer from './CollapseContainer'
+import CollapseMenu from './CollapseMenu'
 
 export interface ILoginProps {
     setLoggedIn: (value: boolean) => void
 }
 
 function Layout(props: any) {
-
     return (
         <>
-            <CollapseContainer />
+            {/* <CollapseMenu></CollapseMenu> */}
             <NavMenu />
             <div className="App">
-                {/* {loggedIn ? ( */}
-                   { props.children }
-                {/* ) : ( */}
-                    {/* <div className="vertical-center justify-content-center">
-                        <Login setLoggedIn={setLoggedIn} />
-                    </div>
-                )} */}
+                <CollapseMenu></CollapseMenu>
+                {props.children}
             </div>
         </>
     )
