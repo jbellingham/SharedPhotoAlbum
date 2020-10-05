@@ -1,7 +1,4 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Threading.Tasks;
-using IdentityModel;
+﻿using IdentityModel;
 using SharedPhotoAlbum.Application.Common.Interfaces;
 using SharedPhotoAlbum.Infrastructure.Identity;
 using SharedPhotoAlbum.Infrastructure.Persistence;
@@ -26,13 +23,7 @@ namespace SharedPhotoAlbum.Infrastructure
             else
             {
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseNpgsql(
-                        configuration.GetConnectionString("DefaultConnection"),
-                        b =>
-                        {
-                            b.SetPostgresVersion(12, 2);
-                            b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName);
-                        }));
+                    options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
             }
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
