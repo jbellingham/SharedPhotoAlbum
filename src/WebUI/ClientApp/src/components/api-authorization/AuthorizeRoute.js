@@ -4,6 +4,7 @@ import { Route, Redirect } from 'react-router-dom'
 import { ApplicationPaths, QueryParameterNames } from './ApiAuthorizationConstants'
 import authService from './AuthorizeService'
 import Layout from '../shared/Layout'
+import { PropTypes } from 'mobx-react'
 
 export default class AuthorizeRoute extends Component {
     constructor(props) {
@@ -65,6 +66,6 @@ export default class AuthorizeRoute extends Component {
 }
 
 AuthorizeRoute.propTypes = {
-    component: Component,
-    path: string,
+    component: PropTypes.element,
+    path: PropTypes.string,
 }

@@ -9,8 +9,13 @@ RUN apt-get update -yq \
     && apt-get install curl gnupg -yq \
     && curl -sL https://deb.nodesource.com/setup_12.x | bash \
     && apt-get install nodejs -yq
+
+WORKDIR /src
+COPY ./src .
+WORKDIR /tests
+COPY ./tests .
 WORKDIR /
-COPY . .
+COPY "SharedPhotoAlbum.sln" .
 RUN dotnet restore
 WORKDIR /src/WebUI
 RUN dotnet build "WebUI.csproj" -c Release -o /app
@@ -25,4 +30,4 @@ RUN dotnet publish "WebUI.csproj" -c Release -o /app
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
-ENTRYPOINT ["dotnet", "WebUI.dll", "--server.urls", "http://0.0.0.0:5000"]
+ENTRYPOINT ["dotnet", "SharedPhotoAlbum.WebUI.dll", "--server.urls", "http://0.0.0.0:5000"]
