@@ -63,3 +63,8 @@ export default class AuthorizeRoute extends Component {
         await this.populateAuthenticationState()
     }
 }
+
+AuthorizeRoute.propTypes = {
+    component: Component,
+    path: string,
+}

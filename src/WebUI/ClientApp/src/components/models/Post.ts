@@ -28,7 +28,9 @@ export class Post {
     }
 
     updateComments(incomingComments: CommentDto[] | undefined): void {
-        const comments = incomingComments?.map((comment) => CommentMapper.fromDto(comment)) || []
-        this.comments = comments
+        if (incomingComments !== undefined && incomingComments.length > 0) {
+            const comments = incomingComments.map((comment) => CommentMapper.fromDto(comment)) as Comment[]
+            this.comments = comments
+        }
     }
 }

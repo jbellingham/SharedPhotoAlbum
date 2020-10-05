@@ -12,13 +12,13 @@ class PostStore {
     @action
     async createPost(post: CreatePostCommand): Promise<void> {
         await this.postClient.create(post)
-        await this.getPosts(post.feedId)
+        await this.getPosts(post.feedId as string)
     }
 
     @action
     async getPosts(feedId: string): Promise<void> {
         const { posts } = await this.postClient.get(feedId)
-        this.posts = posts?.map((dto) => PostMapper.fromDto(dto))
+        this.posts = posts?.map((dto) => PostMapper.fromDto(dto)) || []
     }
 
     @action
