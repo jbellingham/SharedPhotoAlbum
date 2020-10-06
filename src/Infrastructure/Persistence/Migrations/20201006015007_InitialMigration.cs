@@ -1,6 +1,5 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace SharedPhotoAlbum.Infrastructure.Persistence.Migrations
 {
@@ -86,7 +85,7 @@ namespace SharedPhotoAlbum.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     RoleId = table.Column<Guid>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -107,7 +106,7 @@ namespace SharedPhotoAlbum.Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
-                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<Guid>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
                     ClaimValue = table.Column<string>(nullable: true)
@@ -194,7 +193,7 @@ namespace SharedPhotoAlbum.Infrastructure.Persistence.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     CreatedBy = table.Column<Guid>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
-                    LastModifiedBy = table.Column<Guid>(nullable: false),
+                    LastModifiedBy = table.Column<Guid>(nullable: true),
                     LastModified = table.Column<DateTime>(nullable: true),
                     Name = table.Column<string>(maxLength: 100, nullable: false),
                     Description = table.Column<string>(maxLength: 500, nullable: true),
@@ -218,7 +217,7 @@ namespace SharedPhotoAlbum.Infrastructure.Persistence.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     CreatedBy = table.Column<Guid>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
-                    LastModifiedBy = table.Column<Guid>(nullable: false),
+                    LastModifiedBy = table.Column<Guid>(nullable: true),
                     LastModified = table.Column<DateTime>(nullable: true),
                     Text = table.Column<string>(maxLength: 1000, nullable: false),
                     LinkUrl = table.Column<string>(nullable: true),
@@ -242,7 +241,7 @@ namespace SharedPhotoAlbum.Infrastructure.Persistence.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     CreatedBy = table.Column<Guid>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
-                    LastModifiedBy = table.Column<Guid>(nullable: false),
+                    LastModifiedBy = table.Column<Guid>(nullable: true),
                     LastModified = table.Column<DateTime>(nullable: true),
                     Text = table.Column<string>(maxLength: 200, nullable: false),
                     Likes = table.Column<int>(nullable: false),
@@ -266,11 +265,12 @@ namespace SharedPhotoAlbum.Infrastructure.Persistence.Migrations
                     Id = table.Column<Guid>(nullable: false),
                     CreatedBy = table.Column<Guid>(nullable: false),
                     Created = table.Column<DateTime>(nullable: false),
-                    LastModifiedBy = table.Column<Guid>(nullable: false),
+                    LastModifiedBy = table.Column<Guid>(nullable: true),
                     LastModified = table.Column<DateTime>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    MediaType = table.Column<int>(nullable: false),
-                    Content = table.Column<string>(nullable: false),
+                    File_MimeType = table.Column<string>(nullable: true),
+                    File_DataUrl = table.Column<string>(nullable: true),
+                    File_FileType = table.Column<int>(nullable: true),
+                    File_PublicId = table.Column<string>(nullable: true),
                     PostId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
@@ -293,7 +293,8 @@ namespace SharedPhotoAlbum.Infrastructure.Persistence.Migrations
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -319,7 +320,8 @@ namespace SharedPhotoAlbum.Infrastructure.Persistence.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true);
+                unique: true,
+                filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_PostId",

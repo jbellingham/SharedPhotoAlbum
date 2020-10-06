@@ -29,7 +29,7 @@ namespace WebUI
                 try
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
-                    context.Database.Migrate();
+                    await context.Database.MigrateAsync();
 
                     // var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
