@@ -29,11 +29,7 @@ namespace WebUI
                 try
                 {
                     var context = services.GetRequiredService<ApplicationDbContext>();
-
-                    if (context.Database.IsNpgsql())
-                    {
-                        context.Database.Migrate();
-                    }                   
+                    context.Database.Migrate();
 
                     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
