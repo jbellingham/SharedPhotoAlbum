@@ -31,10 +31,10 @@ namespace WebUI
                     var context = services.GetRequiredService<ApplicationDbContext>();
                     context.Database.Migrate();
 
-                    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+                    // var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
 
-                    await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager);
-                    await ApplicationDbContextSeed.SeedSampleDataAsync(context);
+                    // await ApplicationDbContextSeed.SeedDefaultUserAsync(userManager);
+                    // await ApplicationDbContextSeed.SeedSampleDataAsync(context);
                 }
                 catch (Exception ex)
                 {
