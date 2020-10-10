@@ -2,19 +2,19 @@ import { createContext, useContext } from 'react'
 import PostStore from './PostStore'
 import FeedStore from './FeedStore'
 import CommentStore from './CommentStore'
-import AuthStore from './AuthStore'
+// import AuthStore from './AuthStore'
 import UserStore from './UserStore'
 import { PostsClient, CommentsClient, FeedsClient, UserClient } from '../Client'
 import Axios from 'axios'
-import { AuthorizeService } from '../components/api-authorization/AuthorizeService'
+// import { AuthorizeService } from '../components/api-authorization/AuthorizeService'
 
-const authService = new AuthorizeService()
-const baseUrl = 'https://localhost:5002'
-const authStore = new AuthStore(authService)
+// const authService = new AuthorizeService()
+const baseUrl = 'https://localhost:5001'
+// const authStore = new AuthStore()
 
 const axios = Axios.create()
 axios.interceptors.request.use(async function (config) {
-    const token = await authService.getAccessToken()
+    const token = await fetch('api/token') //await authService.getAccessToken()
 
     config.headers = {
         ...config.headers,
@@ -38,7 +38,7 @@ export interface IStore {
     postStore: PostStore
     commentStore: CommentStore
     feedStore: FeedStore
-    authStore: AuthStore
+    // authStore: AuthStore
     userStore: UserStore
 }
 
@@ -46,7 +46,7 @@ export const store: IStore = {
     postStore,
     commentStore,
     feedStore,
-    authStore,
+    // authStore,
     userStore,
 }
 

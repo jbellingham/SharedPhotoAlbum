@@ -13,6 +13,8 @@ namespace SharedPhotoAlbum.Infrastructure
 {
     public static class DependencyInjection
     {
+        public const string CookieScheme = "CookieScheme";
+        
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
@@ -31,15 +33,17 @@ namespace SharedPhotoAlbum.Infrastructure
                 services.AddDefaultIdentity<ApplicationUser>()
                     .AddEntityFrameworkStores<ApplicationDbContext>();
             
-            services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+            // services.AddIdentityServer()
+            //     .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
             
             // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             
             services.AddAuthentication()
-                .AddIdentityServerJwt()
+                // .AddIdentityServerJwt()
+                .AddCookie(CookieScheme)
                 .AddFacebook(facebookOptions =>
                 {
+                    facebookOptions.SignInScheme = CookieScheme;
                     facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
                     facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
                     facebookOptions.Fields.Add("picture");

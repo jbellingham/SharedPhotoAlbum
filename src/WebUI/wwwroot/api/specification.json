@@ -68,6 +68,69 @@
         }
       }
     },
+    "/api/ExternalLogin": {
+      "post": {
+        "tags": [
+          "ExternalLogin"
+        ],
+        "operationId": "ExternalLogin_Index",
+        "parameters": [
+          {
+            "name": "returnUrl",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "ExternalLogin"
+        ],
+        "operationId": "ExternalLogin_ExternalLoginCallback",
+        "parameters": [
+          {
+            "name": "returnUrl",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 1
+          },
+          {
+            "name": "remoteError",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            },
+            "x-position": 2
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/Feeds": {
       "post": {
         "tags": [
@@ -244,6 +307,27 @@
             "JWT": []
           }
         ]
+      }
+    },
+    "/api/Token": {
+      "get": {
+        "tags": [
+          "Token"
+        ],
+        "operationId": "Token_Get",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/api/User": {
