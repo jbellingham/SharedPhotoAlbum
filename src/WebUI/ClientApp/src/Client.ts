@@ -114,7 +114,7 @@ export class CommentsClient implements ICommentsClient {
 }
 
 export interface IExternalLoginClient {
-    index(returnUrl: string | null | undefined): Promise<void>;
+    index(returnUrl: string | null | undefined): Promise<FileResponse>;
     externalLoginCallback(returnUrl: string | null | undefined, remoteError: string | null | undefined): Promise<FileResponse>;
 }
 
@@ -128,16 +128,18 @@ export class ExternalLoginClient implements IExternalLoginClient {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
 
-    index(returnUrl: string | null | undefined): Promise<void> {
+    index(returnUrl: string | null | undefined): Promise<FileResponse> {
         let url_ = this.baseUrl + "/api/ExternalLogin?";
         if (returnUrl !== undefined)
             url_ += "returnUrl=" + encodeURIComponent("" + returnUrl) + "&"; 
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <AxiosRequestConfig>{
+            responseType: "blob",
             method: "POST",
             url: url_,
             headers: {
+                "Accept": "application/octet-stream"
             }
         };
 
@@ -146,7 +148,7 @@ export class ExternalLoginClient implements IExternalLoginClient {
         });
     }
 
-    protected processIndex(response: AxiosResponse): Promise<void> {
+    protected processIndex(response: AxiosResponse): Promise<FileResponse> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -156,14 +158,16 @@ export class ExternalLoginClient implements IExternalLoginClient {
                 }
             }
         }
-        if (status === 200) {
-            const _responseText = response.data;
-            return Promise.resolve<void>(<any>null);
+        if (status === 200 || status === 206) {
+            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
+            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
+            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
+            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<void>(<any>null);
+        return Promise.resolve<FileResponse>(<any>null);
     }
 
     externalLoginCallback(returnUrl: string | null | undefined, remoteError: string | null | undefined): Promise<FileResponse> {

@@ -14,7 +14,7 @@ const baseUrl = 'https://localhost:5001'
 
 const axios = Axios.create()
 axios.interceptors.request.use(async function (config) {
-    const token = await fetch('api/token') //await authService.getAccessToken()
+    const token = await fetch('/api/token') //await authService.getAccessToken()
 
     config.headers = {
         ...config.headers,

@@ -1,5 +1,6 @@
 import { Profile, User, UserManager, WebStorageStateStore } from 'oidc-client'
 import { ApplicationPaths, ApplicationName } from './ApiAuthorizationConstants'
+import Cookies from 'js-cookie'
 
 export const AuthenticationResultStatus = {
     Redirect: 'redirect',
@@ -17,36 +18,20 @@ export class AuthorizeService {
     // If you want to enable pop up authentication simply set this flag to false.
     _popUpDisabled = true
 
-    async isAuthenticated() {
-        const user = await this.getUser()
-        return !!user
+    isAuthenticated() {
+        return !!Cookies.get('authenticated')
     }
 
-    async tokenExpired() {
-        await this.ensureUserManagerInitialized()
-        const user = await this.userManager?.getUser()
-        return user.expired
-    }
+    // async tokenExpired() {
+    //     const user = await this.userManager?.getUser()
+    //     return user.expired
+    // }
 
-    async getUser() {
-        if (this._user && this._user.profile) {
-            return this._user.profile
-        }
-
-        await this.ensureUserManagerInitialized()
-        const user = await this.userManager.getUser()
-        return user && user.profile
-    }
-
-    async getAccessToken() {
-        await this.ensureUserManagerInitialized()
-        let user = await this.userManager.getUser()
-        if (user && user.expired) {
-            await this.signIn({})
-            user = await this.userManager.getUser()
-        }
-        return user && user.access_token
-    }
+    // async getAccessToken() {
+    //     const result = await fetch('/api/token')
+    //     const token = await result.text()
+    //     Cookies.set('token', token)
+    // }
 
     // We try to authenticate the user in three different ways:
     // 1) We try to see if we can authenticate the user silently. This happens
@@ -57,11 +42,25 @@ export class AuthorizeService {
     // 3) If the two methods above fail, we redirect the browser to the IdP to perform a traditional
     //    redirect flow.
     async signIn(state) {
-        await this.ensureUserManagerInitialized()
+        // await this.ensureUserManagerInitialized()
         try {
-            const silentUser = await this.userManager.signinSilent(this.createArguments())
-            this.updateState(silentUser)
-            return this.success(state)
+            // const silentUser = await this.userManager.signinSilent(this.createArguments())
+            const data = {
+                returnUrl: state.returnUrl,
+            }
+            const result = await fetch('/api/externallogin', {
+                mode: 'no-cors',
+                method: 'POST',
+                body: JSON.stringify(data),
+            })
+            // const token = await result.text()
+            if (result.ok) {
+                Cookies.set('authenticated', true)
+                this.updateState()
+                return this.success()
+            } else {
+                return this.error()
+            }
         } catch (silentError) {
             // User might not be authenticated, fallback to popup authentication
             console.log('Silent authentication error: ', silentError)
@@ -138,9 +137,9 @@ export class AuthorizeService {
     }
 
     async completeSignOut(url) {
-        await this.ensureUserManagerInitialized()
+        // await this.ensureUserManagerInitialized()
         try {
-            const response = await this.userManager.signoutCallback(url)
+            const response = null //await this.userManager.signoutCallback(url)
             this.updateState(null)
             return this.success(response && response.data)
         } catch (error) {
@@ -149,9 +148,8 @@ export class AuthorizeService {
         }
     }
 
-    updateState(user) {
-        this._user = user
-        this._isAuthenticated = !!this._user
+    updateState() {
+        this._isAuthenticated = !!this._token
         this.notifySubscribers()
     }
 
@@ -188,37 +186,12 @@ export class AuthorizeService {
         return { status: AuthenticationResultStatus.Fail, message }
     }
 
-    success(state) {
-        return { status: AuthenticationResultStatus.Success, state }
+    success() {
+        return { status: AuthenticationResultStatus.Success }
     }
 
     redirect() {
         return { status: AuthenticationResultStatus.Redirect }
-    }
-
-    async ensureUserManagerInitialized() {
-        if (this.userManager !== undefined) {
-            return
-        }
-
-        const response = await fetch(ApplicationPaths.ApiAuthorizationClientConfigurationUrl)
-        if (!response.ok) {
-            throw new Error(`Could not load settings for '${ApplicationName}'`)
-        }
-
-        const settings = await response.json()
-        settings.automaticSilentRenew = true
-        settings.includeIdTokenInSilentRenew = true
-        settings.userStore = new WebStorageStateStore({
-            prefix: ApplicationName,
-        })
-
-        this.userManager = new UserManager(settings)
-
-        this.userManager.events.addUserSignedOut(async () => {
-            await this.userManager.removeUser()
-            this.updateState(undefined)
-        })
     }
 }
 

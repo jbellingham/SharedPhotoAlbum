@@ -16,6 +16,7 @@ using SharedPhotoAlbum.Infrastructure;
 using SharedPhotoAlbum.Infrastructure.Persistence;
 using SharedPhotoAlbum.WebUI.Filters;
 using SharedPhotoAlbum.WebUI.Services;
+using WebUI.Middleware;
 
 namespace WebUI
 {
@@ -35,6 +36,7 @@ namespace WebUI
             services.AddInfrastructure(Configuration);
 
             services.AddScoped<ICurrentUserService, CurrentUserService>();
+            services.AddScoped<ITokenHelper, TokenHelper>();
 
             services.AddHttpContextAccessor();
 
@@ -101,8 +103,9 @@ namespace WebUI
             JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Add("sub", ClaimTypes.NameIdentifier);
             
             app.UseAuthentication();
-            // app.UseIdentityServer();
             app.UseAuthorization();
+
+            app.UseMiddleware<JwtMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
