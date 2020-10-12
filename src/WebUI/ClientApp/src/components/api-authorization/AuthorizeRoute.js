@@ -2,7 +2,7 @@ import React from 'react'
 import { Component } from 'react'
 import { Route, Redirect } from 'react-router-dom'
 import { ApplicationPaths, QueryParameterNames } from './ApiAuthorizationConstants'
-// import authService from './AuthorizeService'
+import authService from './AuthorizeService'
 import Layout from '../shared/Layout'
 import { PropTypes } from 'mobx-react'
 
@@ -17,12 +17,12 @@ export default class AuthorizeRoute extends Component {
     }
 
     componentDidMount() {
-        // this._subscription = authService.subscribe(() => this.authenticationChanged())
+        this._subscription = authService.subscribe(() => this.authenticationChanged())
         this.populateAuthenticationState()
     }
 
     componentWillUnmount() {
-        // authService.unsubscribe(this._subscription)
+        authService.unsubscribe(this._subscription)
     }
 
     render() {
@@ -55,7 +55,7 @@ export default class AuthorizeRoute extends Component {
     }
 
     async populateAuthenticationState() {
-        const authenticated = false //await authService.isAuthenticated()
+        const authenticated = await authService.isAuthenticated()
         this.setState({ ready: true, authenticated })
     }
 

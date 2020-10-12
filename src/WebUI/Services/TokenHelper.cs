@@ -29,14 +29,23 @@ namespace SharedPhotoAlbum.WebUI.Services
         }
         public Token GenerateJwtToken(ApplicationUser user)
         {
+            // var claims = new[]
+            // {
+            //     new Claim(JwtRegisteredClaimNames.Sub, userName),
+            //     // new Claim(JwtRegisteredClaimNames.Jti, await _jwtOptions.JtiGenerator()),
+            //     new Claim(JwtRegisteredClaimNames.Iat, ToUnixEpochDate(_jwtOptions.IssuedAt).ToString(), ClaimValueTypes.Integer64),
+            //     identity.FindFirst(Constants.Strings.JwtClaimIdentifiers.Rol),
+            //     identity.FindFirst(Helpers.Constants.Strings.JwtClaimIdentifiers.Id)
+            // };
+            
             // generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Secret"]);
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JwtOptions:SigningKey"]));
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
                 Expires = DateTime.UtcNow.AddDays(7),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             

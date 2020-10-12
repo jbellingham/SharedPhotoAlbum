@@ -1,4 +1,6 @@
-﻿using IdentityModel;
+﻿using System;
+using System.Text;
+using IdentityModel;
 using SharedPhotoAlbum.Application.Common.Interfaces;
 using SharedPhotoAlbum.Infrastructure.Identity;
 using SharedPhotoAlbum.Infrastructure.Persistence;
@@ -7,6 +9,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Tokens;
 using SharedPhotoAlbum.Domain.Entities;
 
 namespace SharedPhotoAlbum.Infrastructure
@@ -37,20 +40,51 @@ namespace SharedPhotoAlbum.Infrastructure
             //     .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
             
             // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            var validIssuer = configuration["JwtOptions:Issuer"];
+            var validAudience = configuration["JwtOptions:Audience"];
+            var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["JwtOptions:SigningKey"]));
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = validIssuer,
+
+                ValidateAudience = true,
+                ValidAudience = validAudience,
+
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = signingKey,
+
+                RequireExpirationTime = false,
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.Zero
+            };
             
             services.AddAuthentication()
                 // .AddIdentityServerJwt()
                 .AddCookie(CookieScheme)
                 .AddFacebook(facebookOptions =>
                 {
-                    facebookOptions.SignInScheme = CookieScheme;
+                    // facebookOptions.SignInScheme = CookieScheme;
                     facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
                     facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
                     facebookOptions.Fields.Add("picture");
                     facebookOptions.ClaimActions.MapCustomJson(JwtClaimTypes.Picture,
                         json => json.GetProperty("picture").GetProperty("data")
                         .GetProperty("url").ToString());
+                })
+                .AddJwtBearer(jwtOptions =>
+                {
+                    jwtOptions.ClaimsIssuer = validIssuer;
+                    jwtOptions.TokenValidationParameters = tokenValidationParameters;
+                    jwtOptions.SaveToken = true;
                 });
+
+            // services.AddAuthorization(options =>
+            // {
+            //     options.AddPolicy("ApiUser",
+            //         policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol,
+            //             Constants.Strings.JwtClaims.ApiAccess));
+            // });
 
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IIdentityService, IdentityService>();

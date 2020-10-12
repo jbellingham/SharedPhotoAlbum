@@ -19,7 +19,11 @@ export class AuthorizeService {
     _popUpDisabled = true
 
     isAuthenticated() {
-        return !!Cookies.get('authenticated')
+        return !!Cookies.get('auth_token')
+    }
+
+    async getUser() {
+        return Promise.resolve()
     }
 
     // async tokenExpired() {
@@ -53,9 +57,9 @@ export class AuthorizeService {
                 method: 'POST',
                 body: JSON.stringify(data),
             })
-            // const token = await result.text()
             if (result.ok) {
-                Cookies.set('authenticated', true)
+                const tokenResponse = await result.json()
+                Cookies.set('auth_token', tokenResponse.tokenString)
                 this.updateState()
                 return this.success()
             } else {

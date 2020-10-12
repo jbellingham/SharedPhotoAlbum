@@ -6,6 +6,7 @@ import CommentStore from './CommentStore'
 import UserStore from './UserStore'
 import { PostsClient, CommentsClient, FeedsClient, UserClient } from '../Client'
 import Axios from 'axios'
+import Cookies from 'js-cookie'
 // import { AuthorizeService } from '../components/api-authorization/AuthorizeService'
 
 // const authService = new AuthorizeService()
@@ -14,7 +15,7 @@ const baseUrl = 'https://localhost:5001'
 
 const axios = Axios.create()
 axios.interceptors.request.use(async function (config) {
-    const token = await fetch('/api/token') //await authService.getAccessToken()
+    const token = Cookies.get('auth_token')
 
     config.headers = {
         ...config.headers,

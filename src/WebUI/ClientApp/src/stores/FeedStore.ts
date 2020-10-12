@@ -3,9 +3,7 @@ import { action, computed, observable } from 'mobx'
 import PostStore from './PostStore'
 
 class FeedStore {
-    constructor(private postStore: PostStore, private feedsClient: IFeedsClient) {
-        this.getFeeds()
-    }
+    constructor(private postStore: PostStore, private feedsClient: IFeedsClient) {}
 
     currentFeedId: string | undefined = ''
 
@@ -31,8 +29,10 @@ class FeedStore {
     @computed
     get canViewCurrentFeed(): boolean {
         if (!this.currentFeedId) return false
-        return this.myFeeds.some((feed) => feed.id === this.currentFeedId) ||
-        this.subscriptions.some((feed) => feed.id === this.currentFeedId)
+        return (
+            this.myFeeds.some((feed) => feed.id === this.currentFeedId) ||
+            this.subscriptions.some((feed) => feed.id === this.currentFeedId)
+        )
     }
 
     @action
@@ -58,8 +58,7 @@ class FeedStore {
         if (!this.isLoading) {
             this.isLoading = true
             this.feedsClient.get(null).then(({ feeds }) => {
-                if (feeds !== undefined &&
-                    feeds.length > 0) {
+                if (feeds !== undefined && feeds.length > 0) {
                     this.feeds = feeds
                     this.isLoading = false
                 }

@@ -15,6 +15,9 @@ interface FeedParams {
 const Feed = observer(() => {
     const [showNewFeedModal, setShowNewFeedModal] = React.useState(false)
     const { feedStore } = useStore()
+    useEffect(() => {
+        feedStore.getFeeds()
+    }, [])
     const { feedName, isLoading } = feedStore
     const toggleNewFeedModal = (e: React.MouseEvent): void => {
         e.preventDefault()
