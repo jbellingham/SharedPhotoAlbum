@@ -9,6 +9,30 @@ export const AuthenticationResultStatus = {
 }
 
 export class AuthorizeService {
+    constructor() {
+        window.fbAsyncInit = function () {
+            window.FB.init({
+                appId: '1259536097712653',
+                cookie: true,
+                xfbml: true,
+                version: 'v2.8',
+            })
+            window.FB.AppEvents.logPageView()
+            // eslint-disable-next-line no-restricted-globals
+            window.FB.Event.subscribe('auth.statusChange', self.onStatusChange.bind(self))
+        }.bind(this)
+
+        // Load the SDK asynchronously
+        ;(function (d, s, id) {
+            let js,
+                fjs = d.getElementsByTagName(s)[0]
+            if (d.getElementById(id)) return
+            js = d.createElement(s)
+            js.id = id
+            js.src = 'https://connect.facebook.net/en_US/sdk.js'
+            fjs.parentNode.insertBefore(js, fjs)
+        })(document, 'script', 'facebook-jssdk')
+    }
     _callbacks = []
     _nextSubscriptionId = 0
     _user = null
@@ -24,6 +48,12 @@ export class AuthorizeService {
 
     async getUser() {
         return Promise.resolve()
+    }
+
+    async onStatusChange(response) {
+        if (response.status === 'connected') {
+            await this.signIn()
+        }
     }
 
     // async tokenExpired() {
@@ -63,21 +93,28 @@ export class AuthorizeService {
                 this.updateState()
                 return this.success()
             } else {
-                return this.error()
+                // return this.error()
+                throw new Error('poop')
             }
         } catch (silentError) {
             // User might not be authenticated, fallback to popup authentication
             console.log('Silent authentication error: ', silentError)
 
             try {
-                if (this._popUpDisabled) {
-                    throw new Error(
-                        "Popup disabled. Change 'AuthorizeService.js:AuthorizeService._popupDisabled' to false to enable it.",
-                    )
-                }
+                // if (this._popUpDisabled) {
+                //     throw new Error(
+                //         "Popup disabled. Change 'AuthorizeService.js:AuthorizeService._popupDisabled' to false to enable it.",
+                //     )
+                // }
 
-                const popUpUser = await this.userManager.signinPopup(this.createArguments())
-                this.updateState(popUpUser)
+                // const popUpUser = await this.userManager.signinPopup(this.createArguments())
+                // this.updateState(popUpUser)
+                window.FB.login(
+                    function (response) {
+                        console.log(response)
+                    },
+                    { scope: 'public_profile,email' },
+                )
                 return this.success(state)
             } catch (popUpError) {
                 if (popUpError.message === 'Popup window closed') {
