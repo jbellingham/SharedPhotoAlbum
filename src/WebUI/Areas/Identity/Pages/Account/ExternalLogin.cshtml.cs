@@ -87,6 +87,12 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
             var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor : true);
             if (result.Succeeded)
             {
+                if (!info.Principal.HasClaim(_ => _.Type == JwtClaimTypes.Subject))
+                {
+                    var userId = _userManager.GetUserId(User);
+                    var user = await _userManager.FindByIdAsync(userId);
+                    await _userManager.AddClaimAsync(user, new Claim(JwtClaimTypes.Subject, userId));
+                }
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 return LocalRedirect(returnUrl);
             }
@@ -139,6 +145,7 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
 
                         var userId = await _userManager.GetUserIdAsync(user);
+                        await _userManager.AddClaimAsync(user, new Claim(JwtClaimTypes.Subject, userId));
                         var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                         var callbackUrl = Url.Page(

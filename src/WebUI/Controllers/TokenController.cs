@@ -4,6 +4,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -26,7 +27,7 @@ namespace SharedPhotoAlbum.WebUI.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var userId = User.FindFirst("sub")?.Value;
+            var userId = User.FindFirst(JwtClaimTypes.Id)?.Value;
             var user = await _userStore.FindByIdAsync(userId, CancellationToken.None);
             if (user == null)
             {

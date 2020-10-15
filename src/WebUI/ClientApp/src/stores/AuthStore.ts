@@ -17,7 +17,7 @@ class AuthStore {
         if (token) {
             this.token = token
         } else {
-            this.tokenClient
+            return this.tokenClient
                 .get()
                 .then((response) => {
                     // this.token = await tokenResponse.data
