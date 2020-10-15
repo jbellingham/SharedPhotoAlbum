@@ -1,7 +1,6 @@
 import React from 'react'
 import { Component } from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import { ApplicationPaths, QueryParameterNames } from './ApiAuthorizationConstants'
 import authService from './AuthorizeService'
 import Layout from '../shared/Layout'
 import { PropTypes } from 'mobx-react'
@@ -29,8 +28,10 @@ export default class AuthorizeRoute extends Component {
         const { ready, authenticated } = this.state
         const link = document.createElement('a')
         link.href = this.props.path
-        const returnUrl = `${link.protocol}//${link.host}${link.pathname}${link.search}${link.hash}`
-        const redirectUrl = `${ApplicationPaths.Login}?${QueryParameterNames.ReturnUrl}=${encodeURI(returnUrl)}`
+        if (ready && !authenticated) {
+            window.location.href = '/Identity/Account/Login'
+        }
+
         if (!ready) {
             return <div></div>
         } else {

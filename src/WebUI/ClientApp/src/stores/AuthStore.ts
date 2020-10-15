@@ -1,29 +1,35 @@
-// import { decorate, observable } from 'mobx'
-// import authService, { AuthorizeService } from '../components/api-authorization/AuthorizeService'
-//
-// class AuthStore {
-//     isAuthenticated = false
-//
-//     constructor(authService: AuthorizeService) {
-//         authService.isAuthenticated().then((authenticated) => {
-//             this.isAuthenticated = authenticated
-//         })
-//
-//         // authService.getAccessToken().then((token) => {
-//         //     this.token = token
-//         // })
-//     }
-//
-//     // public async ensureToken() {
-//     //     if (authService.tokenExpired()) {
-//     //         await authService.getAccessToken()
-//     //     }
-//     // }
-// }
-//
-// decorate(AuthStore, {
-//     isAuthenticated: observable,
-//     // token: observable,
-// })
-//
-// export default AuthStore
+import { action, observable } from 'mobx'
+import { TokenClient } from '../Client'
+import Cookies from 'js-cookie'
+
+class AuthStore {
+    @observable
+    isAuthenticated = false
+
+    @observable
+    token = ''
+
+    constructor(private tokenClient: TokenClient) {}
+
+    @action
+    async getToken(): Promise<void> {
+        const token = Cookies.get('auth_token')
+        if (token) {
+            this.token = token
+        } else {
+            this.tokenClient
+                .get()
+                .then((response) => {
+                    // this.token = await tokenResponse.data
+                    // Cookies.set('auth_token')
+                    this.isAuthenticated = true
+                    console.log(response)
+                })
+                .catch((error) => {
+                    console.log(error)
+                })
+        }
+    }
+}
+
+export default AuthStore

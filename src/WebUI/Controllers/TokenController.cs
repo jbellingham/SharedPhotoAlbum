@@ -24,12 +24,16 @@ namespace SharedPhotoAlbum.WebUI.Controllers
         }
         
         [HttpGet]
-        public async Task<JsonResult> Get()
+        public async Task<IActionResult> Get()
         {
             var userId = User.FindFirst("sub")?.Value;
             var user = await _userStore.FindByIdAsync(userId, CancellationToken.None);
+            if (user == null)
+            {
+                return NotFound();
+            }
             var token = GenerateJwtToken(user);
-            return new JsonResult(token);
+            return Ok(token);
         }
 
         private string GenerateJwtToken(ApplicationUser user)

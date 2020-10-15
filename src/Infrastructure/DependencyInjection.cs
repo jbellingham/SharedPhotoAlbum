@@ -6,6 +6,7 @@ using SharedPhotoAlbum.Infrastructure.Identity;
 using SharedPhotoAlbum.Infrastructure.Persistence;
 using SharedPhotoAlbum.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -61,10 +62,10 @@ namespace SharedPhotoAlbum.Infrastructure
             
             services.AddAuthentication()
                 // .AddIdentityServerJwt()
-                .AddCookie(CookieScheme)
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddFacebook(facebookOptions =>
                 {
-                    // facebookOptions.SignInScheme = CookieScheme;
+                    // facebookOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
                     facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
                     facebookOptions.Fields.Add("picture");
