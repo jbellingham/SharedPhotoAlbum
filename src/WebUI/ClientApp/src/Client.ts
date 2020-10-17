@@ -478,7 +478,7 @@ export class PostsClient implements IPostsClient {
 }
 
 export interface ITokenClient {
-    get(): Promise<FileResponse>;
+    get(): Promise<string>;
 }
 
 export class TokenClient implements ITokenClient {
@@ -491,16 +491,15 @@ export class TokenClient implements ITokenClient {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
 
-    get(): Promise<FileResponse> {
+    get(): Promise<string> {
         let url_ = this.baseUrl + "/api/Token";
         url_ = url_.replace(/[?&]$/, "");
 
         let options_ = <AxiosRequestConfig>{
-            responseType: "blob",
             method: "GET",
             url: url_,
             headers: {
-                "Accept": "application/octet-stream"
+                "Accept": "application/json"
             }
         };
 
@@ -509,7 +508,7 @@ export class TokenClient implements ITokenClient {
         });
     }
 
-    protected processGet(response: AxiosResponse): Promise<FileResponse> {
+    protected processGet(response: AxiosResponse): Promise<string> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -519,16 +518,17 @@ export class TokenClient implements ITokenClient {
                 }
             }
         }
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
-            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            return result200;
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<FileResponse>(<any>null);
+        return Promise.resolve<string>(<any>null);
     }
 }
 

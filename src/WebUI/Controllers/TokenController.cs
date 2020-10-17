@@ -25,9 +25,9 @@ namespace SharedPhotoAlbum.WebUI.Controllers
         }
         
         [HttpGet]
-        public async Task<IActionResult> Get()
+        public async Task<ActionResult<string>> Get()
         {
-            var userId = User.FindFirst(JwtClaimTypes.Id)?.Value;
+            var userId = User.FindFirst(JwtClaimTypes.Subject)?.Value;
             var user = await _userStore.FindByIdAsync(userId, CancellationToken.None);
             if (user == null)
             {
@@ -41,7 +41,7 @@ namespace SharedPhotoAlbum.WebUI.Controllers
         {
             // generate token that is valid for 7 days
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_configuration["Secret"]);
+            var key = Encoding.ASCII.GetBytes(_configuration["JwtOptions:SigningKey"]);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),

@@ -7,7 +7,7 @@ import UserStore from './UserStore'
 import { PostsClient, CommentsClient, FeedsClient, UserClient, TokenClient } from '../Client'
 import Axios from 'axios'
 
-const baseUrl = 'https://localhost:5003'
+const baseUrl = ''
 const authStore = new AuthStore(new TokenClient(baseUrl, Axios.create()))
 
 const axios = Axios.create()

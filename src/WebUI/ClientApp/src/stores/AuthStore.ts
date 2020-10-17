@@ -20,8 +20,8 @@ class AuthStore {
             return this.tokenClient
                 .get()
                 .then((response) => {
-                    // this.token = await tokenResponse.data
-                    // Cookies.set('auth_token')
+                    this.token = response
+                    Cookies.set('auth_token', response)
                     this.isAuthenticated = true
                     console.log(response)
                 })

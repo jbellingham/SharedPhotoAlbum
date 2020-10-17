@@ -7,6 +7,7 @@ using SharedPhotoAlbum.Infrastructure.Persistence;
 using SharedPhotoAlbum.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -35,7 +36,8 @@ namespace SharedPhotoAlbum.Infrastructure
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
                 services.AddDefaultIdentity<ApplicationUser>()
-                    .AddEntityFrameworkStores<ApplicationDbContext>();
+                    .AddEntityFrameworkStores<ApplicationDbContext>()
+                    .AddSignInManager<SignInManager>();
             
             // services.AddIdentityServer()
             //     .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
@@ -65,7 +67,7 @@ namespace SharedPhotoAlbum.Infrastructure
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddFacebook(facebookOptions =>
                 {
-                    // facebookOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    facebookOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
                     facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
                     facebookOptions.Fields.Add("picture");
