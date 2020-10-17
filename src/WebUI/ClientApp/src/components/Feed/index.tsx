@@ -29,12 +29,14 @@ const Feed = observer(() => {
     }
 
     const { feedId } = useParams<FeedParams>()
-    feedStore.setCurrentFeed(feedId)
+    // feedStore.setCurrentFeed(feedId)
     useEffect(() => {
         if (feedId) {
             feedStore.getFeed(feedId)
         }
     }, [])
+
+    const { currentFeedId } = feedStore
 
     const canView: boolean = !isLoading && feedStore.canViewCurrentFeed
     return canView ? (
@@ -45,8 +47,12 @@ const Feed = observer(() => {
                         <Col xs={{ span: 12 }} lg={{ span: 7, offset: 2 }}>
                             <h1>{feedName}</h1>
                             {/* {feed.isOwner && */}
-                            <NewPost feedId={feedId} />
-                            <PostList feedId={feedId} />
+                            {currentFeedId && (
+                                <>
+                                    <NewPost feedId={currentFeedId} />
+                                    <PostList feedId={currentFeedId} />
+                                </>
+                            )}
                         </Col>
                         <Col xs={{ span: 0 }} lg={{ span: 3 }}>
                             {/* {feed.isOwner && */}

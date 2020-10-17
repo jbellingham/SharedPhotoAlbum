@@ -16,6 +16,7 @@ class AuthStore {
         const token = Cookies.get('auth_token')
         if (token) {
             this.token = token
+            this.isAuthenticated = true
         } else {
             return this.tokenClient
                 .get()
