@@ -38,6 +38,8 @@ namespace SharedPhotoAlbum.Infrastructure
                 services.AddDefaultIdentity<ApplicationUser>()
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddSignInManager<SignInManager>();
+                
+            
             
             // services.AddIdentityServer()
             //     .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
