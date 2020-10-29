@@ -4,6 +4,7 @@ import { NavItem, NavLink } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import authService from './AuthorizeService'
 import { ApplicationPaths } from './ApiAuthorizationConstants'
+import Cookies from 'js-cookie'
 
 export class LoginMenu extends Component {
     constructor(props) {
@@ -46,6 +47,12 @@ export class LoginMenu extends Component {
     }
 
     authenticatedView(userName, profilePath, logoutPath) {
+        const logout = async () => {
+            Cookies.remove('auth_token')
+            await fetch('/api/authentication/logout', {
+                method: 'POST',
+            })
+        }
         return (
             <Fragment>
                 <NavItem>
@@ -54,9 +61,9 @@ export class LoginMenu extends Component {
                     </NavLink>
                 </NavItem>
                 <NavItem>
-                    <NavLink tag={Link} className="text-dark" to={logoutPath}>
-                        <Button variant="primary">Logout</Button>
-                    </NavLink>
+                    <Button variant="primary" onClick={logout}>
+                        Logout
+                    </Button>
                 </NavItem>
             </Fragment>
         )

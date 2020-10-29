@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using SharedPhotoAlbum.Domain.Entities;
+using SharedPhotoAlbum.Domain.Exceptions;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
@@ -24,6 +25,7 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
+        private ExternalLoginInfo _externalLoginInfo;
 
         public ExternalLoginModel(
             SignInManager<ApplicationUser> signInManager,
@@ -61,7 +63,6 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
 
         public IActionResult OnPost(string provider, string returnUrl = null)
         {
-            // Request a redirect to the external login provider.
             string redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
             AuthenticationProperties properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return new ChallengeResult(provider, properties);
@@ -73,46 +74,82 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
-                return RedirectToPage("./Login", new {ReturnUrl = returnUrl });
-            }
-            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
-            {
-                ErrorMessage = "Error loading external login information.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
 
-            // Sign in the user with this external login provider if the user already has a login.
-            SignInResult result = await _signInManager.ExternalLoginSignInAsync(
-                info.LoginProvider,
-                info.ProviderKey,
-                isPersistent: false,
-                bypassTwoFactor: true);
-            
-            if (result.Succeeded)
+            try
             {
-                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
+                await PopulateExternalLoginInfo();
+                await SignInWithExternalLoginInfo();
+
+                _logger.LogInformation(
+                    "{Name} logged in with {LoginProvider} provider.",
+                    _externalLoginInfo.Principal.Identity.Name,
+                    _externalLoginInfo.LoginProvider);
                 return LocalRedirect(returnUrl);
             }
-            if (result.IsLockedOut)
+            catch (ExternalLoginInformationNotFoundException ex)
+            {
+                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+            }
+            catch (UserIsLockedOutException ex)
             {
                 return RedirectToPage("./Lockout");
             }
-
-            // If the user does not have an account, then ask the user to create an account.
-            PrepareRegistrationViewModel(returnUrl, info);
-            return Page();
+            catch (LocalUserNotFoundForExternalLoginException ex)
+            {
+                PrepareRegistrationViewModel();
+                return Page();
+            }
         }
 
-        private void PrepareRegistrationViewModel(string returnUrl, ExternalLoginInfo info)
+        private async Task PopulateExternalLoginInfo()
         {
-            ReturnUrl = returnUrl;
-            ProviderDisplayName = info.ProviderDisplayName;
-            if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+            _externalLoginInfo = await _signInManager.GetExternalLoginInfoAsync();
+            if (_externalLoginInfo == null)
+            {
+                ErrorMessage = "Error loading external login information.";
+                throw new ExternalLoginInformationNotFoundException();
+            }
+        }
+
+        private async Task SignInWithExternalLoginInfo()
+        {
+            SignInResult result = await _signInManager.ExternalLoginSignInAsync(
+                _externalLoginInfo.LoginProvider,
+                _externalLoginInfo.ProviderKey,
+                isPersistent: false,
+                bypassTwoFactor: true);
+
+            if (UserIsLockedOut(result))
+            {
+                throw new UserIsLockedOutException();
+            }
+                
+            if (LocalUserNotFoundForExternalLogin(result))
+            {
+                throw new LocalUserNotFoundForExternalLoginException();
+            }
+        }
+
+        private static bool UserIsLockedOut(SignInResult result)
+        {
+            return result.IsLockedOut;
+        }
+
+        private static bool LocalUserNotFoundForExternalLogin(SignInResult result)
+        {
+            return !result.Succeeded;
+        }
+
+        private void PrepareRegistrationViewModel()
+        {
+            ProviderDisplayName = _externalLoginInfo.ProviderDisplayName;
+            if (_externalLoginInfo.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
             {
                 Input = new InputModel
                 {
-                    Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                    Email = _externalLoginInfo.Principal.FindFirstValue(ClaimTypes.Email)
                 };
             }
         }
