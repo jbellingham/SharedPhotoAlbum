@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using IdentityModel;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -15,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using SharedPhotoAlbum.Domain.Entities;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
 {
@@ -63,8 +62,8 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
         public IActionResult OnPost(string provider, string returnUrl = null)
         {
             // Request a redirect to the external login provider.
-            var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
-            var properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
+            string redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
+            AuthenticationProperties properties = _signInManager.ConfigureExternalAuthenticationProperties(provider, redirectUrl);
             return new ChallengeResult(provider, properties);
         }
 
@@ -76,7 +75,7 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
                 ErrorMessage = $"Error from external provider: {remoteError}";
                 return RedirectToPage("./Login", new {ReturnUrl = returnUrl });
             }
-            var info = await _signInManager.GetExternalLoginInfoAsync();
+            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
                 ErrorMessage = "Error loading external login information.";
@@ -84,15 +83,14 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor : true);
+            SignInResult result = await _signInManager.ExternalLoginSignInAsync(
+                info.LoginProvider,
+                info.ProviderKey,
+                isPersistent: false,
+                bypassTwoFactor: true);
+            
             if (result.Succeeded)
             {
-                if (!info.Principal.HasClaim(_ => _.Type == JwtClaimTypes.Subject))
-                {
-                    var userId = _userManager.GetUserId(User);
-                    var user = await _userManager.FindByIdAsync(userId);
-                    await _userManager.AddClaimAsync(user, new Claim(JwtClaimTypes.Subject, userId));
-                }
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 return LocalRedirect(returnUrl);
             }
@@ -100,19 +98,22 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
             {
                 return RedirectToPage("./Lockout");
             }
-            else
+
+            // If the user does not have an account, then ask the user to create an account.
+            PrepareRegistrationViewModel(returnUrl, info);
+            return Page();
+        }
+
+        private void PrepareRegistrationViewModel(string returnUrl, ExternalLoginInfo info)
+        {
+            ReturnUrl = returnUrl;
+            ProviderDisplayName = info.ProviderDisplayName;
+            if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
             {
-                // If the user does not have an account, then ask the user to create an account.
-                ReturnUrl = returnUrl;
-                ProviderDisplayName = info.ProviderDisplayName;
-                if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
+                Input = new InputModel
                 {
-                    Input = new InputModel
-                    {
-                        Email = info.Principal.FindFirstValue(ClaimTypes.Email)
-                    };
-                }
-                return Page();
+                    Email = info.Principal.FindFirstValue(ClaimTypes.Email)
+                };
             }
         }
 
@@ -120,7 +121,7 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             // Get the information about the user from the external login provider
-            var info = await _signInManager.GetExternalLoginInfoAsync();
+            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
                 ErrorMessage = "Error loading external login information during confirmation.";
@@ -131,31 +132,18 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
             {
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
 
-                var result = await _userManager.CreateAsync(user);
+                IdentityResult result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
-                        if (info.Principal.HasClaim(_ => _.Type == JwtClaimTypes.Picture))
-                        {
-                            await _userManager.AddClaimAsync(user,
-                                info.Principal.FindFirst(JwtClaimTypes.Picture));
-                        }
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+                        await AddProfilePictureClaimIfEmpty(info, user);
 
                         var userId = await _userManager.GetUserIdAsync(user);
                         await _userManager.AddClaimAsync(user, new Claim(JwtClaimTypes.Subject, userId));
-                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-                        var callbackUrl = Url.Page(
-                            "/Account/ConfirmEmail",
-                            pageHandler: null,
-                            values: new { area = "Identity", userId = userId, code = code },
-                            protocol: Request.Scheme);
-
-                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                        await SendEmailConfirmationEmail(user, userId);
 
                         // If account confirmation is required, we need to show the link if we don't have a real email sender
                         if (_userManager.Options.SignIn.RequireConfirmedAccount)
@@ -177,6 +165,29 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
             ProviderDisplayName = info.ProviderDisplayName;
             ReturnUrl = returnUrl;
             return Page();
+        }
+
+        private async Task AddProfilePictureClaimIfEmpty(ExternalLoginInfo info, ApplicationUser user)
+        {
+            if (info.Principal.HasClaim(_ => _.Type == JwtClaimTypes.Picture))
+            {
+                await _userManager.AddClaimAsync(user,
+                    info.Principal.FindFirst(JwtClaimTypes.Picture));
+            }
+        }
+
+        private async Task SendEmailConfirmationEmail(ApplicationUser user, string userId)
+        {
+            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            var callbackUrl = Url.Page(
+                "/Account/ConfirmEmail",
+                pageHandler: null,
+                values: new {area = "Identity", userId = userId, code = code},
+                protocol: Request.Scheme);
+
+            await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
         }
     }
 }

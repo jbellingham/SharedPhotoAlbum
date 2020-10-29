@@ -39,7 +39,6 @@ namespace SharedPhotoAlbum.Application.Posts.Commands.CreatePost
 
             if (fileUploadResult.Success)
             {
-
                 var entity = new Post
                 {
                     FeedId = request.FeedId,

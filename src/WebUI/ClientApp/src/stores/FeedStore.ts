@@ -1,12 +1,19 @@
 import { CreateFeedCommand, FeedDto, IFeedsClient } from '../Client'
-import { action, computed, observable } from 'mobx'
+import { action, autorun, computed, observable } from 'mobx'
 import PostStore from './PostStore'
 import { Feed } from '../components/models/Feed'
 import { FeedMapper } from '../mappers/FeedMapper'
 
 class FeedStore {
-    constructor(private postStore: PostStore, private feedsClient: IFeedsClient) {}
+    constructor(private postStore: PostStore, private feedsClient: IFeedsClient) {
+        autorun(() => {
+            if (this.currentFeedId) {
+                this.getFeed(this.currentFeedId)
+            }
+        })
+    }
 
+    @observable
     currentFeedId: string | undefined = ''
 
     @observable
@@ -39,9 +46,6 @@ class FeedStore {
 
     @action
     async getFeed(feedId: string | null): Promise<void> {
-        if (feedId) {
-            this.currentFeedId = feedId
-        }
         if (!this.isLoading) {
             this.isLoading = true
             this.feedsClient.get(feedId).then(({ feeds }) => {
@@ -70,7 +74,6 @@ class FeedStore {
 
     async createFeed(feed: CreateFeedCommand): Promise<string> {
         const feedId = await this.feedsClient.create(feed)
-        await this.getFeed(feedId)
         return feedId
     }
 }

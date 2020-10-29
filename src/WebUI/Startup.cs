@@ -1,6 +1,4 @@
-using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
-using System.Security.Claims;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -98,10 +96,6 @@ namespace WebUI
             });
 
             app.UseRouting();
-
-            // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
-            // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Add("sub", ClaimTypes.NameIdentifier);
-            
             app.UseAuthentication();
             app.UseAuthorization();
 

@@ -29,12 +29,7 @@ const Feed = observer(() => {
     }
 
     const { feedId } = useParams<FeedParams>()
-    // feedStore.setCurrentFeed(feedId)
-    useEffect(() => {
-        if (feedId) {
-            feedStore.getFeed(feedId)
-        }
-    }, [])
+    feedStore.currentFeedId = feedId
 
     const { currentFeedId } = feedStore
 
