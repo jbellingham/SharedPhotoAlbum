@@ -49,9 +49,12 @@ export class LoginMenu extends Component {
     authenticatedView(userName, profilePath, logoutPath) {
         const logout = async () => {
             Cookies.remove('auth_token')
-            await fetch('/api/authentication/logout', {
+            const result = await fetch('/api/logout', {
                 method: 'POST',
             })
+            if (result.ok) {
+                window.location = '/Identity/Account/Login'
+            }
         }
         return (
             <Fragment>

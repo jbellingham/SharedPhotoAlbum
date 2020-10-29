@@ -6,27 +6,6 @@
     "version": "1.0.0"
   },
   "paths": {
-    "/api/Authentication": {
-      "post": {
-        "tags": [
-          "Authentication"
-        ],
-        "operationId": "Authentication_Logout",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/octet-stream": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/api/Comments": {
       "post": {
         "tags": [
@@ -231,6 +210,19 @@
             "JWT": []
           }
         ]
+      }
+    },
+    "/api/Logout": {
+      "post": {
+        "tags": [
+          "Logout"
+        ],
+        "operationId": "Logout_Index",
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        }
       }
     },
     "/_configuration/{clientId}": {
