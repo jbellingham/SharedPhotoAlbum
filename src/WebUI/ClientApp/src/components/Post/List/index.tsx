@@ -4,24 +4,6 @@ import React, { useEffect } from 'react'
 import Post from '..'
 import { useStore } from '../../../stores/StoreContext'
 
-// export const GET_POSTS = gql`
-//     query postsByFeedId($feedId: String!, $skip: Int, $limit: Int) {
-//         postsByFeedId(feedId: $feedId, skip: $skip, limit: $limit) {
-//             _id
-//             text
-//             poster {
-//                 _id
-//                 email
-//             }
-//             media {
-//                 _id
-//                 publicId
-//                 mimeType
-//             }
-//         }
-//     }
-// `
-
 interface PostListProps {
     feedId: string
 }
@@ -30,9 +12,10 @@ const PostList = observer((props: PostListProps) => {
     const offset = 200
     const { postStore } = useStore()
     const { posts } = postStore
+    const { feedId } = props
     useEffect(() => {
-        postStore.getPosts(props.feedId)
-    }, [])
+        postStore.getPosts(feedId)
+    }, [feedId])
 
     // const { postsByFeedId: posts } = data || {}
 
@@ -62,7 +45,7 @@ const PostList = observer((props: PostListProps) => {
             ))}
         </>
     ) : (
-        <span>Loading ...</span>
+        <span>There's nothing here...</span>
     )
 })
 

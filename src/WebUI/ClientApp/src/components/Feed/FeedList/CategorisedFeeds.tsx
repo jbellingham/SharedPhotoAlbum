@@ -4,6 +4,7 @@ import { observer } from 'mobx-react'
 import { IFeedDto } from '../../../Client'
 import { Button } from 'react-bootstrap'
 import { useHistory, useParams } from 'react-router-dom'
+import { useStore } from '../../../stores/StoreContext'
 
 export interface ICategorisedFeedsProps {
     feeds: IFeedDto[]
@@ -13,11 +14,11 @@ export interface ICategorisedFeedsProps {
 
 const CategorisedFeeds = observer((props: ICategorisedFeedsProps) => {
     const { feedId } = useParams()
-    const [selectedFeedId, setselectedFeedId] = React.useState(feedId)
     const history = useHistory()
+    const { feedStore } = useStore()
 
     const onButtonClick = (feedId: string) => {
-        setselectedFeedId(feedId)
+        feedStore.currentFeedId = feedId
         history.push(feedId)
     }
 
@@ -27,7 +28,7 @@ const CategorisedFeeds = observer((props: ICategorisedFeedsProps) => {
             <p key={id}>
                 <Button
                     onClick={() => onButtonClick(id || '')}
-                    variant={selectedFeedId === id ? 'primary' : 'outline-primary'}
+                    variant={feedStore.currentFeedId === id ? 'primary' : 'outline-primary'}
                 >
                     {name}
                 </Button>

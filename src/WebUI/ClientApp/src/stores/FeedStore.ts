@@ -1,23 +1,19 @@
 import { CreateFeedCommand, FeedDto, IFeedsClient } from '../Client'
-import { action, autorun, computed, observable } from 'mobx'
+import { action, computed, observable } from 'mobx'
 import PostStore from './PostStore'
 import { Feed } from '../components/models/Feed'
 import { FeedMapper } from '../mappers/FeedMapper'
 
 class FeedStore {
-    constructor(private postStore: PostStore, private feedsClient: IFeedsClient) {
-        autorun(() => {
-            if (this.currentFeedId) {
-                this.getFeed(this.currentFeedId)
-            }
-        })
-    }
+    constructor(private postStore: PostStore, private feedsClient: IFeedsClient) {}
 
     @observable
     currentFeedId: string | undefined = ''
 
-    @observable
-    feedName: string | undefined = ''
+    @computed
+    get feedName(): string | undefined {
+        return this.feeds.find((_) => _.id === this.currentFeedId)?.name
+    }
 
     @observable
     isLoading = false
@@ -50,7 +46,6 @@ class FeedStore {
             this.isLoading = true
             this.feedsClient.get(feedId).then(({ feeds }) => {
                 if (feeds?.length === 1) {
-                    this.feedName = feeds[0].name
                     this.feeds = [...this.feeds, FeedMapper.fromDto(feeds[0])]
                 }
                 this.isLoading = false
@@ -64,7 +59,6 @@ class FeedStore {
             this.isLoading = true
             this.feedsClient.get(null).then(({ feeds }) => {
                 if (feeds !== undefined && feeds.length > 0) {
-                    this.feedName = feeds.find((f) => f.id === this.currentFeedId)?.name
                     this.feeds = feeds.map((feedDto: FeedDto) => FeedMapper.fromDto(feedDto))
                     this.isLoading = false
                 }
@@ -74,6 +68,8 @@ class FeedStore {
 
     async createFeed(feed: CreateFeedCommand): Promise<string> {
         const feedId = await this.feedsClient.create(feed)
+        await this.getFeeds()
+        this.currentFeedId = feedId
         return feedId
     }
 }

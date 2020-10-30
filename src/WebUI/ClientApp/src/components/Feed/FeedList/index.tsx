@@ -11,7 +11,6 @@ import CategorisedFeeds, { ICategorisedFeedsProps } from './CategorisedFeeds'
 // }
 
 const FeedList = observer(() => {
-    // const [selectedFeedId, setSelectedFeedId] = React.useState(props.selectedFeed)
     const [showNewFeedModal, setShowNewFeedModal] = React.useState(false)
 
     const { feedStore } = useStore()
@@ -21,10 +20,6 @@ const FeedList = observer(() => {
     const handleNewFeedModalClose = () => {
         setShowNewFeedModal(!showNewFeedModal)
     }
-
-    // if (props.selectedFeed && selectedFeedId !== props.selectedFeed) {
-    //     setSelectedFeedId(props.selectedFeed)
-    // }
 
     const myFeedsProps: ICategorisedFeedsProps = {
         feeds: myFeeds,
