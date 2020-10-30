@@ -166,8 +166,8 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             // Get the information about the user from the external login provider
-            ExternalLoginInfo info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
+            _externalLoginInfo = await _signInManager.GetExternalLoginInfoAsync();
+            if (_externalLoginInfo == null)
             {
                 ErrorMessage = "Error loading external login information during confirmation.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
@@ -180,10 +180,10 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
                 IdentityResult result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
-                    result = await _userManager.AddLoginAsync(user, info);
+                    result = await _userManager.AddLoginAsync(user, _externalLoginInfo);
                     if (result.Succeeded)
                     {
-                        _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+                        _logger.LogInformation("User created an account using {Name} provider.", _externalLoginInfo.LoginProvider);
                         await AddFacebookProfileClaimsIfEmpty();
 
                         var userId = await _userManager.GetUserIdAsync(user);
@@ -196,7 +196,7 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
                             return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
                         }
 
-                        await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
+                        await _signInManager.SignInAsync(user, isPersistent: false, _externalLoginInfo.LoginProvider);
 
                         return LocalRedirect(returnUrl);
                     }
@@ -207,7 +207,7 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
                 }
             }
 
-            ProviderDisplayName = info.ProviderDisplayName;
+            ProviderDisplayName = _externalLoginInfo.ProviderDisplayName;
             ReturnUrl = returnUrl;
             return Page();
         }

@@ -60,9 +60,9 @@ class FeedStore {
             this.feedsClient.get(null).then(({ feeds }) => {
                 if (feeds !== undefined && feeds.length > 0) {
                     this.feeds = feeds.map((feedDto: FeedDto) => FeedMapper.fromDto(feedDto))
-                    this.isLoading = false
                 }
             })
+            this.isLoading = false
         }
     }
 
