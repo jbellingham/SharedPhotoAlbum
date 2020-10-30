@@ -29,7 +29,7 @@ const MediaContainer = (props: IMediaDto): JSX.Element => {
                         quality="auto"
                         width="500"
                         height="500"
-                        crop="fill"
+                        crop="fit"
                     ></Image>
                 )
         }
