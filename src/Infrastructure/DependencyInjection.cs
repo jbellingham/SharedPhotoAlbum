@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using IdentityModel;
 using SharedPhotoAlbum.Application.Common.Interfaces;
@@ -18,8 +19,6 @@ namespace SharedPhotoAlbum.Infrastructure
 {
     public static class DependencyInjection
     {
-        public const string CookieScheme = "CookieScheme";
-        
         public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
         {
             if (configuration.GetValue<bool>("UseInMemoryDatabase"))
@@ -39,12 +38,6 @@ namespace SharedPhotoAlbum.Infrastructure
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddSignInManager<SignInManager>();
                 
-            
-            
-            // services.AddIdentityServer()
-            //     .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
-            
-            // JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
             var validIssuer = configuration["JwtOptions:Issuer"];
             var validAudience = configuration["JwtOptions:Audience"];
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration["JwtOptions:SigningKey"]));
@@ -65,7 +58,6 @@ namespace SharedPhotoAlbum.Infrastructure
             };
             
             services.AddAuthentication()
-                // .AddIdentityServerJwt()
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddFacebook(facebookOptions =>
                 {
@@ -76,6 +68,8 @@ namespace SharedPhotoAlbum.Infrastructure
                     facebookOptions.ClaimActions.MapCustomJson(JwtClaimTypes.Picture,
                         json => json.GetProperty("picture").GetProperty("data")
                         .GetProperty("url").ToString());
+                    facebookOptions.ClaimActions.MapCustomJson(JwtClaimTypes.GivenName, json => json.GetProperty("first_name").ToString());
+                    facebookOptions.ClaimActions.MapCustomJson(JwtClaimTypes.FamilyName, json => json.GetProperty("last_name").ToString());
                 })
                 .AddJwtBearer(jwtOptions =>
                 {

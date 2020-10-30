@@ -1,23 +1,26 @@
+import { observer } from 'mobx-react'
 import React from 'react'
 import { Image } from 'react-bootstrap'
 import { useStore } from '../../../stores/StoreContext'
 
-function ProfilePicture() {
+const ProfilePicture = observer(() => {
     const { userStore } = useStore()
-    const { loading, profilePictureUrl } = userStore
-    if (!loading) {
-        // const { name, profilePicture } = data.getUser || {}
+    const { user } = userStore
+    if (!user) {
+        userStore.getUserProfile()
+    }
+    if (!userStore.loading) {
         return (
             <Image
-                // alt={name}
-                src={profilePictureUrl}
+                alt={`${user?.firstName} ${user?.lastName}`}
+                src={user?.profilePictureUrl}
                 roundedCircle
-                width={100}//profilePicture?.width}
-                height={100}//profilePicture?.height}
+                width={50}
+                height={50}
             />
         )
     }
     return null
-}
+})
 
 export default ProfilePicture

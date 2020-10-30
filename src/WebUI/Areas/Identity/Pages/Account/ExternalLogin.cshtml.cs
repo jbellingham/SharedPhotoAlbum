@@ -1,4 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -12,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using SharedPhotoAlbum.Application.Common.Interfaces;
 using SharedPhotoAlbum.Domain.Entities;
 using SharedPhotoAlbum.Domain.Exceptions;
 using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
@@ -25,18 +29,21 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
+        private readonly IUserClaimsService _userClaimsService;
         private ExternalLoginInfo _externalLoginInfo;
 
         public ExternalLoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             ILogger<ExternalLoginModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IUserClaimsService userClaimsService)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
             _emailSender = emailSender;
+            _userClaimsService = userClaimsService ?? throw new ArgumentNullException(nameof(userClaimsService));
         }
 
         [BindProperty]
@@ -81,6 +88,7 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
             {
                 await PopulateExternalLoginInfo();
                 await SignInWithExternalLoginInfo();
+                await AddFacebookProfileClaimsIfEmpty();
 
                 _logger.LogInformation(
                     "{Name} logged in with {LoginProvider} provider.",
@@ -176,7 +184,7 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
                     if (result.Succeeded)
                     {
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
-                        await AddProfilePictureClaimIfEmpty(info, user);
+                        await AddFacebookProfileClaimsIfEmpty();
 
                         var userId = await _userManager.GetUserIdAsync(user);
                         await _userManager.AddClaimAsync(user, new Claim(JwtClaimTypes.Subject, userId));
@@ -204,13 +212,10 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
             return Page();
         }
 
-        private async Task AddProfilePictureClaimIfEmpty(ExternalLoginInfo info, ApplicationUser user)
+        private async Task AddFacebookProfileClaimsIfEmpty()
         {
-            if (info.Principal.HasClaim(_ => _.Type == JwtClaimTypes.Picture))
-            {
-                await _userManager.AddClaimAsync(user,
-                    info.Principal.FindFirst(JwtClaimTypes.Picture));
-            }
+            var user = await _userManager.FindByLoginAsync(_externalLoginInfo.ProviderDisplayName, _externalLoginInfo.ProviderKey);
+            await _userClaimsService.AddMissingUserClaims(user, _externalLoginInfo.Principal);
         }
 
         private async Task SendEmailConfirmationEmail(ApplicationUser user, string userId)

@@ -113,108 +113,6 @@ export class CommentsClient implements ICommentsClient {
     }
 }
 
-export interface IExternalLoginClient {
-    index(returnUrl: string | null | undefined): Promise<FileResponse>;
-    externalLoginCallback(returnUrl: string | null | undefined, remoteError: string | null | undefined): Promise<FileResponse>;
-}
-
-export class ExternalLoginClient implements IExternalLoginClient {
-    private instance: AxiosInstance;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(baseUrl?: string, instance?: AxiosInstance) {
-        this.instance = instance ? instance : axios.create();
-        this.baseUrl = baseUrl ? baseUrl : "";
-    }
-
-    index(returnUrl: string | null | undefined): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/api/ExternalLogin?";
-        if (returnUrl !== undefined)
-            url_ += "returnUrl=" + encodeURIComponent("" + returnUrl) + "&"; 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <AxiosRequestConfig>{
-            responseType: "blob",
-            method: "POST",
-            url: url_,
-            headers: {
-                "Accept": "application/octet-stream"
-            }
-        };
-
-        return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processIndex(_response);
-        });
-    }
-
-    protected processIndex(response: AxiosResponse): Promise<FileResponse> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
-            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<FileResponse>(<any>null);
-    }
-
-    externalLoginCallback(returnUrl: string | null | undefined, remoteError: string | null | undefined): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/api/ExternalLogin?";
-        if (returnUrl !== undefined)
-            url_ += "returnUrl=" + encodeURIComponent("" + returnUrl) + "&"; 
-        if (remoteError !== undefined)
-            url_ += "remoteError=" + encodeURIComponent("" + remoteError) + "&"; 
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <AxiosRequestConfig>{
-            responseType: "blob",
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "application/octet-stream"
-            }
-        };
-
-        return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processExternalLoginCallback(_response);
-        });
-    }
-
-    protected processExternalLoginCallback(response: AxiosResponse): Promise<FileResponse> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
-            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<FileResponse>(<any>null);
-    }
-}
-
 export interface IFeedsClient {
     create(command: CreateFeedCommand): Promise<string>;
     get(feedId: string | null | undefined): Promise<FeedVm>;
@@ -584,7 +482,7 @@ export class TokenClient implements ITokenClient {
 }
 
 export interface IUserClient {
-    profilePictureUrl(): Promise<string>;
+    get(): Promise<UserDetailsDto>;
 }
 
 export class UserClient implements IUserClient {
@@ -597,7 +495,7 @@ export class UserClient implements IUserClient {
         this.baseUrl = baseUrl ? baseUrl : "";
     }
 
-    profilePictureUrl(): Promise<string> {
+    get(): Promise<UserDetailsDto> {
         let url_ = this.baseUrl + "/api/User";
         url_ = url_.replace(/[?&]$/, "");
 
@@ -610,11 +508,11 @@ export class UserClient implements IUserClient {
         };
 
         return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processProfilePictureUrl(_response);
+            return this.processGet(_response);
         });
     }
 
-    protected processProfilePictureUrl(response: AxiosResponse): Promise<string> {
+    protected processGet(response: AxiosResponse): Promise<UserDetailsDto> {
         const status = response.status;
         let _headers: any = {};
         if (response.headers && typeof response.headers === "object") {
@@ -628,13 +526,13 @@ export class UserClient implements IUserClient {
             const _responseText = response.data;
             let result200: any = null;
             let resultData200  = _responseText;
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
+            result200 = UserDetailsDto.fromJS(resultData200);
             return result200;
         } else if (status !== 200 && status !== 204) {
             const _responseText = response.data;
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
-        return Promise.resolve<string>(<any>null);
+        return Promise.resolve<UserDetailsDto>(<any>null);
     }
 }
 
@@ -1152,6 +1050,50 @@ export interface IStoredMediaDto {
     publicId?: string | undefined;
     mimeType?: string | undefined;
     postId?: string;
+}
+
+export class UserDetailsDto implements IUserDetailsDto {
+    profilePictureUrl?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+
+    constructor(data?: IUserDetailsDto) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.profilePictureUrl = _data["profilePictureUrl"];
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+        }
+    }
+
+    static fromJS(data: any): UserDetailsDto {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserDetailsDto();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["profilePictureUrl"] = this.profilePictureUrl;
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        return data; 
+    }
+}
+
+export interface IUserDetailsDto {
+    profilePictureUrl?: string | undefined;
+    firstName?: string | undefined;
+    lastName?: string | undefined;
 }
 
 export interface FileResponse {

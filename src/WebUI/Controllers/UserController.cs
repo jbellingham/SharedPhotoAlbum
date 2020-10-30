@@ -6,6 +6,7 @@ using IdentityModel;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using SharedPhotoAlbum.Domain.Entities;
 
 namespace SharedPhotoAlbum.WebUI.Controllers
@@ -19,29 +20,23 @@ namespace SharedPhotoAlbum.WebUI.Controllers
         {
             _signInManager = signInManager ?? throw new ArgumentNullException(nameof(signInManager));
         }
-        public async Task<string> ProfilePictureUrl()
-        {
-            var info = await _signInManager.GetExternalLoginInfoAsync();
 
-            if (info == null)
+        [HttpGet]
+        public ActionResult<UserDetailsDto> Get()
+        {
+            return Ok(new UserDetailsDto
             {
-                // do something
-            }
-            //
-            // var identity = (ClaimsIdentity)this.User.Identity;
-            // if (info.Principal.HasClaim(_ => _.Type == JwtClaimTypes.Picture))
-            // {
-            //     if (!identity.HasClaim(_ => _.Type == JwtClaimTypes.Picture))
-            //     {
-            //         
-            //     }
-            // }
-            
-            // add to onloginsuccess
-            var authResult = await HttpContext.AuthenticateAsync();
-            var identity = (ClaimsIdentity)this.User.Identity;
-            var result = identity.Claims.SingleOrDefault(_ => _.Type == JwtClaimTypes.Picture)?.Value;
-            return result;
+                ProfilePictureUrl = HttpContext.User.FindFirst(JwtClaimTypes.Picture)?.Value,
+                FirstName = HttpContext.User.FindFirst(JwtClaimTypes.GivenName)?.Value,
+                LastName = HttpContext.User.FindFirst(JwtClaimTypes.FamilyName)?.Value,
+            });
         }
+    }
+
+    public class UserDetailsDto
+    {
+        public string ProfilePictureUrl { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     }
 }

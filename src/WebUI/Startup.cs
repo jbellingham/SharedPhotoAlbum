@@ -35,6 +35,7 @@ namespace WebUI
 
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<ITokenHelper, TokenHelper>();
+            services.AddScoped<IUserClaimsService, UserClaimsService>();
 
             services.AddHttpContextAccessor();
 
