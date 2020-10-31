@@ -10,7 +10,8 @@ function App() {
     const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME
 
     return (
-        <CloudinaryContext cloudName={cloudName}>
+        //todo: remove cloudname
+        <CloudinaryContext cloudName="dzehqlqqu">
             <StoreContext.Provider value={store}>
                 <Router>
                     <Switch>
