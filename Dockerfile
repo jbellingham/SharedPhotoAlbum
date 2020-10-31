@@ -21,7 +21,7 @@ WORKDIR /src/WebUI
 RUN dotnet build "WebUI.csproj" -c Release -o /app
 WORKDIR /src/WebUI/ClientApp
 RUN npm install
-RUN npm run build
+RUN npm run build:production
 
 FROM dotnet-build-env AS publish
 WORKDIR /src/WebUI
