@@ -17,9 +17,12 @@
     }
     
     .status-input {
-        margin: 0.3em 0 0 1em;
+        margin-top: 0.3em;
         .status-input-field {
             display: inline;
+            @media only screen and (max-width: 768px) {
+                width: 79%;
+            }
             width: 90%;
         }
         .status-input-submit {

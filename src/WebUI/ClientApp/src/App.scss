@@ -19,3 +19,9 @@
   padding: 1em;
   border-radius: 5px;
 }
+
+@media only screen and (max-width: 768px) {
+  .App {
+    padding: 0;
+  }
+}

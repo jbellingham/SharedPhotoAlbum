@@ -2,6 +2,7 @@ import React from 'react'
 import { Carousel, CarouselItem } from 'react-bootstrap'
 import { Image, Video } from 'cloudinary-react'
 import { Media } from '../../models/Media'
+import { useMediaQuery } from 'react-responsive'
 
 export interface IMediaDto {
     onClick: () => void
@@ -9,6 +10,10 @@ export interface IMediaDto {
 }
 
 const MediaContainer = (props: IMediaDto): JSX.Element => {
+    const isDesktopOrLaptop = useMediaQuery({
+        query: '(min-device-width: 1224px)',
+    })
+
     const renderMedia = (media: Media): JSX.Element => {
         switch (media.mimeType) {
             case 'video/mp4':
@@ -27,9 +32,10 @@ const MediaContainer = (props: IMediaDto): JSX.Element => {
                         responsive
                         fetchFormat="auto"
                         quality="auto"
-                        width="500"
-                        height="500"
+                        width={isDesktopOrLaptop ? '' : '300'}
+                        height={isDesktopOrLaptop ? '800' : ''}
                         crop="fit"
+                        aspectRatio="16:9"
                     ></Image>
                 )
         }
