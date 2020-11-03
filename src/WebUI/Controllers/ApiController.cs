@@ -9,7 +9,7 @@ namespace SharedPhotoAlbum.WebUI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = CookieAuthenticationDefaults.AuthenticationScheme + "," + JwtBearerDefaults.AuthenticationScheme)]
     public abstract class ApiController : ControllerBase
     {
         private IMediator _mediator;

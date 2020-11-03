@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -128,7 +126,7 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
                 _externalLoginInfo.ProviderKey,
                 isPersistent: false,
                 bypassTwoFactor: true);
-
+        
             if (UserIsLockedOut(result))
             {
                 throw new UserIsLockedOutException();

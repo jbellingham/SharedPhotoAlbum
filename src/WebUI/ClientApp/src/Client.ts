@@ -9,6 +9,106 @@
 
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 
+export interface IAuthClient {
+    authenticate(): Promise<AuthenticationResponse>;
+    refreshToken(authToken: string | null | undefined, refreshToken: string | null | undefined): Promise<AuthenticationResponse>;
+}
+
+export class AuthClient implements IAuthClient {
+    private instance: AxiosInstance;
+    private baseUrl: string;
+    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
+
+    constructor(baseUrl?: string, instance?: AxiosInstance) {
+        this.instance = instance ? instance : axios.create();
+        this.baseUrl = baseUrl ? baseUrl : "";
+    }
+
+    authenticate(): Promise<AuthenticationResponse> {
+        let url_ = this.baseUrl + "/api/Auth";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "GET",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processAuthenticate(_response);
+        });
+    }
+
+    protected processAuthenticate(response: AxiosResponse): Promise<AuthenticationResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = AuthenticationResponse.fromJS(resultData200);
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<AuthenticationResponse>(<any>null);
+    }
+
+    refreshToken(authToken: string | null | undefined, refreshToken: string | null | undefined): Promise<AuthenticationResponse> {
+        let url_ = this.baseUrl + "/api/Auth?";
+        if (authToken !== undefined)
+            url_ += "authToken=" + encodeURIComponent("" + authToken) + "&"; 
+        if (refreshToken !== undefined)
+            url_ += "refreshToken=" + encodeURIComponent("" + refreshToken) + "&"; 
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <AxiosRequestConfig>{
+            method: "POST",
+            url: url_,
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.instance.request(options_).then((_response: AxiosResponse) => {
+            return this.processRefreshToken(_response);
+        });
+    }
+
+    protected processRefreshToken(response: AxiosResponse): Promise<AuthenticationResponse> {
+        const status = response.status;
+        let _headers: any = {};
+        if (response.headers && typeof response.headers === "object") {
+            for (let k in response.headers) {
+                if (response.headers.hasOwnProperty(k)) {
+                    _headers[k] = response.headers[k];
+                }
+            }
+        }
+        if (status === 200) {
+            const _responseText = response.data;
+            let result200: any = null;
+            let resultData200  = _responseText;
+            result200 = AuthenticationResponse.fromJS(resultData200);
+            return result200;
+        } else if (status !== 200 && status !== 204) {
+            const _responseText = response.data;
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+        }
+        return Promise.resolve<AuthenticationResponse>(<any>null);
+    }
+}
+
 export interface ICommentsClient {
     create(command: CreateCommentCommand): Promise<string>;
     get(postId: string | undefined): Promise<CommentsVm>;
@@ -212,61 +312,6 @@ export class FeedsClient implements IFeedsClient {
             return throwException("An unexpected server error occurred.", status, _responseText, _headers);
         }
         return Promise.resolve<FeedVm>(<any>null);
-    }
-}
-
-export interface IHomeClient {
-    index(): Promise<FileResponse>;
-}
-
-export class HomeClient implements IHomeClient {
-    private instance: AxiosInstance;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(baseUrl?: string, instance?: AxiosInstance) {
-        this.instance = instance ? instance : axios.create();
-        this.baseUrl = baseUrl ? baseUrl : "";
-    }
-
-    index(): Promise<FileResponse> {
-        let url_ = this.baseUrl + "/api/Home";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <AxiosRequestConfig>{
-            responseType: "blob",
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "application/octet-stream"
-            }
-        };
-
-        return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processIndex(_response);
-        });
-    }
-
-    protected processIndex(response: AxiosResponse): Promise<FileResponse> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200 || status === 206) {
-            const contentDisposition = response.headers ? response.headers["content-disposition"] : undefined;
-            const fileNameMatch = contentDisposition ? /filename="?([^"]*?)"?(;|$)/g.exec(contentDisposition) : undefined;
-            const fileName = fileNameMatch && fileNameMatch.length > 1 ? fileNameMatch[1] : undefined;
-            return Promise.resolve({ fileName: fileName, status: status, data: response.data as Blob, headers: _headers });
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<FileResponse>(<any>null);
     }
 }
 
@@ -481,61 +526,6 @@ export class PostsClient implements IPostsClient {
     }
 }
 
-export interface ITokenClient {
-    get(): Promise<string>;
-}
-
-export class TokenClient implements ITokenClient {
-    private instance: AxiosInstance;
-    private baseUrl: string;
-    protected jsonParseReviver: ((key: string, value: any) => any) | undefined = undefined;
-
-    constructor(baseUrl?: string, instance?: AxiosInstance) {
-        this.instance = instance ? instance : axios.create();
-        this.baseUrl = baseUrl ? baseUrl : "";
-    }
-
-    get(): Promise<string> {
-        let url_ = this.baseUrl + "/api/Token";
-        url_ = url_.replace(/[?&]$/, "");
-
-        let options_ = <AxiosRequestConfig>{
-            method: "GET",
-            url: url_,
-            headers: {
-                "Accept": "application/json"
-            }
-        };
-
-        return this.instance.request(options_).then((_response: AxiosResponse) => {
-            return this.processGet(_response);
-        });
-    }
-
-    protected processGet(response: AxiosResponse): Promise<string> {
-        const status = response.status;
-        let _headers: any = {};
-        if (response.headers && typeof response.headers === "object") {
-            for (let k in response.headers) {
-                if (response.headers.hasOwnProperty(k)) {
-                    _headers[k] = response.headers[k];
-                }
-            }
-        }
-        if (status === 200) {
-            const _responseText = response.data;
-            let result200: any = null;
-            let resultData200  = _responseText;
-            result200 = resultData200 !== undefined ? resultData200 : <any>null;
-            return result200;
-        } else if (status !== 200 && status !== 204) {
-            const _responseText = response.data;
-            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
-        }
-        return Promise.resolve<string>(<any>null);
-    }
-}
-
 export interface IUserClient {
     get(): Promise<UserDetailsDto>;
 }
@@ -589,6 +579,90 @@ export class UserClient implements IUserClient {
         }
         return Promise.resolve<UserDetailsDto>(<any>null);
     }
+}
+
+export class AuthenticationResponse implements IAuthenticationResponse {
+    isAuthenticated?: boolean;
+    authToken?: Token | undefined;
+    refreshToken?: Token | undefined;
+
+    constructor(data?: IAuthenticationResponse) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.isAuthenticated = _data["isAuthenticated"];
+            this.authToken = _data["authToken"] ? Token.fromJS(_data["authToken"]) : <any>undefined;
+            this.refreshToken = _data["refreshToken"] ? Token.fromJS(_data["refreshToken"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): AuthenticationResponse {
+        data = typeof data === 'object' ? data : {};
+        let result = new AuthenticationResponse();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["isAuthenticated"] = this.isAuthenticated;
+        data["authToken"] = this.authToken ? this.authToken.toJSON() : <any>undefined;
+        data["refreshToken"] = this.refreshToken ? this.refreshToken.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IAuthenticationResponse {
+    isAuthenticated?: boolean;
+    authToken?: Token | undefined;
+    refreshToken?: Token | undefined;
+}
+
+export class Token implements IToken {
+    tokenString?: string | undefined;
+    validTo?: Date | undefined;
+
+    constructor(data?: IToken) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.tokenString = _data["tokenString"];
+            this.validTo = _data["validTo"] ? new Date(_data["validTo"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): Token {
+        data = typeof data === 'object' ? data : {};
+        let result = new Token();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["tokenString"] = this.tokenString;
+        data["validTo"] = this.validTo ? this.validTo.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IToken {
+    tokenString?: string | undefined;
+    validTo?: Date | undefined;
 }
 
 export class CreateCommentCommand implements ICreateCommentCommand {

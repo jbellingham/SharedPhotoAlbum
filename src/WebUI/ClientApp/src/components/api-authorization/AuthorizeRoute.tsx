@@ -9,15 +9,15 @@ function AuthorizeRoute(props: any): JSX.Element {
     const { authStore } = useStore()
 
     useEffect(() => {
-        async function getToken() {
-            await authStore.getToken()
+        async function authenticate() {
+            await authStore.authenticate()
             setReady(true)
         }
 
         if (ready && !authStore.isAuthenticated) {
             window.location.href = '/Identity/Account/Login'
         } else if (!authStore.isAuthenticated) {
-            getToken()
+            authenticate()
         }
     })
 

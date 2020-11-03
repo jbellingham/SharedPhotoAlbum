@@ -43,9 +43,10 @@ namespace SharedPhotoAlbum.Infrastructure
             var validIssuer = configuration["JwtOptions:Issuer"];
             
             services.AddAuthentication()
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddFacebook(facebookOptions =>
                 {
-                    facebookOptions.SignInScheme = JwtBearerDefaults.AuthenticationScheme;
+                    facebookOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                     facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
                     facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
                     facebookOptions.Fields.Add("picture");

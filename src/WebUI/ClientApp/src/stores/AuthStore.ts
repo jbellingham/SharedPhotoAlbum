@@ -1,35 +1,54 @@
 import { action, observable } from 'mobx'
-import { TokenClient } from '../Client'
+import { AuthClient, AuthenticationResponse } from '../Client'
 import Cookies from 'js-cookie'
 
 class AuthStore {
     @observable
-    isAuthenticated = false
+    isAuthenticated: boolean | undefined = false
 
     @observable
-    token = ''
+    token: string | undefined = undefined
 
-    constructor(private tokenClient: TokenClient) {}
+    @observable
+    tokenExpiry: Date | undefined = undefined
+
+    @observable
+    refreshToken: string | undefined = undefined
+
+    constructor(private tokenClient: AuthClient) {
+        this.token = Cookies.get('auth_token')
+        const dateString = Cookies.get('auth_token_expires')
+        this.tokenExpiry = new Date(dateString)
+    }
 
     @action
-    async getToken(): Promise<void> {
-        const token = Cookies.get('auth_token')
-        if (token) {
-            this.token = token
+    async authenticate(): Promise<void> {
+        if (this.token && this.tokenExpiry && new Date() < this.tokenExpiry) {
             this.isAuthenticated = true
+        } else if (this.token && this.refreshToken && this.tokenExpiry && new Date() >= this.tokenExpiry) {
+            return this.tokenClient
+                .refreshToken(this.token, this.refreshToken)
+                .then((response) => this.handleAuthenticationResponse(response))
         } else {
             return this.tokenClient
-                .get()
-                .then((response) => {
-                    this.token = response
-                    Cookies.set('auth_token', response)
-                    this.isAuthenticated = true
-                    console.log(response)
-                })
+                .authenticate()
+                .then((response) => this.handleAuthenticationResponse(response))
                 .catch((error) => {
                     console.log(error)
                 })
         }
+    }
+
+    private handleAuthenticationResponse(response: AuthenticationResponse): void {
+        this.isAuthenticated = response.isAuthenticated
+        this.token = response.authToken?.tokenString
+        this.tokenExpiry = response.authToken?.validTo
+        this.refreshToken = response.refreshToken?.tokenString
+
+        this.token && Cookies.set('auth_token', response.authToken?.tokenString)
+        this.tokenExpiry && Cookies.set('auth_token_expires', response.authToken?.validTo)
+        this.isAuthenticated = true
+        console.log(response)
     }
 }
 

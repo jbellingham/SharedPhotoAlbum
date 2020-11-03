@@ -4,22 +4,24 @@ import FeedStore from './FeedStore'
 import CommentStore from './CommentStore'
 import AuthStore from './AuthStore'
 import UserStore from './UserStore'
-import { PostsClient, CommentsClient, FeedsClient, UserClient, TokenClient } from '../Client'
+import { PostsClient, CommentsClient, FeedsClient, UserClient, AuthClient } from '../Client'
 import Axios from 'axios'
 
 const baseUrl = ''
-const authStore = new AuthStore(new TokenClient(baseUrl, Axios.create()))
+const authStore = new AuthStore(new AuthClient(baseUrl, Axios.create()))
 
 const axios = Axios.create()
 axios.interceptors.request.use(async function (config) {
-    if (!authStore.token) {
-        await authStore.getToken()
+    if (!authStore.isAuthenticated) {
+        await authStore.authenticate()
     }
     const token = authStore.token
 
-    config.headers = {
-        ...config.headers,
-        Authorization: `Bearer ${token}`,
+    if (token) {
+        config.headers = {
+            ...config.headers,
+            Authorization: `Bearer ${token}`,
+        }
     }
     return config
 })
