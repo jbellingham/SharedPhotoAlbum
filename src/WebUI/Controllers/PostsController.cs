@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SharedPhotoAlbum.Application.Posts.Commands.CreatePost;
 using SharedPhotoAlbum.Application.Posts.Queries.GetPosts;
 
 namespace SharedPhotoAlbum.WebUI.Controllers
 {
-    [Authorize]
     public class PostsController : ApiController
     {
         [HttpPost]

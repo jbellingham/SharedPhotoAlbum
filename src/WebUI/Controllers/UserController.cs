@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
 using IdentityModel;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SharedPhotoAlbum.Domain.Entities;
 
 namespace SharedPhotoAlbum.WebUI.Controllers
 {
-    [Authorize]
     public class UserController : ApiController
     {
         private readonly SignInManager<ApplicationUser> _signInManager;

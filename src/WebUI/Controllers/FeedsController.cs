@@ -7,7 +7,6 @@ using SharedPhotoAlbum.Application.Feeds.Queries.GetFeed;
 
 namespace SharedPhotoAlbum.WebUI.Controllers
 {
-    [Authorize]
     public class FeedsController : ApiController
     {
         [HttpPost]

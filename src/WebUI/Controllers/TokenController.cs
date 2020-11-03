@@ -1,32 +1,31 @@
 ﻿using System;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using IdentityModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using SharedPhotoAlbum.Domain.Entities;
+using SharedPhotoAlbum.Infrastructure.Identity;
 
 namespace SharedPhotoAlbum.WebUI.Controllers
 {
+    [AllowAnonymous]
     public class TokenController : ApiController
     {
-        private readonly IConfiguration _configuration;
         private readonly IUserStore<ApplicationUser> _userStore;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly ITokenHelper _tokenHelper;
 
         public TokenController(
-            IConfiguration configuration,
             IUserStore<ApplicationUser> userStore,
-            UserManager<ApplicationUser> userManager)
+            UserManager<ApplicationUser> userManager,
+            ITokenHelper tokenHelper)
         {
-            _configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             _userStore = userStore ?? throw new ArgumentNullException(nameof(userStore));
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
+            _tokenHelper = tokenHelper ?? throw new ArgumentNullException(nameof(tokenHelper));
         }
         
         [HttpGet]
@@ -59,23 +58,7 @@ namespace SharedPhotoAlbum.WebUI.Controllers
 
         private string GenerateJwtToken(ApplicationUser user)
         {
-            SecurityTokenDescriptor tokenDescriptor = CreateSecurityTokenDescriptor(user);
-            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken token = tokenHandler.CreateToken(tokenDescriptor);
-            return tokenHandler.WriteToken(token);
-        }
-
-        private SecurityTokenDescriptor CreateSecurityTokenDescriptor(ApplicationUser user)
-        {
-            byte[] key = Encoding.ASCII.GetBytes(_configuration["JwtOptions:SigningKey"]);
-            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user.Id.ToString()) }),
-                Expires = DateTime.UtcNow.AddDays(7), // generate token that is valid for 7 days
-                SigningCredentials =
-                    new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            return tokenDescriptor;
+            return _tokenHelper.GenerateJwtToken(user);
         }
     }
 }

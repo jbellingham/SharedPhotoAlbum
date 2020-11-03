@@ -11,6 +11,7 @@ using NSwag.Generation.Processors.Security;
 using SharedPhotoAlbum.Application;
 using SharedPhotoAlbum.Application.Common.Interfaces;
 using SharedPhotoAlbum.Infrastructure;
+using SharedPhotoAlbum.Infrastructure.Identity;
 using SharedPhotoAlbum.Infrastructure.Persistence;
 using SharedPhotoAlbum.WebUI.Filters;
 using SharedPhotoAlbum.WebUI.Services;

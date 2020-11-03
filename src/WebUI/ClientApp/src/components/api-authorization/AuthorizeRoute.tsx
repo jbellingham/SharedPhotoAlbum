@@ -13,11 +13,11 @@ function AuthorizeRoute(props: any): JSX.Element {
             await authStore.getToken()
             setReady(true)
         }
-        if (!authStore.isAuthenticated) {
-            getToken()
-        }
+
         if (ready && !authStore.isAuthenticated) {
             window.location.href = '/Identity/Account/Login'
+        } else if (!authStore.isAuthenticated) {
+            getToken()
         }
     })
 
