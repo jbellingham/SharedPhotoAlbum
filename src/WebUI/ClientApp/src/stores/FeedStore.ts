@@ -1,11 +1,10 @@
 import { CreateFeedCommand, FeedDto, IFeedsClient } from '../Client'
 import { action, computed, observable } from 'mobx'
-import PostStore from './PostStore'
 import { Feed } from '../components/models/Feed'
 import { FeedMapper } from '../mappers/FeedMapper'
 
 class FeedStore {
-    constructor(private postStore: PostStore, private feedsClient: IFeedsClient) {}
+    constructor(private feedsClient: IFeedsClient) {}
 
     @observable
     currentFeedId: string | undefined = ''
@@ -38,6 +37,11 @@ class FeedStore {
             this.myFeeds.some((feed) => feed.id === this.currentFeedId) ||
             this.subscriptions.some((feed) => feed.id === this.currentFeedId)
         )
+    }
+
+    @action
+    setCurrentFeedId(feedId: string): void {
+        this.currentFeedId = feedId.toLowerCase()
     }
 
     @action

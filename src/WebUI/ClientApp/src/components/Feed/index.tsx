@@ -29,7 +29,7 @@ const Feed = observer(() => {
     }
 
     const { feedId } = useParams<FeedParams>()
-    feedStore.currentFeedId = feedId
+    feedStore.setCurrentFeedId(feedId)
 
     const { currentFeedId } = feedStore
 

@@ -34,7 +34,7 @@ const clients = {
 
 const postStore = new PostStore(new PostsClient(baseUrl, axios), clients.commentsClient)
 const commentStore = new CommentStore(clients.commentsClient, postStore)
-const feedStore = new FeedStore(postStore, clients.feedsClient)
+const feedStore = new FeedStore(clients.feedsClient)
 const userStore = new UserStore(clients.userClient)
 
 export interface IStore {
