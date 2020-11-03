@@ -41,7 +41,9 @@ class FeedStore {
 
     @action
     setCurrentFeedId(feedId: string): void {
-        this.currentFeedId = feedId.toLowerCase()
+        if (feedId) {
+            this.currentFeedId = feedId.toLowerCase()
+        }
     }
 
     @action
