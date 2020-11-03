@@ -3,6 +3,7 @@ using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using SharedPhotoAlbum.Domain.Entities;
+using SharedPhotoAlbum.Infrastructure.Identity;
 
 namespace SharedPhotoAlbum.WebUI.Controllers
 {
@@ -20,9 +21,9 @@ namespace SharedPhotoAlbum.WebUI.Controllers
         {
             return Ok(new UserDetailsDto
             {
-                ProfilePictureUrl = HttpContext.User.FindFirst(JwtClaimTypes.Picture)?.Value,
-                FirstName = HttpContext.User.FindFirst(JwtClaimTypes.GivenName)?.Value,
-                LastName = HttpContext.User.FindFirst(JwtClaimTypes.FamilyName)?.Value,
+                ProfilePictureUrl = HttpContext.User.FindFirst(CustomClaimTypes.Facebook.Picture)?.Value,
+                FirstName = HttpContext.User.FindFirst(CustomClaimTypes.Facebook.FirstName)?.Value,
+                LastName = HttpContext.User.FindFirst(CustomClaimTypes.Facebook.LastName)?.Value,
             });
         }
     }

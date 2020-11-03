@@ -60,7 +60,7 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
             returnUrl = returnUrl ?? Url.Content("~/");
 
             // Clear the existing external cookie to ensure a clean login process
-            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            await HttpContext.SignOutAsync(IdentityConstants.ApplicationScheme);
 
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
@@ -185,7 +186,6 @@ namespace SharedPhotoAlbum.WebUI.Areas.Identity.Pages.Account
                         await AddFacebookProfileClaimsIfEmpty();
 
                         var userId = await _userManager.GetUserIdAsync(user);
-                        await _userManager.AddClaimAsync(user, new Claim(JwtClaimTypes.Subject, userId));
                         await SendEmailConfirmationEmail(user, userId);
 
                         // If account confirmation is required, we need to show the link if we don't have a real email sender

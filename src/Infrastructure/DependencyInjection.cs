@@ -43,18 +43,18 @@ namespace SharedPhotoAlbum.Infrastructure
             var validIssuer = configuration["JwtOptions:Issuer"];
             
             services.AddAuthentication()
-                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddFacebook(facebookOptions =>
                 {
-                    facebookOptions.SignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+                    facebookOptions.SignInScheme = IdentityConstants.ApplicationScheme;
                     facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
                     facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
                     facebookOptions.Fields.Add("picture");
-                    facebookOptions.ClaimActions.MapCustomJson(JwtClaimTypes.Picture,
+                    facebookOptions.ClaimActions.MapCustomJson(CustomClaimTypes.Facebook.Picture,
                         json => json.GetProperty("picture").GetProperty("data")
                         .GetProperty("url").ToString());
-                    facebookOptions.ClaimActions.MapCustomJson(JwtClaimTypes.GivenName, json => json.GetProperty("first_name").ToString());
-                    facebookOptions.ClaimActions.MapCustomJson(JwtClaimTypes.FamilyName, json => json.GetProperty("last_name").ToString());
+                    facebookOptions.ClaimActions.MapJsonKey(CustomClaimTypes.Facebook.FirstName, "first_name");
+                    facebookOptions.ClaimActions.MapJsonKey(CustomClaimTypes.Facebook.LastName, "last_name");
+                    facebookOptions.ClaimActions.MapJsonKey(CustomClaimTypes.Facebook.ProviderKey, "id");
                 })
                 .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtOptions =>
                 {

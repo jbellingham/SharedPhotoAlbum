@@ -7,6 +7,7 @@ using IdentityModel;
 using Microsoft.AspNetCore.Identity;
 using SharedPhotoAlbum.Application.Common.Interfaces;
 using SharedPhotoAlbum.Domain.Entities;
+using SharedPhotoAlbum.Infrastructure.Identity;
 
 namespace SharedPhotoAlbum.WebUI.Services
 {
@@ -17,8 +18,14 @@ namespace SharedPhotoAlbum.WebUI.Services
         private ClaimsPrincipal _externalLoginPrincipal;
         private IEnumerable<Claim> _existingClaims;
         
-        private readonly List<string> _claimsToAdd = new List<string> { JwtClaimTypes.Picture, JwtClaimTypes.GivenName, JwtClaimTypes.FamilyName };
-        
+        private readonly List<string> _claimsToAdd = new List<string>
+        {
+            CustomClaimTypes.Facebook.Picture,
+            CustomClaimTypes.Facebook.FirstName,
+            CustomClaimTypes.Facebook.LastName,
+            CustomClaimTypes.Facebook.ProviderKey
+        };
+
         public UserClaimsService(UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager ?? throw new ArgumentNullException(nameof(userManager));
