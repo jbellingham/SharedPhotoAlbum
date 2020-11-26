@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using IdentityModel;
+using IdentityServer4;
 using SharedPhotoAlbum.Application.Common.Interfaces;
 using SharedPhotoAlbum.Infrastructure.Identity;
 using SharedPhotoAlbum.Infrastructure.Persistence;
@@ -50,7 +51,7 @@ namespace SharedPhotoAlbum.Infrastructure
                 .AddIdentityServerJwt()
                 .AddFacebook(facebookOptions =>
                 {
-                    // facebookOptions.SignInScheme = IdentityConstants.ApplicationScheme;
+                    
                     facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
                     facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
                     facebookOptions.Fields.Add("picture");

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import NewFeed from '../NewFeed'
 import { Button } from 'react-bootstrap'
 import { useStore } from '../../../stores/StoreContext'
@@ -14,6 +14,9 @@ const FeedList = observer(() => {
     const [showNewFeedModal, setShowNewFeedModal] = React.useState(false)
 
     const { feedStore } = useStore()
+    useEffect(() => {
+        feedStore.getFeeds()
+    }, [])
 
     const { myFeeds, subscriptions } = feedStore
 

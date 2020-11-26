@@ -7,6 +7,7 @@ import { store, StoreContext } from './stores/StoreContext'
 import AuthorizeRoute from './components/api-authorization/AuthorizeRoute'
 import { ApplicationPaths } from './components/api-authorization/ApiAuthorizationConstants'
 import ApiAuthorizationRoutes from './components/api-authorization/ApiAuthorizationRoutes'
+import Layout from './components/shared/Layout'
 
 function App() {
     const cloudName = process.env.REACT_APP_CLOUDINARY_CLOUD_NAME
@@ -17,10 +18,12 @@ function App() {
             <StoreContext.Provider value={store}>
                 <Router>
                     <Switch>
-                        <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
-                        <AuthorizeRoute path="/invite/:inviteCode" component={Invite} />
-                        <AuthorizeRoute path="/:feedId" component={Feed} />
-                        <AuthorizeRoute path="/" component={Feed} />
+                        <Layout>
+                            <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
+                            <AuthorizeRoute path="/invite/:inviteCode" component={Invite} />
+                            <AuthorizeRoute path="/:feedId" component={Feed} />
+                            <AuthorizeRoute path="/" component={Feed} />
+                        </Layout>
                     </Switch>
                 </Router>
             </StoreContext.Provider>

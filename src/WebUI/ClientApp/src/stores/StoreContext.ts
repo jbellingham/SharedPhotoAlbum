@@ -2,14 +2,12 @@ import { createContext, useContext } from 'react'
 import PostStore from './PostStore'
 import FeedStore from './FeedStore'
 import CommentStore from './CommentStore'
-import AuthStore from './AuthStore'
 import UserStore from './UserStore'
 import { PostsClient, CommentsClient, FeedsClient, UserClient, AuthClient } from '../Client'
 import Axios from 'axios'
 import authService from '../components/api-authorization/AuthorizeService'
 
 const baseUrl = ''
-const authStore = new AuthStore(new AuthClient(baseUrl, Axios.create()))
 
 const axios = Axios.create()
 axios.interceptors.request.use(async function (config) {
@@ -39,7 +37,6 @@ export interface IStore {
     postStore: PostStore
     commentStore: CommentStore
     feedStore: FeedStore
-    authStore: AuthStore
     userStore: UserStore
 }
 
@@ -47,7 +44,6 @@ export const store: IStore = {
     postStore,
     commentStore,
     feedStore,
-    authStore,
     userStore,
 }
 
