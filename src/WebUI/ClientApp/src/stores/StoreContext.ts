@@ -6,16 +6,14 @@ import AuthStore from './AuthStore'
 import UserStore from './UserStore'
 import { PostsClient, CommentsClient, FeedsClient, UserClient, AuthClient } from '../Client'
 import Axios from 'axios'
+import authService from '../components/api-authorization/AuthorizeService'
 
 const baseUrl = ''
 const authStore = new AuthStore(new AuthClient(baseUrl, Axios.create()))
 
 const axios = Axios.create()
 axios.interceptors.request.use(async function (config) {
-    if (!authStore.isAuthenticated) {
-        await authStore.authenticate()
-    }
-    const token = authStore.token
+    const token = await authService.getAccessToken()
 
     if (token) {
         config.headers = {
