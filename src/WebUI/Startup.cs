@@ -99,9 +99,10 @@ namespace WebUI
 
             app.UseRouting();
             app.UseAuthentication();
+            app.UseIdentityServer();
             app.UseAuthorization();
 
-            app.UseMiddleware<JwtMiddleware>();
+            // app.UseMiddleware<JwtMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();

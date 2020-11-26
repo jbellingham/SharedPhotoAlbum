@@ -36,32 +36,37 @@ namespace SharedPhotoAlbum.Infrastructure
 
             services.AddScoped<IApplicationDbContext>(provider => provider.GetService<ApplicationDbContext>());
 
-                services.AddDefaultIdentity<ApplicationUser>()
-                    .AddEntityFrameworkStores<ApplicationDbContext>()
-                    .AddSignInManager<SignInManager>();
+            services.AddDefaultIdentity<ApplicationUser>()
+                .AddRoles<ApplicationRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+                    // .AddSignInManager<SignInManager>();
                 
-            var validIssuer = configuration["JwtOptions:Issuer"];
+            // var validIssuer = configuration["JwtOptions:Issuer"];
             
+            services.AddIdentityServer()
+                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+
             services.AddAuthentication()
+                .AddIdentityServerJwt()
                 .AddFacebook(facebookOptions =>
                 {
-                    facebookOptions.SignInScheme = IdentityConstants.ApplicationScheme;
+                    // facebookOptions.SignInScheme = IdentityConstants.ApplicationScheme;
                     facebookOptions.AppId = configuration["Authentication:Facebook:AppId"];
                     facebookOptions.AppSecret = configuration["Authentication:Facebook:AppSecret"];
                     facebookOptions.Fields.Add("picture");
                     facebookOptions.ClaimActions.MapCustomJson(CustomClaimTypes.Facebook.Picture,
                         json => json.GetProperty("picture").GetProperty("data")
-                        .GetProperty("url").ToString());
+                            .GetProperty("url").ToString());
                     facebookOptions.ClaimActions.MapJsonKey(CustomClaimTypes.Facebook.FirstName, "first_name");
                     facebookOptions.ClaimActions.MapJsonKey(CustomClaimTypes.Facebook.LastName, "last_name");
                     facebookOptions.ClaimActions.MapJsonKey(CustomClaimTypes.Facebook.ProviderKey, "id");
-                })
-                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtOptions =>
-                {
-                    jwtOptions.ClaimsIssuer = validIssuer;
-                    jwtOptions.TokenValidationParameters = TokenValidation.BuildParameters(configuration);
-                    jwtOptions.SaveToken = true;
                 });
+                // .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtOptions =>
+                // {
+                //     jwtOptions.ClaimsIssuer = validIssuer;
+                //     jwtOptions.TokenValidationParameters = TokenValidation.BuildParameters(configuration);
+                //     jwtOptions.SaveToken = true;
+                // });
 
             // services.AddAuthorization(options =>
             // {
