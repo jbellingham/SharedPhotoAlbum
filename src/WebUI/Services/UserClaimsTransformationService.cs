@@ -50,7 +50,8 @@ namespace SharedPhotoAlbum.WebUI.Services
         private async Task GetUserByClaimsPrincipal()
         {
             var identifier = _identity?.FindFirst(ClaimTypes.NameIdentifier);
-            _user = await _userManager.FindByIdAsync(identifier?.Value);
+            Guid.TryParse(identifier?.Value, out var id);
+            _user = await _userManager.FindByIdAsync(id.ToString());
             if (_user == null)
             {
                 throw new NotFoundException();

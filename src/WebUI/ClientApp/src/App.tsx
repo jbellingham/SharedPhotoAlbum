@@ -1,6 +1,6 @@
 import React from 'react'
 import Feed from './components/Feed'
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { BrowserRouter, Route, Switch } from 'react-router-dom'
 import { CloudinaryContext } from 'cloudinary-react'
 import Invite from './components/Invite'
 import { store, StoreContext } from './stores/StoreContext'
@@ -16,16 +16,15 @@ function App() {
         //todo: remove cloudname
         <CloudinaryContext cloudName="dzehqlqqu">
             <StoreContext.Provider value={store}>
-                <Router>
+                <BrowserRouter>
                     <Switch>
                         <Layout>
-                            <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
                             <AuthorizeRoute path="/invite/:inviteCode" component={Invite} />
                             <AuthorizeRoute path="/:feedId" component={Feed} />
-                            <AuthorizeRoute path="/" component={Feed} />
+                            <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
                         </Layout>
                     </Switch>
-                </Router>
+                </BrowserRouter>
             </StoreContext.Provider>
         </CloudinaryContext>
     )
