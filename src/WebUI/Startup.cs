@@ -1,4 +1,5 @@
 using System.Linq;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -37,6 +38,7 @@ namespace WebUI
             services.AddScoped<ICurrentUserService, CurrentUserService>();
             services.AddScoped<ITokenHelper, TokenHelper>();
             services.AddScoped<IUserClaimsService, UserClaimsService>();
+            services.AddTransient<IClaimsTransformation, UserClaimsTransformationService>();
 
             services.AddHttpContextAccessor();
 
@@ -99,9 +101,10 @@ namespace WebUI
 
             app.UseRouting();
             app.UseAuthentication();
+            app.UseIdentityServer();
             app.UseAuthorization();
 
-            app.UseMiddleware<JwtMiddleware>();
+            // app.UseMiddleware<JwtMiddleware>();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapDefaultControllerRoute();
