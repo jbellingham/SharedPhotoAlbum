@@ -1,6 +1,7 @@
 import React from 'react'
 import { Component } from 'react'
 import { Route, Redirect } from 'react-router-dom'
+import Layout from '../shared/Layout'
 import { ApplicationPaths, QueryParameterNames } from './ApiAuthorizationConstants'
 import authService from './AuthorizeService'
 
@@ -38,7 +39,11 @@ export default class AuthorizeRoute extends Component {
                     {...rest}
                     render={(props) => {
                         if (authenticated) {
-                            return <Component {...props} />
+                            return (
+                                <Layout>
+                                    <Component {...props} />
+                                </Layout>
+                            )
                         } else {
                             return <Redirect to={redirectUrl} />
                         }

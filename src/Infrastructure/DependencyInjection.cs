@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using IdentityModel;
@@ -43,9 +45,25 @@ namespace SharedPhotoAlbum.Infrastructure
                     // .AddSignInManager<SignInManager>();
                 
             // var validIssuer = configuration["JwtOptions:Issuer"];
+
+            var builder = services.AddIdentityServer()
+                .AddAspNetIdentity<ApplicationUser>()
+                .AddOperationalStore<ApplicationDbContext>()
+                .AddIdentityResources()
+                .AddApiResources()
+                .AddClients();
             
-            services.AddIdentityServer()
-                .AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
+            if (configuration.GetValue<bool>("UseDeveloperSigningCredential"))
+            {
+                builder.AddDeveloperSigningCredential();
+            }
+            else
+            {
+                var bytes = File.ReadAllBytes($"/var/ssl/private/{configuration["WEBSITE_LOAD_CERTIFICATES"]}.p12");
+                var certificate = new X509Certificate2(bytes);
+                builder.AddSigningCredential(certificate);
+            }
+                //.AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt()

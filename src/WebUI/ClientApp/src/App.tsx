@@ -18,11 +18,9 @@ function App() {
             <StoreContext.Provider value={store}>
                 <BrowserRouter>
                     <Switch>
-                        <Layout>
-                            <AuthorizeRoute path="/invite/:inviteCode" component={Invite} />
-                            <AuthorizeRoute path="/:feedId" component={Feed} />
-                            <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
-                        </Layout>
+                        <Route path={ApplicationPaths.ApiAuthorizationPrefix} component={ApiAuthorizationRoutes} />
+                        <AuthorizeRoute path="/invite/:inviteCode" component={Invite} />
+                        <AuthorizeRoute path="/:feedId?" component={Feed} />
                     </Switch>
                 </BrowserRouter>
             </StoreContext.Provider>
