@@ -42,9 +42,6 @@ namespace SharedPhotoAlbum.Infrastructure
             services.AddDefaultIdentity<ApplicationUser>()
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-                    // .AddSignInManager<SignInManager>();
-                
-            // var validIssuer = configuration["JwtOptions:Issuer"];
 
             var builder = services.AddIdentityServer()
                 .AddAspNetIdentity<ApplicationUser>()
@@ -63,7 +60,6 @@ namespace SharedPhotoAlbum.Infrastructure
                 var certificate = new X509Certificate2(bytes);
                 builder.AddSigningCredential(certificate);
             }
-                //.AddApiAuthorization<ApplicationUser, ApplicationDbContext>();
 
             services.AddAuthentication()
                 .AddIdentityServerJwt()
@@ -80,19 +76,6 @@ namespace SharedPhotoAlbum.Infrastructure
                     facebookOptions.ClaimActions.MapJsonKey(CustomClaimTypes.Facebook.LastName, "last_name");
                     facebookOptions.ClaimActions.MapJsonKey(CustomClaimTypes.Facebook.ProviderKey, "id");
                 });
-                // .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, jwtOptions =>
-                // {
-                //     jwtOptions.ClaimsIssuer = validIssuer;
-                //     jwtOptions.TokenValidationParameters = TokenValidation.BuildParameters(configuration);
-                //     jwtOptions.SaveToken = true;
-                // });
-
-            // services.AddAuthorization(options =>
-            // {
-            //     options.AddPolicy("ApiUser",
-            //         policy => policy.RequireClaim(Constants.Strings.JwtClaimIdentifiers.Rol,
-            //             Constants.Strings.JwtClaims.ApiAccess));
-            // });
 
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IIdentityService, IdentityService>();
