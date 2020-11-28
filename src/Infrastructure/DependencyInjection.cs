@@ -1,24 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
-using IdentityModel;
-using IdentityServer4;
 using SharedPhotoAlbum.Application.Common.Interfaces;
 using SharedPhotoAlbum.Infrastructure.Identity;
 using SharedPhotoAlbum.Infrastructure.Persistence;
 using SharedPhotoAlbum.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Logging;
-using Microsoft.IdentityModel.Tokens;
 using SharedPhotoAlbum.Domain.Entities;
 
 namespace SharedPhotoAlbum.Infrastructure
@@ -44,7 +34,7 @@ namespace SharedPhotoAlbum.Infrastructure
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            var builder = services.AddIdentityServer()
+            var builder = services.AddIdentityServer(options => options.IssuerUri = configuration["JwtOptions:IssuerUri"])
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddOperationalStore<ApplicationDbContext>()
                 .AddIdentityResources()
