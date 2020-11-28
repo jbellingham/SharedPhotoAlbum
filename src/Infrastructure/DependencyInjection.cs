@@ -67,7 +67,6 @@ namespace SharedPhotoAlbum.Infrastructure
                     facebookOptions.ClaimActions.MapJsonKey(CustomClaimTypes.Facebook.LastName, "last_name");
                     facebookOptions.ClaimActions.MapJsonKey(CustomClaimTypes.Facebook.ProviderKey, "id");
                 });
-            IdentityModelEventSource.ShowPII = true;
 
             services.AddTransient<IDateTime, DateTimeService>();
             services.AddTransient<IIdentityService, IdentityService>();
