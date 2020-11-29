@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Logging;
 using SharedPhotoAlbum.Domain.Entities;
 
 namespace SharedPhotoAlbum.Infrastructure
@@ -34,7 +33,8 @@ namespace SharedPhotoAlbum.Infrastructure
                 .AddRoles<ApplicationRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            var builder = services.AddIdentityServer(options => options.IssuerUri = configuration["JwtOptions:IssuerUri"])
+            var builder = services
+                .AddIdentityServer(options => options.IssuerUri = configuration["JwtOptions:IssuerUri"])
                 .AddAspNetIdentity<ApplicationUser>()
                 .AddOperationalStore<ApplicationDbContext>()
                 .AddIdentityResources()

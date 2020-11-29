@@ -6,6 +6,7 @@ export class AuthorizeService {
     _nextSubscriptionId = 0
     _user = null
     _isAuthenticated = false
+    _isLoading = false
 
     // By default pop ups are disabled because they don't work properly on Edge.
     // If you want to enable pop up authentication simply set this flag to false.
@@ -29,7 +30,20 @@ export class AuthorizeService {
     async getAccessToken() {
         await this.ensureUserManagerInitialized()
         const user = await this.userManager.getUser()
+        if (user && user.expired) {
+            await this.handleRefresh()
+        }
         return user && user.access_token
+    }
+
+    async handleRefresh() {
+        if (!this._isLoading) {
+            this._isLoading = true
+            await this.userManager.signinSilent(this.createArguments())
+            this._isLoading = false
+        } else {
+            setTimeout(this.getAccessToken, 500)
+        }
     }
 
     // We try to authenticate the user in three different ways:
