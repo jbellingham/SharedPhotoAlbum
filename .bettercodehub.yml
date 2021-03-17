@@ -1,0 +1,5 @@
+exclude:
+- /DirectoryYouWantToExclude/.*
+- .*/FileYouWantToExclude\.java
+- src/Infrastructure/Persistence/Migrations/.*
+- src/WebUI/ClientApp/src\Client.ts
