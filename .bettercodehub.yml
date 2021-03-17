@@ -1,3 +1,4 @@
 exclude:
 - /src/Infrastructure/Persistence/Migrations/.*
 - /src/WebUI/ClientApp/src/Client\.ts
+component_depth: 2
