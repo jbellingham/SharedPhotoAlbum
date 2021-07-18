@@ -16,7 +16,7 @@
     "apollo-boost": "^0.4.9",
     "apollo-client": "^2.6.10",
     "apollo-server-express": "^2.16.0",
-    "axios": "^0.19.2",
+    "axios": "^0.21.1",
     "bootstrap": "^4.5.0",
     "cloudinary": "^1.22.0",
     "cloudinary-core": "^2.10.2",
