@@ -2,7 +2,6 @@
 using SharedPhotoAlbum.Application.Common.Interfaces;
 using SharedPhotoAlbum.Domain.Common;
 using SharedPhotoAlbum.Domain.Entities;
-using IdentityServer4.EntityFramework.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Options;
@@ -10,6 +9,7 @@ using System.Data;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Duende.IdentityServer.EntityFramework.Options;
 
 namespace SharedPhotoAlbum.Infrastructure.Persistence
 {

@@ -17,7 +17,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Feeds.Commands
             var command = new CreateFeedCommand();
 
             FluentActions.Invoking(() =>
-                SendAsync(command)).Should().Throw<ValidationException>();
+                SendAsync(command)).Should().ThrowAsync<ValidationException>();
         }
 
         [Test]

@@ -2,8 +2,8 @@
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using Duende.IdentityServer.Extensions;
 using IdentityModel;
-using IdentityServer4.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

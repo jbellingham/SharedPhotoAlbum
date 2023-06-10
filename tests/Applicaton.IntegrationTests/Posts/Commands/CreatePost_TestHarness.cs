@@ -54,7 +54,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Posts.Commands
             _post.Should().NotBeNull();
             _post.Text.Should().Be(_command.Text);
             _post.CreatedBy.Should().Be(_userId.Value);
-            _post.Created.Should().BeCloseTo(DateTime.Now, 10000);
+            _post.Created.Should().BeCloseTo(DateTime.Now, new TimeSpan(10000));
             // _post.LastModifiedBy.Should().BeNull();
             _post.LastModified.Should().BeNull();
         }

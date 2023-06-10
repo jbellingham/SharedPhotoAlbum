@@ -16,7 +16,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Posts.Commands
             var command = new CreatePostCommand();
 
             FluentActions.Invoking(() =>
-                SendAsync(command)).Should().Throw<ValidationException>();
+                SendAsync(command)).Should().ThrowAsync<ValidationException>();
         }
 
         [Test]

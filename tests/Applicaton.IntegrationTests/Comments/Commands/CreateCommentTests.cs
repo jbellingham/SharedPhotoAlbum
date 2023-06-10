@@ -16,7 +16,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Comments.Commands
             var command = new CreateCommentCommand();
 
             FluentActions.Invoking(() =>
-                SendAsync(command)).Should().Throw<ValidationException>();
+                SendAsync(command)).Should().ThrowAsync<ValidationException>();
         }
 
         [Test]

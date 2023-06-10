@@ -61,7 +61,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests.Comments.Commands
             _comment.Should().NotBeNull();
             _comment.Text.Should().Be(_command.Text);
             _comment.CreatedBy.Should().Be(_userId.Value);
-            _comment.Created.Should().BeCloseTo(DateTime.Now, 10000);
+            _comment.Created.Should().BeCloseTo(DateTime.Now, new TimeSpan(10000));
             // _comment.LastModifiedBy.Should().BeNull();
             _comment.LastModified.Should().BeNull();
         }

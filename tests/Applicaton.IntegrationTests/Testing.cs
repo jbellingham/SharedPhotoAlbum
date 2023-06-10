@@ -12,6 +12,7 @@ using Moq;
 using Npgsql;
 using NUnit.Framework;
 using Respawn;
+using Respawn.Graph;
 using SharedPhotoAlbum.Application.Common.Interfaces;
 using SharedPhotoAlbum.Application.IntegrationTests.Seeds;
 using SharedPhotoAlbum.Domain.Entities;
@@ -25,10 +26,10 @@ namespace SharedPhotoAlbum.Application.IntegrationTests
     {
         private static IConfiguration _configuration;
         private static IServiceScopeFactory _scopeFactory;
-        private static Checkpoint _checkpoint;
+        private static Respawner _checkpoint;
 
         [OneTimeSetUp]
-        public void RunBeforeAnyTests()
+        public async Task RunBeforeAnyTests()
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
@@ -58,16 +59,16 @@ namespace SharedPhotoAlbum.Application.IntegrationTests
             services.AddTransient<ICurrentUserService, CurrentUserService>();
 
             _scopeFactory = services.BuildServiceProvider().GetService<IServiceScopeFactory>();
-        
-            _checkpoint = new Checkpoint
-            {
-                TablesToIgnore = new [] { "__EFMigrationsHistory" },
-                SchemasToInclude = new []
+            _checkpoint = await Respawner.CreateAsync(_configuration.GetConnectionString("DefaultConnection"),
+                new RespawnerOptions
                 {
-                    "public"
-                },
-                DbAdapter = DbAdapter.Postgres
-            };
+                    TablesToIgnore = new []{ new Table("__EFMigrationsHistory")},
+                    SchemasToInclude = new[]
+                    {
+                        "public"
+                    },
+                    DbAdapter = DbAdapter.Postgres
+                });
 
             EnsureDatabase();
         }
@@ -124,7 +125,7 @@ namespace SharedPhotoAlbum.Application.IntegrationTests
             await using (var conn = new NpgsqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 await conn.OpenAsync();
-                await _checkpoint.Reset(conn);
+                await _checkpoint.ResetAsync(conn);
                 _currentUserId = Guid.Empty;
             }
         }
